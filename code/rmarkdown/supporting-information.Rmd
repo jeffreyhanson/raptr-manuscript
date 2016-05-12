@@ -1,0 +1,28 @@
+---
+fontsize: 11pt
+documentclass: article
+bibliography: Endnote_lib.bib
+csl: reference-style.csl
+output:
+  rmarkdown::pdf_document:
+    fig_caption: yes
+    keep_tex: yes
+    includes:
+      in_header: [preamble-latex.tex, preamble-latex3.tex]
+---
+## Supporting Information
+All data and code is stored in an online repository (\url{www.github.com/paleo13/rapr-manuscript}) to replicate analyses in this study. See the \textit{README} file for instructions.
+
+
+```{r, include=FALSE}
+# set wd
+knitr::opts_knit$set(root.dir=normalizePath('../..'))
+```
+
+```{r, include=FALSE}
+# load .rda file
+try(session::restore.session('data/final/results.rda'))
+
+# set options
+options(error=NULL)
+```
