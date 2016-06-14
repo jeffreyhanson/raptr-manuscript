@@ -1,0 +1,14 @@
+title = "simulation parameters"
+
+[debug]
+number.planning.units=25
+amount.target=0.2
+space.target=0.8
+blm=10
+
+[release]
+number.planning.units=225
+amount.target=0.2
+space.target=0.8
+blm=10
+

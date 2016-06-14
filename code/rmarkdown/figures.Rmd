@@ -1,7 +1,7 @@
 ---
 fontsize: 11pt
 documentclass: article
-bibliography: Endnote_lib.bib
+bibliography: references.bib
 csl: reference-style.csl
 output:
   rmarkdown::pdf_document:
@@ -22,5 +22,370 @@ try(session::restore.session('data/final/results.rda'))
 
 # set options
 options(error=NULL)
+
+# prelimary processing
+sim.pus.FPLY <- fortify(sim.pus)
+aus.FPLY <- fortify(aus.PLY)
+cs1.pus.FPLY <- fortify(cs1.pus)
+cs2.grid.FPLY <- fortify(cs2.grid.PLY)
+cs2.grid.sub.FPLY <- fortify(cs2.grid.sub.PLY)
+
+# store countries
+data(countriesHigh)
+countries.FPLY <- countriesHigh[
+	countriesHigh$ADMIN %in% c(
+		'Italy', 'Switzerland', 'France', 'Austria',
+		'Germany', 'Slovenia', 'Croatia', 'Hungary',
+		'Monaco', 'Germany', 'Slovakia', 'Czech Republic'
+	)
+,] %>% spFortify
+
+```
+
+## Figures
+
+```{r, echo=FALSE, message=FALSE, fig.height=2, fig.width=2, fig.cap="Example of an attribute space. This environmental attribute space has dimensions relating to annual temperature ($^{\\circ}$C) and rainfall (ml) values. Letters denote the environmental conditions associated with the geographic locations where four hypothetical populations are found. Points represent demand points. In this space, populations closer to each other are considered more similar to each other."}
+## generate data
+# population data
+populations <- data.frame(
+	population=LETTERS[1:4],
+	temperature=c(22,29,21.6,34),
+	rainfall=c(6,12,5.5,6)
+)
+# demand point data
+make.dp <- function(x, n, pad.percent=0.2) {
+	padding<-diff(range(x))*pad.percent
+	return(seq(min(x)-padding, max(x)+padding, length.out=n))
+}
+demand.points <- expand.grid(
+	temperature=make.dp(populations$temperature, n=4, pad.percent=0.2),
+	rainfall=make.dp(populations$rainfall, n=4, pad.percent=0.2)
+)
+
+## plot data
+ggplot(aes(x=temperature, y=rainfall), data=populations) +
+	geom_point(data=demand.points, fill='gray70') +
+	geom_text(aes(label=population), size=6) +
+	theme_classic() +
+	xlab(expression('Temperature ('*degree*'C)')) +
+	ylab('Rainfall (mm)') +
+	theme(axis.line.x=element_line(), axis.line.y=element_line())
+```
+
+```{r, echo=FALSE, messages=FALSE, results='hide', fig.height=1.5, fig.width=4.5, fig.cap='Simulation study. Squares denote planning units. Each panel shows the distribution for a different simulated species. The fill of each planning unit indicates the probability that a given species inhabits it. Panel (a) shows the uniformly distributed species, panel (b) shows the normally distributed species, and panel (c) shows the bimodally distributed species.'}
+# prepare data
+sim.pus.occ.FPLY <- ldply(
+	seq_len(nrow(sim.species)),
+	function(i) {
+		curr.DF <- sim.pus.FPLY
+		curr.DF$species <- sim.species$name[i]
+		curr.DF$Probability <- sim.dps[[i]]@weights[as.numeric(curr.DF$id)]
+		return(curr.DF)
+	}
+)
+sim.pus.occ.FPLY$species <- gsub('\n', ' ', as.character(sim.pus.occ.FPLY$species))
+sim.pus.occ.FPLY$species <- factor(as.character(sim.pus.occ.FPLY$species), levels=gsub('\n', ' ', sim.species$name)) 
+# make plot
+ggplot() +
+	geom_polygon(data=sim.pus.occ.FPLY, aes(x=long, y=lat, group=group, fill=Probability), color='black') +
+	theme_classic() +
+	theme(axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 5, 0, 0), "lines"),
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank(),
+		legend.position=c(1.15, 0.6)) +
+	facet_wrap(~ species, ncol=3)
+```
+
+
+```{r, echo=FALSE, fig.height=4.5, fig.width=4.0, fig.cap='Species used in the first case-study. Squares denote planning units. Each panel shows the distribution of a given species. For a given species, planning units inhabited by the species are shown in bright blue and those uninhabited are shown in dark blue.'}
+# prepare data
+cs1.pus.occ.FPLY <- ldply(
+	seq_along(cs1.params.LST[[MODE]]$common.names),
+	function(i) {
+		curr.DF <- cs1.pus.FPLY
+		curr.DF$species <- cs1.params.LST[[MODE]]$common.names[i]
+		curr.DF$Occupancy <- 'absent'
+		curr.DF$Occupancy[which(curr.DF$id %in% filter(cs1.ru@data@pu.species.probabilities, species==i)$pu)] <- 'present'
+		return(curr.DF)
+	}
+)
+cs1.pus.occ.FPLY$species <- factor(as.character(cs1.pus.occ.FPLY$species), levels=cs1.params.LST[[MODE]]$common.names)
+# make plots
+ggplot() +
+	geom_polygon(data=aus.FPLY, aes(x=long, y=lat, group=group), fill='grey85', color='grey70') +
+	geom_polygon(data=cs1.pus.occ.FPLY, aes(x=long, y=lat, group=group, fill=Occupancy), color='black') +
+	theme_classic() +
+	theme(axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank(), legend.background=element_rect(color='transparent', fill='transparent'),
+		legend.position=c(1.045, 1.035), legend.justification=c(1,1), legend.key.size=unit(3, 'mm')
+	) +
+	scale_fill_manual(name='Occupancy', values=c('absent'='#132B43', 'present'='#56B1F7')) +
+	coord_cartesian(xlim=cs1.pus@bbox[1,], ylim=cs1.pus@bbox[2,]) +
+	facet_wrap(~ species, ncol=2)
+```
+
+```{r, echo=FALSE, fig.height=2.5, fig.width=3, fig.cap='Distribution of environmental variation across Queensland, Australia. Squares denote planning units. The panels show the first and second main gradients of climatic variation.'}
+# prepare data
+cs1.pca.FPTS <- ldply(
+	seq_len(cs1.params.LST[[MODE]]$n.pc.layers),
+	function(i) {
+		curr.DF <- cs1.bioclim.RAST[[i]] %>% 
+			aggregate(10) %>% 
+			rasterToPoints() %>% 
+			as.data.frame()
+		names(curr.DF)[3] <- 'Score'
+		curr.DF$pc <- paste0('Principal component ',i)
+		return(curr.DF)
+	}
+)
+# make plots
+p1 <- ggplot() +
+	geom_polygon(data=aus.FPLY, aes(x=long, y=lat, group=group), fill='grey85', color='grey70') +
+	geom_raster(data=filter(cs1.pca.FPTS, pc==unique(pc)[1]), aes(x=x, y=y, fill=Score)) +
+	geom_polygon(data=cs1.pus.FPLY, aes(x=long, y=lat, group=group), fill=NA, color='black') +
+	theme_classic() +
+	theme(axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank(), legend.background=element_rect(color='transparent', fill='transparent'),
+		legend.position=c(1.1, 1.07), legend.justification=c(1,1), legend.key.size=unit(3, 'mm')
+	) +
+	coord_cartesian(xlim=cs1.pus@bbox[1,], ylim=cs1.pus@bbox[2,]) +
+	facet_wrap(~ pc)
+p2 <- ggplot() +
+	geom_polygon(data=aus.FPLY, aes(x=long, y=lat, group=group), fill='grey85', color='grey70') +
+	geom_raster(data=filter(cs1.pca.FPTS, pc==unique(pc)[2]), aes(x=x, y=y, fill=Score)) +
+	geom_polygon(data=cs1.pus.FPLY, aes(x=long, y=lat, group=group), fill=NA, color='black') +
+	theme_classic() +
+	theme(axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank(), legend.background=element_rect(color='transparent', fill='transparent'),
+		legend.position=c(1.1, 1.07), legend.justification=c(1,1), legend.key.size=unit(3, 'mm')
+		) +
+	coord_cartesian(xlim=cs1.pus@bbox[1,], ylim=cs1.pus@bbox[2,]) +
+	facet_wrap(~ pc)
+# render plots
+grid.arrange(p1, p2, ncol=2)
+```
+
+```{r, echo=FALSE, fig.height=4.5, fig.width=4.5, fig.cap=paste0('Study area for the second case-study. Squares denote planning units. Panel (a) shows the planning units occupied by ',cs2.params.LST[[MODE]]$common.name,'. Panels (b--c) show the spatial distribution of the ordinated values that describe patterns of genetic variation associated this species.')}
+# prepare full grid data
+cs2.spp.grid.FPLY <- cs2.grid.FPLY
+cs2.spp.grid.FPLY$Title <- 'Occupancy'
+cs2.spp.grid.FPLY$Occupancy <- 'absent'
+cs2.spp.grid.FPLY$Occupancy[which(cs2.grid.PLY@data[[cs2.params.LST[[MODE]]$species.name]][as.numeric(cs2.spp.grid.FPLY$id)]==1)] <- 'present'
+
+# prepare subset grid data
+cs2.spp.grid.sub.FPLY <- cs2.grid.sub.FPLY
+cs2.spp.grid.sub.FPLY$nmds1 <- NA
+cs2.spp.grid.sub.FPLY$nmds2 <- NA
+cs2.nmds1 <- cs2.grid.sub.DF[[paste0(cs2.params.LST[[MODE]]$species.name,'_genetic_d1')]]
+cs2.nmds2 <- cs2.grid.sub.DF[[paste0(cs2.params.LST[[MODE]]$species.name,'_genetic_d2')]]
+
+curr.pos <- match(as.numeric(cs2.spp.grid.sub.FPLY$id), cs2.grid.sub.DF$id)
+cs2.spp.grid.sub.FPLY$nmds1 <- cs2.nmds1[curr.pos]
+cs2.spp.grid.sub.FPLY$nmds2 <- cs2.nmds2[curr.pos]
+
+cs2.spp.grid.sub.FPLY$Cost <- costs.MTX[match(cs2.grid.sub.PLY$id[as.numeric(cs2.spp.grid.sub.FPLY$id)], costs.MTX[,1]),2]
+
+cs2.spp.grid.sub.FPLY$Title1 <- 'Opportunity cost'
+cs2.spp.grid.sub.FPLY$Title2 <- 'Genetic NMDS 1'
+cs2.spp.grid.sub.FPLY$Title3 <- 'Genetic NMDS 2'
+
+# plot species data
+p1 <- ggplot() +
+	geom_polygon(data=countries.FPLY, aes(x=long, y=lat, group=group), fill='grey85', color='grey70') +
+	geom_polygon(data=cs2.spp.grid.FPLY, aes(x=long, y=lat, group=group, fill=Occupancy), alpha=0.8, color='grey10') +
+	theme_classic() +
+	theme(
+		axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank(), legend.position='none'
+	) +
+	scale_fill_manual(name='Occupancy', values=c('absent'='#132B43', 'present'='#56B1F7')) +
+	coord_cartesian(xlim=buffered.range(cs2.grid.FPLY$long, 0), ylim=buffered.range(cs2.grid.FPLY$lat, 0)) +
+	facet_wrap(~ Title)
+# plot cost data
+p2 <- ggplot() +
+	geom_polygon(data=countries.FPLY, aes(x=long, y=lat, group=group), fill='grey85', color='grey70') +
+	geom_polygon(data=cs2.spp.grid.sub.FPLY, aes(x=long, y=lat, group=group, fill=Cost), alpha=0.8, color='grey10') +
+	theme_classic() +
+	theme(
+		axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank(), legend.background=element_rect(color='black', fill='white'),
+		legend.position=c(1, 0), legend.justification=c(1,0), legend.key.size=unit(3, 'mm'),
+		legend.title=element_blank()
+	) +
+	coord_cartesian(xlim=buffered.range(cs2.grid.sub.FPLY$long, 0), ylim=buffered.range(cs2.grid.sub.FPLY$lat, 0)) +
+	scale_fill_continuous(NULL) +
+	facet_wrap(~ Title1)
+# plot nmds axis 1
+p3 <- ggplot() +
+	geom_polygon(data=countries.FPLY, aes(x=long, y=lat, group=group),fill='grey85', color='grey70') +
+	geom_polygon(data=cs2.spp.grid.sub.FPLY, aes(x=long, y=lat, group=group, fill=nmds1), alpha=0.8, color='grey10') +
+	theme_classic() +
+	theme(
+		axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank(), legend.background=element_rect(color='black', fill='white'),
+		legend.position=c(1, 0), legend.justification=c(1,0), legend.key.size=unit(3, 'mm')
+	) + 
+	coord_cartesian(xlim=buffered.range(cs2.grid.sub.FPLY$long, 0), ylim=buffered.range(cs2.grid.sub.FPLY$lat, 0)) +
+	scale_fill_gradient2(name=element_blank(), low='darkblue', mid='white', high='darkred') +
+	facet_wrap(~ Title2)
+# plot nmds axis 2
+p4 <- ggplot() +
+	geom_polygon(data=countries.FPLY, aes(x=long, y=lat, group=group),fill='grey85', color='grey70') +
+	geom_polygon(data=cs2.spp.grid.sub.FPLY, aes(x=long, y=lat, group=group, fill=nmds2), alpha=0.8, color='grey10') +
+	theme_classic() +
+	theme(
+		axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank(), legend.background=element_rect(color='black', fill='white'),
+		legend.position=c(1, 0), legend.justification=c(1,0),   legend.key.size=unit(3, 'mm')
+	) + 
+	coord_cartesian(xlim=buffered.range(cs2.grid.sub.FPLY$long, 0), ylim=buffered.range(cs2.grid.sub.FPLY$lat, 0)) +
+	scale_fill_gradient2(name=element_blank(), low='darkblue', mid='white', high='darkred') +
+	facet_wrap(~ Title3)
+# render plots
+grid.arrange(p1, p2, p3, p4, ncol=2)
+```
+
+```{r, echo=FALSE, fig.height=3.5, fig.width=5, fig.cap=paste0('Simulation study prioritisations. Squares denote planning units. The fill of each planning unit denotes the probability that it is occupied by a given species. The color the border of each planning unit indicates if it was selected for prioritisation. Each panel shows the prioritisation resulting from a given species and parameters. Each row of panels corresponds to a different species. The top row of panels (a,d,g,j ) shows prioritisations generated for the uniformly distributed species, middle row of panels (b,e,h,k) for the normally distributed species, and the bottom row of panels (c,f,i,l) for the bimodally distributed species. Each column of panels correpsonds to a different set of parameters used to generate the prioritisation. The left column of panels (a--c) shows prioritizations generated using only ',(sim.params.LST[[MODE]]$amount.target*100),' % amount targets, the middle-left column of panels (d--f) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets, the middle-right column of panels (g--i) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount based targets and a boundary length modifier (BLM) of ',sim.params.LST[[MODE]]$blm,', and the right column of panels (j--l) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets and also a boundary length modifier of ',(sim.params.LST[[MODE]]$blm),'.')}
+# prepare data
+sim.pus.sel.FPLY <- ldply(
+	seq_len(nrow(sim.spp.DF)),
+	function(i) {
+		curr.DF <- sim.pus.FPLY %>% mutate(species=sim.spp.DF$species[i], prioritisation=sim.spp.DF$prioritisation[i])
+		curr.selection <- selections(sim.prioritisations[[sim.spp.DF$species[i]]][[sim.spp.DF$prioritisation[i]]])[as.numeric(curr.DF$id)]
+		curr.DF$Selection <-  c('discarded','selected')[curr.selection+1]
+		return(curr.DF)
+	}
+)
+sim.pus.sel.FPLY$prioritisation <- factor(as.character(sim.pus.sel.FPLY$prioritisation),
+	levels=c('Amount\ntargets', 'Amount &\nspace targets', 'Amount target\nand BLM', 'Amount & space\ntargets and BLM'))
+# prepare plotting data
+sim.letter.DF2 <- mutate(sim.spp.DF, letter=paste0('(', letters[seq_along(species)],')'))
+sim.letter.DF2$long <- gCentroid(sim.pus[1,])@coords[1]
+sim.letter.DF2$lat <- gCentroid(sim.pus[1,])@coords[2]
+# make plot
+ggplot() +
+	geom_polygon(data=sim.pus.sel.FPLY, aes(x=long, y=lat, group=group, fill=Selection), color='black') +
+	geom_text(data=sim.letter.DF2, aes(label=letter, x=long, y=lat), color='black', size=3) +
+	theme_classic() +
+	theme(
+		axis.ticks=element_blank(), axis.ticks.x=element_blank(), axis.ticks.y=element_blank(),
+		axis.text=element_blank(), axis.text.x=element_blank(), axis.text.y=element_blank(),
+		axis.line=element_blank(), axis.line.x=element_blank(), axis.line.y=element_blank(),
+		plot.background=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
+		panel.background=element_blank(), panel.border=element_blank(), legend.position='none',
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank()) +
+	scale_fill_manual(name='Solution', values=c('discarded'='#f7fcfd', 'selected'='#00441b')) +
+	facet_grid(species ~ prioritisation)
+```
+
+
+```{r, echo=FALSE, fig.height=2.5, fig.width=4.5, fig.cap=paste0('Prioritisations for the niche-based case-study in Queensland, Australia. Squares represent planning units. Dark green planning units for selected for protection and pale green units were discarded. Panel (a) shows the planning units selected when using ',cs1.params.LST[[MODE]]$amount.target*100,' % amount targets. Panel (b) shows the planning units selected selected when using ',cs1.params.LST[[MODE]]$amount.target*100,' % amount targets and ',cs1.params.LST[[MODE]]$space.target*100,' % niche targets')}
+# prepare data
+cs1.pus.sel.FPLY <- ldply(
+	names(cs1.prioritisations),
+	function(x) {
+		curr.DF <- cs1.pus.FPLY
+		curr.DF$Prioritisation <- x
+		curr.DF$Solution <- 'discarded'
+		curr.DF$Solution[curr.DF$id %in% which(as.logical(selections(cs1.prioritisations[[x]])))] <- 'selected'
+		return(curr.DF)
+	}
+)
+cs1.pus.sel.FPLY$Prioritisation <- factor(as.character(cs1.pus.sel.FPLY$Prioritisation), levels=names(cs1.prioritisations))
+# make plots
+ggplot() +
+	geom_polygon(data=aus.FPLY, aes(x=long, y=lat, group=group), fill='grey85', color='grey70') +
+	geom_polygon(data=cs1.pus.sel.FPLY, aes(x=long, y=lat, group=group, fill=Solution), color='black') +
+	theme_classic() +
+	theme(axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank(), legend.background=element_rect(color='transparent', fill='transparent'),
+		legend.position=c(1.03, 1.03), legend.justification=c(1,1), legend.key.size=unit(3, 'mm')
+	) +
+	scale_fill_manual(name='Solution', values=c('discarded'='#f7fcfd', 'selected'='#00441b')) +
+	coord_cartesian(xlim=cs1.pus@bbox[1,], ylim=cs1.pus@bbox[2,]) +
+	facet_wrap(~ Prioritisation, ncol=2)
+```
+
+```{r, echo=FALSE, fig.height=5, fig.width=5, fig.cap=paste0('Prioritisations for the genetic case-study in the European Alps. Panel (a) shows the planning units selected when using ',cs2.params.LST[[MODE]]$amount.target*100,' % amount targets. Panel (b) shows the planning units selected selected when using ',cs2.params.LST[[MODE]]$amount.target*100,' % amount targets and ',cs2.params.LST[[MODE]]$genetic.target*100,' % genetic targets. The conventions for panels (a--b) are detailed in the caption for Figure 7. Panels (c--d) show the solutions in the genetic space. In these panels, each point is an average of the ordinations for individuals in each planning unit. Each point represents the typical genetic characeristics of individuals sampled in a given planning unit (based on an NMDS of the binary loci data). Planning units associated with points that are closer togeather contain individuals with more similar genetic characteristics than planning units that are further apart. Dark green planning units were selected for protection, and pale green planning units were discarded.')}
+# prepare spatial data
+cs2.sel.grid.sub.FPLY <- cs2.grid.sub.FPLY
+cs2.sel.grid.sub.FPLY$Title1 <-'Amount target'
+cs2.sel.grid.sub.FPLY$Title2 <- 'Amount & genetic target'
+
+cs2.sel.grid.sub.FPLY$Amount.selection <- 'discarded'
+cs2.sel.grid.sub.FPLY$Amount.selection[cs2.sel.grid.sub.FPLY$id %in% which(as.logical(selections(cs2.prioritisations[[1]])))] <- 'selected'
+
+cs2.sel.grid.sub.FPLY$Amount.genetic.selection <- 'discarded'
+cs2.sel.grid.sub.FPLY$Amount.genetic.selection[cs2.sel.grid.sub.FPLY$id %in% which(as.logical(selections(cs2.prioritisations[[2]])))] <- 'selected'
+
+# prepare genetic space plots
+cs2.sel.space.DF <- data.frame(cs2.genetic.AS@spaces[[1]]@planning.unit.points@coords)
+names(cs2.sel.space.DF) <- c('d1', 'd2')
+cs2.sel.space.DF$id <- cs2.genetic.AS@spaces[[1]]@planning.unit.points@ids
+
+cs2.sel.space.DF$Amount.selection <- 'discarded'
+cs2.sel.space.DF$Amount.selection[cs2.sel.space.DF$id %in% which(as.logical(selections(cs2.prioritisations[[1]])))] <- 'selected'
+
+cs2.sel.space.DF$Amount.genetic.selection <- 'discarded'
+cs2.sel.space.DF$Amount.genetic.selection[cs2.sel.space.DF$id %in% which(as.logical(selections(cs2.prioritisations[[2]])))] <- 'selected'
+
+# make plots
+p1 <- ggplot() +
+	geom_polygon(data=countries.FPLY, aes(x=long, y=lat, group=group), fill='grey85', color='grey70') +
+	geom_polygon(data=cs2.sel.grid.sub.FPLY, aes(x=long, y=lat, group=group, fill=Amount.selection), color='black') +
+	theme_classic() +
+	theme(axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank(), legend.background=element_rect(color='black', fill='white'),
+		axis.title=element_blank(), legend.position='none'
+	) +
+	scale_fill_manual(name='Solution', values=c('discarded'='#f7fcfd', 'selected'='#00441b', 'uninhabited'='grey65')) +
+	coord_cartesian(xlim=cs2.grid.sub.PLY@bbox[1,], ylim=cs2.grid.sub.PLY@bbox[2,]) +
+	facet_wrap(~ Title1)
+p2 <- ggplot() +
+	geom_polygon(data=countries.FPLY, aes(x=long, y=lat, group=group), fill='grey85', color='grey70') +
+	geom_polygon(data=cs2.sel.grid.sub.FPLY, aes(x=long, y=lat, group=group, fill=Amount.genetic.selection), color='black') +
+	theme_classic() +
+	theme(axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank(), legend.background=element_rect(color='black', fill='white'),
+		legend.position=c(1, 0), legend.justification=c(1,0), legend.key.size=unit(3, 'mm')
+	) +
+	scale_fill_manual(name='Solution', values=c('discarded'='#f7fcfd', 'selected'='#00441b', 'uninhabited'='grey65')) +
+	coord_cartesian(xlim=cs2.grid.sub.PLY@bbox[1,], ylim=cs2.grid.sub.PLY@bbox[2,]) +
+	facet_wrap(~ Title2)
+p3 <- ggplot() +
+	geom_point(data=cs2.sel.space.DF, aes(x=d1, y=d2, fill=Amount.selection), pch=21, size=3, color='black') +
+	theme_classic() + xlab('Genetic NMDS Axis 1') + ylab('Genetic NMDS Axis 2') +
+	theme(legend.position='none', axis.line.x=element_line(), axis.line.y=element_line()) +
+	scale_fill_manual(name='Solution', values=c('discarded'='transparent', 'selected'='#00441b'))
+p4 <- ggplot() +
+	geom_point(data=cs2.sel.space.DF, aes(x=d1, y=d2, fill=Amount.genetic.selection), pch=21, size=3, color='black') +
+	theme_classic() + xlab('Genetic NMDS Axis 1') + ylab('Genetic NMDS Axis 2') +
+	theme(legend.position='none', axis.line.x=element_line(), axis.line.y=element_line()) +
+	scale_fill_manual(name='Solution', values=c('discarded'='transparent', 'selected'='#00441b'))
+# render plots
+grid.arrange(p1,p2,p3,p4,ncol=2)
 
 ```

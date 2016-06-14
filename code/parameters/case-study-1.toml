@@ -1,0 +1,33 @@
+title = "case-study 1 parameters"
+
+[debug]
+n.pc.layers = 2
+pu.size = 50000
+amount.target = 0.2
+space.target = -100
+dp.quantile = 0.5
+dp.number = 20
+dp.bandwidth=[0.2, 0.2]
+environmental.layer.resolution = 25000
+thin.distance=20000
+max.records=100
+mcp.percent=85
+species.names=['Dacelo leachii', 'Falco berigora', 'Ramsayornis modestus', 'Platycercus adscitus']
+common.names=['Blue-winged kookaburra', 'Brown falcon', 'Brown-backed honeyeater','Pale-headed rosella']
+
+[release]
+n.pc.layers = 2
+pu.size = 5000
+amount.target = 0.2
+space.target = 0.8
+dp.quantile = 0.5
+dp.number = 1000
+dp.bandwidth=[0.2, 0.2]
+environmental.layer.resolution = 1000
+thin.distance=1000
+max.records=1e8
+mcp.percent=85
+species.names=['Dacelo leachii', 'Falco berigora', 'Ramsayornis modestus', 'Platycercus adscitus']
+common.names=['Blue-winged kookaburra', 'Brown falcon', 'Brown-backed honeyeater','Pale-headed rosella']
+
+ 
