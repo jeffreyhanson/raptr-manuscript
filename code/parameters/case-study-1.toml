@@ -17,13 +17,13 @@ common.names=['Blue-winged kookaburra', 'Brown falcon', 'Brown-backed honeyeater
 
 [release]
 n.pc.layers = 2
-pu.size = 5000
+pu.size = 10000
 amount.target = 0.2
 space.target = 0.8
 dp.quantile = 0.5
 dp.number = 1000
 dp.bandwidth=[0.2, 0.2]
-environmental.layer.resolution = 1000
+environmental.layer.resolution = 5000
 thin.distance=1000
 max.records=1e8
 mcp.percent=85
