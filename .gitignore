@@ -16,3 +16,6 @@ gurobi.log
 # cache
 data/intermediate/*
 
+# do not ignore the following files
+!.gitkeep
+!*/
