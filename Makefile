@@ -11,10 +11,11 @@ COMMIT_ID=$(shell git ls-remote https://github.com/paleo13/rapr-manuscript.git H
 all: clean analysis manuscript
 
 clean:
-	@rm -f *.aux *.bbl *.blg *.log *.pdf *.bak *~ *.Rout */*.Rout */*.pdf */*.aux */*.log *.rda */*.rda */*/*.rda data/intermediate/*.rda data/intermediate/*.Rout
+	@rm -f *.aux *.bbl *.blg *.log *.pdf *.bak *~ *.Rout */*.Rout */*.pdf */*.aux */*.log *.rda */*.rda */*/*.rda data/intermediate/*.rda data/intermediate/*.Rout data/intermediate/*.rds
 	@rm data/intermediate/structure -rf
 	@rm data/intermediate/bayescan -rf
 	@rm data/intermediate/pcadapt -rf
+	@rm data/intermediate/ala_cache -rf
 	@rm code/rmarkdown/article_files/figure-latex/*.pdf -f
 	@rm code/rmarkdown/supporting_information_files/figure-latex/*.pdf -f
 	@rm code/rmarkdown/figures_files/figure-latex/*.pdf -f
