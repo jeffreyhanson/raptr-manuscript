@@ -83,7 +83,7 @@ names(cs1.spp.RST) <- cs1.params.LST[[MODE]]$common.names
 
 ## create RapUnsolved object
 # create template RapUnsolved with dummy attribute space data
-cs1.ru <- rap(pus=cs1.pus, species=cs1.spp.RST, spaces=list(cs1.bioclim.RAST), kernel.method='hypervolume',amount.target=cs1.params.LST[[MODE]]$amount.target, space.target=cs1.params.LST[[MODE]]$space.target, solve=FALSE, quantile=0.8, n.demand.points=20, Threads=general.params.LST[[MODE]]$threads, MIPGap=general.params.LST[[MODE]]$MIPGap, NumberSolutions=1, include.geographic.space=FALSE)
+cs1.ru <- rap(pus=cs1.pus, species=cs1.spp.RST, spaces=list(cs1.bioclim.RAST), kernel.method='hypervolume',amount.target=cs1.params.LST[[MODE]]$amount.target, space.target=cs1.params.LST[[MODE]]$space.target, solve=FALSE, quantile=0.95, n.demand.points=20, Threads=general.params.LST[[MODE]]$threads, MIPGap=general.params.LST[[MODE]]$MIPGap, NumberSolutions=1, include.geographic.space=FALSE)
 cs1.ru@data@species[[1]] <- cs1.params.LST[[MODE]]$common.names
 # create new attribute spaces
 cs1.spaces <- llply(seq_along(cs1.params.LST[[MODE]]$common.names), .fun=function(i) {
