@@ -113,3 +113,34 @@ full.p.table = function(PT) {
 	return(PT2)
 }
 
+#' Parallel extract 
+#'
+#' This function executes the \code{\link[raster]{extract}} function in parallel.
+#' @args x \code{raster} object
+#' @args y \code{Spatial} object
+#' @args threads \code{numberic} number of threads for processing
+#' @args ... passed to \code{\link[raster]{extract}}.
+#' @return \code{matrix}
+parallel_extract <- function(x, y, threads=1, ...) {
+	## init
+	# get extra args
+	args.LST <- list(...)
+	fids <- seq_along(y@polygons)
+	tids <- rep(seq_len(threads), ceiling(length(fids)/threads))
+	tids <- tids[seq_along(fids)]
+	fids <- split(fids, factor(tids))
+	## main proc
+	# initialize cluster
+	clust <- makeCluster(threads, 'PSOCK')
+	clusterEvalQ(clust, library(raster))
+	clusterExport(clust, c('x', 'y', 'args.LST'), envir=environment())
+	registerDoParallel(clust)
+	# run analysis
+	results.LST <- llply(fids, function(i) {
+		do.call(extract, append(list(x=x, y=y[i,]),args.LST))
+	}, .parallel=TRUE)
+	# kill cluster
+	clust <- stopCluster(clust)
+	# merge results
+	return(rbind.fill.matrix(results.LST))
+}

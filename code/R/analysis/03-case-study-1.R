@@ -24,8 +24,8 @@ cs1.pus@data$id <- seq_len(nrow(cs1.pus@data))
 cs1.pus@proj4string <- cs1.bioclim.RAST@crs
 
 # omit planning units that doesn't overlap with non-NA values in worldclim raster
-cs1.pus.RST <- rasterize(cs1.pus, y=cs1.bioclim.RAST, field='id')
-values.MTX <- zonal(cs1.bioclim.RAST, z=cs1.pus.RST)
+values.MTX <- parallel_extract(x=cs1.bioclim.RAST, y=cs1.pus, threads=general.params.LST[[MODE]]$threads, fun=mean)
+values.MTX <- cbind(matrix(seq_len(nrow(cs1.pus@data)),ncol=1), values.MTX)
 cs1.pus <- cs1.pus[which(rowSums(!is.finite(values.MTX[,-1]))==0),]
 values.MTX <- values.MTX[cs1.pus$id,]
 cs1.pus@data$id <- seq_len(nrow(cs1.pus@data))
@@ -83,7 +83,7 @@ names(cs1.spp.RST) <- cs1.params.LST[[MODE]]$common.names
 
 ## create RapUnsolved object
 # create template RapUnsolved with dummy attribute space data
-cs1.ru <- rap(pus=cs1.pus, species=cs1.spp.RST, spaces=list(cs1.bioclim.RAST), kernel.method='hypervolume',amount.target=cs1.params.LST[[MODE]]$amount.target, space.target=cs1.params.LST[[MODE]]$space.target, solve=FALSE, quantile=0.95, n.demand.points=20, Threads=general.params.LST[[MODE]]$threads, MIPGap=general.params.LST[[MODE]]$MIPGap, NumberSolutions=1, include.geographic.space=FALSE)
+cs1.ru <- rap(pus=cs1.pus, species=cs1.spp.RST, spaces=list(cs1.bioclim.RAST), kernel.method='hypervolume',amount.target=cs1.params.LST[[MODE]]$amount.target, space.target=cs1.params.LST[[MODE]]$space.target, solve=FALSE, quantile=0.95, n.demand.points=20, n.species.points=rep(20, nlayers(cs1.spp.RST)), Threads=general.params.LST[[MODE]]$threads, MIPGap=general.params.LST[[MODE]]$MIPGap, NumberSolutions=1, include.geographic.space=FALSE)
 cs1.ru@data@species[[1]] <- cs1.params.LST[[MODE]]$common.names
 # create new attribute spaces
 cs1.spaces <- llply(seq_along(cs1.params.LST[[MODE]]$common.names), .fun=function(i) {
@@ -97,9 +97,16 @@ cs1.spaces <- llply(seq_along(cs1.params.LST[[MODE]]$common.names), .fun=functio
 	# generate dp coords
 	curr.species.geo.points <- SpatialPoints(coords=randomPoints(cs1.spp.RST[[i]], n=ceiling(0.2*cellStats(cs1.spp.RST[[i]], 'sum'))), proj4string=cs1.spp.RST[[i]]@crs)
 	curr.species.env.points <- extract(cs1.bioclim.RAST,curr.species.geo.points)
+	curr.species.env.points.mean <- apply(curr.species.env.points, 2, mean)
+	curr.species.env.points.sd <- apply(curr.species.env.points, 2, sd)
+	curr.species.env.points<-sweep(curr.species.env.points,MARGIN=2,FUN='-',curr.species.env.points.mean)
+	curr.species.env.points<-sweep(curr.species.env.points,MARGIN=2,FUN='/',curr.species.env.points.sd) 
 	# generate dps
-	curr.species.dps <- make.DemandPoints(curr.species.env.points,  n=cs1.params.LST[[MODE]]$dp.number, quantile=cs1.params.LST[[MODE]]$dp.quantile, kernel.method='hypervolume', bandwidth=cs1.params.LST[[MODE]]$dp.bandwidth)
+	raw.curr.species.dps <- make.DemandPoints(curr.species.env.points,  n=cs1.params.LST[[MODE]]$dp.number, quantile=cs1.params.LST[[MODE]]$dp.quantile, kernel.method='hypervolume', bandwidth=cs1.params.LST[[MODE]]$dp.bandwidth)
+	raw.curr.species.dps@coords<-sweep(raw.curr.species.dps@coords,MARGIN=2,FUN='*',curr.species.env.points.sd)
+	raw.curr.species.dps@coords<-sweep(raw.curr.species.dps@coords,MARGIN=2,FUN='+',curr.species.env.points.mean)
 	# z-scale pus and dps
+	curr.species.dps <- raw.curr.species.dps
 	curr.species.dps@coords<-sweep(curr.species.dps@coords,MARGIN=2,FUN='-',curr.pu.coords.mean)
 	curr.species.dps@coords<-sweep(curr.species.dps@coords,MARGIN=2,FUN='/',curr.pu.coords.sd) 
 	return(

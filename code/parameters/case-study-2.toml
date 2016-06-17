@@ -1,8 +1,8 @@
 title = "case-study 2 parameters"
 
 [debug]
-species.name = ["Carex sempervirens"]
-common.name = ["evergreen sedge"]
+species.name = ["Phyteuma betonicifolium"]
+common.name = ["Betony-leaved Rampion"]
 min.k = 2
 max.k = 100000
 max.stress = 0.25
@@ -11,8 +11,8 @@ amount.target = 0.1
 genetic.target = 0.8
 
 [release]
-species.name = ["Carex sempervirens"]
-common.name = ["evergreen sedge"]
+species.name = ["Phyteuma betonicifolium"]
+common.name = ["Betony-leaved Rampion"]
 min.k = 2
 max.k = 100000
 max.stress = 0.25
