@@ -6,7 +6,7 @@ common.name = ["Betony-leaved Rampion"]
 min.k = 2
 max.k = 100000
 max.stress = 0.25
-trymax = 100
+trymax = 5
 amount.target = 0.1
 genetic.target = 0.85
 

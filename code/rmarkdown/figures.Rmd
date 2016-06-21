@@ -72,7 +72,7 @@ ggplot(aes(x=temperature, y=rainfall), data=populations) +
 	theme(axis.line.x=element_line(), axis.line.y=element_line())
 ```
 
-```{r, echo=FALSE, messages=FALSE, results='hide', fig.height=1.5, fig.width=4.5, fig.cap='Simulation study. Squares denote planning units. Each panel shows the distribution for a different simulated species. The color of each planning unit indicates the probability that a given species inhabits it. Panel (a) shows the uniformly distributed species, panel (b) shows the normally distributed species, and panel (c) shows the bimodally distributed species.'}
+```{r, echo=FALSE, messages=FALSE, results='hide', fig.height=1.5, fig.width=4.5, fig.cap='Simulation study data set. Squares denote planning units. Each panel shows the distribution for a different simulated species. The color of each planning unit indicates the probability that a given species inhabits it. Panel (a) shows the uniformly distributed species, panel (b) shows the normally distributed species, and panel (c) shows the bimodally distributed species.'}
 # prepare data
 sim.pus.occ.FPLY <- ldply(
 	seq_len(nrow(sim.species)),
@@ -96,13 +96,48 @@ sim.pus.occ.letters.DF <- data.frame(
 ggplot() +
 	geom_polygon(data=sim.pus.occ.FPLY, aes(x=long, y=lat, group=group, fill=Probability), color='black') +
 	theme_classic() +
-	geom_text(data=sim.pus.occ.letters.DF, aes(x=x, y=y, label=letter), color='white') +
+	geom_text(data=sim.pus.occ.letters.DF, aes(x=x, y=y, label=letter), size=2, color='white') +
 	theme(axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 5, 0, 0), "lines"),
 		strip.background = element_rect(fill='grey20'),
 		strip.text = element_text(color='white'),
 		axis.title=element_blank(),
 		legend.position=c(1.15, 0.6)) +
 	facet_wrap(~ species, ncol=3)
+```
+
+```{r, echo=FALSE, fig.height=3.5, fig.width=5, fig.cap=paste0('Simulation study prioritisations. Each panel shows a prioritisation generated for a single species using a set of parameters. Squares denote planning units. Dark green planning units were selected for protection and pale green planning units were discarded. Each row of panels corresponds to a different species. The top row of panels (a, d, g, j) shows prioritisations generated for the uniformly distributed species, middle row of panels (b, e, h, k) for the normally distributed species, and the bottom row of panels (c, f, i, l) for the bimodally distributed species. Each column of panels correpsonds to a different set of parameters used to generate the prioritisation. The left column of panels (a--c) shows prioritizations generated using only ',(sim.params.LST[[MODE]]$amount.target*100),' % amount targets, the middle-left column of panels (d--f) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets, the middle-right column of panels (g--i) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount based targets and a boundary length modifier (BLM) of ',sim.params.LST[[MODE]]$blm,', and the right column of panels (j--l) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets and also a boundary length modifier of ',(sim.params.LST[[MODE]]$blm),'.')}
+# prepare data
+sim.pus.sel.FPLY <- ldply(
+	seq_len(nrow(sim.spp.DF)),
+	function(i) {
+		curr.DF <- sim.pus.FPLY %>% mutate(species=sim.spp.DF$species[i], prioritisation=sim.spp.DF$prioritisation[i])
+		curr.selection <- selections(sim.prioritisations[[as.character(sim.spp.DF$species[i])]][[as.character(sim.spp.DF$prioritisation[i])]])[as.numeric(curr.DF$id)]
+		curr.DF$Selection <-  c('discarded','selected')[curr.selection+1]
+		return(curr.DF)
+	}
+)
+sim.pus.sel.FPLY$prioritisation <- factor(as.character(sim.pus.sel.FPLY$prioritisation),
+	levels=c('Amount\ntargets', 'Amount &\nspace targets', 'Amount target\nand BLM', 'Amount & space\ntargets and BLM'))
+# prepare plotting data
+sim.letter.DF2 <- mutate(sim.spp.DF, letter=paste0('(', letters[seq_along(species)],')'))
+sim.letter.DF2$long <- gCentroid(sim.pus[1,])@coords[1]
+sim.letter.DF2$lat <- gCentroid(sim.pus[1,])@coords[2]
+# make plot
+ggplot() +
+	geom_polygon(data=sim.pus.sel.FPLY, aes(x=long, y=lat, group=group, fill=Selection), color='black') +
+	geom_text(data=sim.letter.DF2, aes(label=letter, x=long, y=lat), color='black', size=1.8) +
+	theme_classic() +
+	theme(
+		axis.ticks=element_blank(), axis.ticks.x=element_blank(), axis.ticks.y=element_blank(),
+		axis.text=element_blank(), axis.text.x=element_blank(), axis.text.y=element_blank(),
+		axis.line=element_blank(), axis.line.x=element_blank(), axis.line.y=element_blank(),
+		plot.background=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
+		panel.background=element_blank(), panel.border=element_blank(), legend.position='none',
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank()) +
+	scale_fill_manual(name='Solution', values=c('discarded'='#f7fcfd', 'selected'='#00441b')) +
+	facet_grid(species ~ prioritisation)
 ```
 
 ```{r, echo=FALSE, fig.height=2.5, fig.width=3, fig.cap='Distribution of environmental variation across Queensland, Australia. Squares denote planning units. The panels show the first and second main gradients of climatic variation.'}
@@ -185,6 +220,43 @@ ggplot() +
 	scale_fill_manual(name='Occupancy', values=c('absent'='#132B43', 'present'='#56B1F7')) +
 	coord_cartesian(xlim=cs1.pus@bbox[1,], ylim=cs1.pus@bbox[2,]) +
 	facet_wrap(~ species, ncol=2)
+```
+
+```{r, echo=FALSE, fig.height=2.5, fig.width=4.5, fig.cap=paste0('Prioritisations for the niche-based case-study in Queensland, Australia. Squares represent planning units. Dark green planning units for selected for protection and pale green units were discarded. Panel (a) shows the planning units selected when using ',cs1.params.LST[[MODE]]$amount.target*100,' % amount targets. Panel (b) shows the planning units selected selected when using ',cs1.params.LST[[MODE]]$amount.target*100,' % amount targets and ',cs1.params.LST[[MODE]]$space.target*100,' % niche targets')}
+# prepare data
+cs1.pus.sel.FPLY <- ldply(
+	names(cs1.prioritisations),
+	function(x) {
+		curr.DF <- cs1.pus.FPLY
+		curr.DF$Prioritisation <- x
+		curr.DF$Solution <- 'discarded'
+		curr.DF$Solution[curr.DF$id %in% which(as.logical(selections(cs1.prioritisations[[x]])))] <- 'selected'
+		return(curr.DF)
+	}
+)
+cs1.pus.sel.FPLY$Prioritisation <- factor(as.character(cs1.pus.sel.FPLY$Prioritisation), levels=names(cs1.prioritisations))
+# make letter data.frame
+cs1.pus.sel.letters.DF <- data.frame(
+	x=unname(cs1.pus@bbox[1,1] + (diff(cs1.pus@bbox[1,])*0.05)),
+	y=unname(cs1.pus@bbox[2,1] + (diff(cs1.pus@bbox[2,])*0.965)),
+	Prioritisation=names(cs1.prioritisations),
+	letter=paste0('(', letters[1:2], ')')
+)
+# make plots
+ggplot() +
+	geom_polygon(data=aus.FPLY, aes(x=long, y=lat, group=group), fill='grey85', color='grey70') +
+	geom_polygon(data=cs1.pus.sel.FPLY, aes(x=long, y=lat, group=group, fill=Solution), color='black') +
+	geom_text(data=cs1.pus.sel.letters.DF, aes(x=x, y=y, label=letter), color='black') +
+	theme_classic() +
+	theme(axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white'),
+		axis.title=element_blank(), legend.background=element_rect(color='transparent', fill='transparent'),
+		legend.position=c(1.03, 1.03), legend.justification=c(1,1), legend.key.size=unit(3, 'mm')
+	) +
+	scale_fill_manual(name='Solution', values=c('discarded'='#f7fcfd', 'selected'='#00441b')) +
+	coord_cartesian(xlim=cs1.pus@bbox[1,], ylim=cs1.pus@bbox[2,]) +
+	facet_wrap(~ Prioritisation, ncol=2)
 ```
 
 ```{r, echo=FALSE, fig.height=4.5, fig.width=4.5, fig.cap=paste0('Study area and data used in the second case-study. Squares denote planning units. Panel (a) shows all grid cells surveyed by the IntraBioDiv project. Grid cells occupied by ',cs2.params.LST[[MODE]]$common.name,' are shown in bright blue. The subsequent panels contain only the grid cells that were occupied by the species. Panel (b) shows the opportunity cost of each planning unit (estimated as the total human population density). Panels (b--c) show the spatial distribution of the ordinated genetic data. These values describe the typical genetic characteristics of individuals in each planning unit. Planning units with similar values/color have contain individuals with similar loci polymorphisms.')}
@@ -289,79 +361,6 @@ p4 <- ggplot() +
 	facet_wrap(~ Title3)
 # render plots
 grid.arrange(p1, p2, p3, p4, ncol=2)
-```
-
-```{r, echo=FALSE, fig.height=3.5, fig.width=5, fig.cap=paste0('Simulation study prioritisations. Each panel shows a prioritisation generated for a single species using a set of parameters. Squares denote planning units. Dark green planning units were selected for protection and pale green planning units were discarded. Each row of panels corresponds to a different species. The top row of panels (a, d, g, j) shows prioritisations generated for the uniformly distributed species, middle row of panels (b, e, h, k) for the normally distributed species, and the bottom row of panels (c, f, i, l) for the bimodally distributed species. Each column of panels correpsonds to a different set of parameters used to generate the prioritisation. The left column of panels (a--c) shows prioritizations generated using only ',(sim.params.LST[[MODE]]$amount.target*100),' % amount targets, the middle-left column of panels (d--f) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets, the middle-right column of panels (g--i) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount based targets and a boundary length modifier (BLM) of ',sim.params.LST[[MODE]]$blm,', and the right column of panels (j--l) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets and also a boundary length modifier of ',(sim.params.LST[[MODE]]$blm),'.')}
-# prepare data
-sim.pus.sel.FPLY <- ldply(
-	seq_len(nrow(sim.spp.DF)),
-	function(i) {
-		curr.DF <- sim.pus.FPLY %>% mutate(species=sim.spp.DF$species[i], prioritisation=sim.spp.DF$prioritisation[i])
-		curr.selection <- selections(sim.prioritisations[[sim.spp.DF$species[i]]][[sim.spp.DF$prioritisation[i]]])[as.numeric(curr.DF$id)]
-		curr.DF$Selection <-  c('discarded','selected')[curr.selection+1]
-		return(curr.DF)
-	}
-)
-sim.pus.sel.FPLY$prioritisation <- factor(as.character(sim.pus.sel.FPLY$prioritisation),
-	levels=c('Amount\ntargets', 'Amount &\nspace targets', 'Amount target\nand BLM', 'Amount & space\ntargets and BLM'))
-# prepare plotting data
-sim.letter.DF2 <- mutate(sim.spp.DF, letter=paste0('(', letters[seq_along(species)],')'))
-sim.letter.DF2$long <- gCentroid(sim.pus[1,])@coords[1]
-sim.letter.DF2$lat <- gCentroid(sim.pus[1,])@coords[2]
-# make plot
-ggplot() +
-	geom_polygon(data=sim.pus.sel.FPLY, aes(x=long, y=lat, group=group, fill=Selection), color='black') +
-	geom_text(data=sim.letter.DF2, aes(label=letter, x=long, y=lat), color='black', size=3) +
-	theme_classic() +
-	theme(
-		axis.ticks=element_blank(), axis.ticks.x=element_blank(), axis.ticks.y=element_blank(),
-		axis.text=element_blank(), axis.text.x=element_blank(), axis.text.y=element_blank(),
-		axis.line=element_blank(), axis.line.x=element_blank(), axis.line.y=element_blank(),
-		plot.background=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
-		panel.background=element_blank(), panel.border=element_blank(), legend.position='none',
-		strip.background = element_rect(fill='grey20'),
-		strip.text = element_text(color='white'),
-		axis.title=element_blank()) +
-	scale_fill_manual(name='Solution', values=c('discarded'='#f7fcfd', 'selected'='#00441b')) +
-	facet_grid(species ~ prioritisation)
-```
-
-
-```{r, echo=FALSE, fig.height=2.5, fig.width=4.5, fig.cap=paste0('Prioritisations for the niche-based case-study in Queensland, Australia. Squares represent planning units. Dark green planning units for selected for protection and pale green units were discarded. Panel (a) shows the planning units selected when using ',cs1.params.LST[[MODE]]$amount.target*100,' % amount targets. Panel (b) shows the planning units selected selected when using ',cs1.params.LST[[MODE]]$amount.target*100,' % amount targets and ',cs1.params.LST[[MODE]]$space.target*100,' % niche targets')}
-# prepare data
-cs1.pus.sel.FPLY <- ldply(
-	names(cs1.prioritisations),
-	function(x) {
-		curr.DF <- cs1.pus.FPLY
-		curr.DF$Prioritisation <- x
-		curr.DF$Solution <- 'discarded'
-		curr.DF$Solution[curr.DF$id %in% which(as.logical(selections(cs1.prioritisations[[x]])))] <- 'selected'
-		return(curr.DF)
-	}
-)
-cs1.pus.sel.FPLY$Prioritisation <- factor(as.character(cs1.pus.sel.FPLY$Prioritisation), levels=names(cs1.prioritisations))
-# make letter data.frame
-cs1.pus.sel.letters.DF <- data.frame(
-	x=unname(cs1.pus@bbox[1,1] + (diff(cs1.pus@bbox[1,])*0.05)),
-	y=unname(cs1.pus@bbox[2,1] + (diff(cs1.pus@bbox[2,])*0.965)),
-	Prioritisation=names(cs1.prioritisations),
-	letter=paste0('(', letters[1:2], ')')
-)
-# make plots
-ggplot() +
-	geom_polygon(data=aus.FPLY, aes(x=long, y=lat, group=group), fill='grey85', color='grey70') +
-	geom_polygon(data=cs1.pus.sel.FPLY, aes(x=long, y=lat, group=group, fill=Solution), color='black') +
-	geom_text(data=cs1.pus.sel.letters.DF, aes(x=x, y=y, label=letter), color='black') +
-	theme_classic() +
-	theme(axis.ticks=element_blank(), axis.text=element_blank(), axis.line=element_blank(), plot.margin = unit(c(0, 0, 0, 0), "lines"),
-		strip.background = element_rect(fill='grey20'),
-		strip.text = element_text(color='white'),
-		axis.title=element_blank(), legend.background=element_rect(color='transparent', fill='transparent'),
-		legend.position=c(1.03, 1.03), legend.justification=c(1,1), legend.key.size=unit(3, 'mm')
-	) +
-	scale_fill_manual(name='Solution', values=c('discarded'='#f7fcfd', 'selected'='#00441b')) +
-	coord_cartesian(xlim=cs1.pus@bbox[1,], ylim=cs1.pus@bbox[2,]) +
-	facet_wrap(~ Prioritisation, ncol=2)
 ```
 
 ```{r, echo=FALSE, fig.height=5, fig.width=5, fig.cap=paste0('Prioritisations for the genetic case-study in the European Alps. Panels (a--b) show prioritisations generated using different parameters. Squares denote planning units shown in geographic space. Panel (a) shows the planning units selected when using ',cs2.params.LST[[MODE]]$amount.target*100,' % amount targets. Panel (b) shows the planning units selected selected when using ',cs2.params.LST[[MODE]]$amount.target*100,' % amount targets and ',cs2.params.LST[[MODE]]$genetic.target*100,' % genetic targets. Panels (c--d) show the solutions in the genetic space. Each point corresponds to a planning unit. The coordinates of the points represent the typical genetic characeristics of individuals sampled in planning units (based on an NMDS of the binary loci data). Planning units associated with points that are closer togeather contain individuals with more similar genetic characteristics than planning units that are further apart. In all panels, dark green planning units were selected for protection, and pale green planning units were discarded.')}
