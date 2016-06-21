@@ -43,8 +43,9 @@ cs1.pus <- spChFIDs(cs1.pus, as.character(seq_len(nrow(cs1.pus@data))))
 dir.create('data/intermediate/ala_cache', showWarnings=FALSE)
 ala_config(cache_directory='data/intermediate/ala_cache', download_reason_id=4)
 cs1.records.LST <- llply(cs1.params.LST[[MODE]]$species.names, occurrences, wkt=cs1.record.bbox, use_data_table=TRUE)
-# filter and combine records
+# subset and combine records
 cs1.subset.records.LST <- llply(cs1.records.LST, function(x) {
+	# extract valid records
 	x <- dplyr::filter(
 		x$data,
 		habitatMismatch==FALSE,
@@ -54,17 +55,27 @@ cs1.subset.records.LST <- llply(cs1.records.LST, function(x) {
 		is.finite(latitude)
 	)
 	if ('speciesOutsideExpertRange' %in% names(x)) x <- filter(x, speciesOutsideExpertRange==FALSE)
+	# subset to first n records (used for debugging parameters)
 	if (nrow(x) > cs1.params.LST[[MODE]]$max.records) x <- x[seq_len(cs1.params.LST[[MODE]]$max.records),]
+	# return subsetted data
 	return(x)
 })
+# rarefy records
+cs1.rarefied.records.LST <- llply(cs1.subset.records.LST, function(x) {
+	x.sp <- SpatialPoints(coords=as.matrix(x[,c('longitude', 'latitude')]), proj4string=CRS('+init=epsg:4326')) %>% spTransform(qld.PLY@proj4string)
+	x.rfy <- spRarefy(x=x.sp, grid=as.numeric(cs1.params.LST[[MODE]]$rarefy.cell.size), nrep=1)
+	return(x.rfy)
+})
 # thin records 
-cs1.thinned.records.LST <- llply(cs1.subset.records.LST, function(x) {
+cs1.thinned.records.LST <- llply(cs1.rarefied.records.LST, function(x) {
 	spThin(
-		SpatialPoints(coords=as.matrix(x[,c('longitude', 'latitude')]), proj4string=CRS('+init=epsg:4326')),
+		spTransform(x[[1]], CRS('+init=epsg:4326')),
 		method='gurobi',
 		great.circle.distance=TRUE,
 		dist=cs1.params.LST[[MODE]]$thin.distance,
-		Presolve=2
+		Presolve=2,
+		Threads=general.params.LST[[MODE]]$threads,
+		MIPGap=general.params.LST[[MODE]]$MIPGap
 	)
 })
 # generate mcps
@@ -87,25 +98,31 @@ cs1.ru <- rap(pus=cs1.pus, species=cs1.spp.RST, spaces=list(cs1.bioclim.RAST), k
 cs1.ru@data@species[[1]] <- cs1.params.LST[[MODE]]$common.names
 # create new attribute spaces
 cs1.spaces <- llply(seq_along(cs1.params.LST[[MODE]]$common.names), .fun=function(i) {
-	# extract coordinates of planning units in environmental space
+	## extract coordinates of planning units in environmental space
 	curr.ids<-cs1.ru@data@attribute.spaces[[1]]@spaces[[i]]@planning.unit.points@ids
 	curr.pu.coords <- values.MTX[curr.ids,-1,drop=FALSE]
+	# z-score coordinates
 	curr.pu.coords.mean <- apply(curr.pu.coords, 2, mean)
 	curr.pu.coords.sd <- apply(curr.pu.coords, 2, sd)
 	curr.pu.coords<-sweep(curr.pu.coords,MARGIN=2,FUN='-',curr.pu.coords.mean)
 	curr.pu.coords<-sweep(curr.pu.coords,MARGIN=2,FUN='/',curr.pu.coords.sd) 
-	# generate dp coords
-	curr.species.geo.points <- SpatialPoints(coords=randomPoints(cs1.spp.RST[[i]], n=ceiling(0.2*cellStats(cs1.spp.RST[[i]], 'sum'))), proj4string=cs1.spp.RST[[i]]@crs)
+	## extract coordinates in environmental space
+	curr.species.geo.points <- SpatialPoints(coords=randomPoints(cs1.spp.RST[[i]], n=200), proj4string=cs1.spp.RST[[i]]@crs)
 	curr.species.env.points <- extract(cs1.bioclim.RAST,curr.species.geo.points)
+	# omit outlying points in the randomly generated points
+	curr.species.env.points.sp <- SpatialPoints(curr.species.env.points)
+	curr.species.env.points.mcp <- mcp(curr.species.env.points.sp, percent=cs1.params.LST[[MODE]]$mcp.percent)
+	curr.species.env.points <- curr.species.env.points[gIntersects(curr.species.env.points.sp,curr.species.env.points.mcp,byid=TRUE)[1,],]
+	# z-score coodinates
 	curr.species.env.points.mean <- apply(curr.species.env.points, 2, mean)
 	curr.species.env.points.sd <- apply(curr.species.env.points, 2, sd)
 	curr.species.env.points<-sweep(curr.species.env.points,MARGIN=2,FUN='-',curr.species.env.points.mean)
-	curr.species.env.points<-sweep(curr.species.env.points,MARGIN=2,FUN='/',curr.species.env.points.sd) 
-	# generate dps
+	curr.species.env.points<-sweep(curr.species.env.points,MARGIN=2,FUN='/',curr.species.env.points.sd)
+	# generate demand points
 	raw.curr.species.dps <- make.DemandPoints(curr.species.env.points,  n=cs1.params.LST[[MODE]]$dp.number, quantile=cs1.params.LST[[MODE]]$dp.quantile, kernel.method='hypervolume', bandwidth=cs1.params.LST[[MODE]]$dp.bandwidth)
 	raw.curr.species.dps@coords<-sweep(raw.curr.species.dps@coords,MARGIN=2,FUN='*',curr.species.env.points.sd)
 	raw.curr.species.dps@coords<-sweep(raw.curr.species.dps@coords,MARGIN=2,FUN='+',curr.species.env.points.mean)
-	# z-scale pus and dps
+	## put demand points on the same scale as the planning unit coordinates
 	curr.species.dps <- raw.curr.species.dps
 	curr.species.dps@coords<-sweep(curr.species.dps@coords,MARGIN=2,FUN='-',curr.pu.coords.mean)
 	curr.species.dps@coords<-sweep(curr.species.dps@coords,MARGIN=2,FUN='/',curr.pu.coords.sd) 

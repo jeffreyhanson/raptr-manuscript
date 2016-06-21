@@ -12,6 +12,7 @@ environmental.layer.resolution = 25000
 thin.distance=10000
 max.records=1e8
 mcp.percent=85
+rarefy.cell.size=1000
 species.names=['Dacelo leachii', 'Falco berigora', 'Ramsayornis modestus', 'Platycercus adscitus']
 common.names=['Blue-winged kookaburra', 'Brown falcon', 'Brown-backed honeyeater','Pale-headed rosella']
 
@@ -27,6 +28,7 @@ environmental.layer.resolution = 25000
 thin.distance=10000
 max.records=1e8
 mcp.percent=85
+rarefy.cell.size=1000
 species.names=['Dacelo leachii', 'Falco berigora', 'Ramsayornis modestus', 'Platycercus adscitus']
 common.names=['Blue-winged kookaburra', 'Brown falcon', 'Brown-backed honeyeater','Pale-headed rosella']
 
