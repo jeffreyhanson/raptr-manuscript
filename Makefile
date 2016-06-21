@@ -48,7 +48,7 @@ article: article/article.pdf
 
 figures: article/figures.pdf
 
-si: article/supporting_information.pdf
+si: article/supporting-information.pdf
 
 article/article.pdf: code/rmarkdown/article.Rmd code/rmarkdown/references.bib code/rmarkdown/preamble-latex.tex code/rmarkdown/reference-style.csl
 	R -e "rmarkdown::render('code/rmarkdown/article.Rmd')"
@@ -68,11 +68,11 @@ article/tables.pdf: code/rmarkdown/tables.Rmd code/rmarkdown/preamble-latex.tex 
 	rm code/rmarkdown/tables.tex -f
 	rm code/rmarkdown/tables.md -f
 
-article/supporting_information.pdf: code/rmarkdown/supporting_information.Rmd code/rmarkdown/preamble-latex.tex code/rmarkdown/preamble-latex3.tex
-	R -e "rmarkdown::render('code/rmarkdown/supporting_information.Rmd')"
-	mv code/rmarkdown/supporting_information.pdf article/
-	rm code/rmarkdown/supporting_information.tex -f
-	rm code/rmarkdown/supporting_information.md -f
+article/supporting-information.pdf: code/rmarkdown/supporting-information.Rmd code/rmarkdown/preamble-latex.tex code/rmarkdown/preamble-latex3.tex
+	R -e "rmarkdown::render('code/rmarkdown/supporting-information.Rmd')"
+	mv code/rmarkdown/supporting-information.pdf article/
+	rm code/rmarkdown/supporting-information.tex -f
+	rm code/rmarkdown/supporting-information.md -f
 
 # commands for running analysis
 analysis: data/final/results.rda

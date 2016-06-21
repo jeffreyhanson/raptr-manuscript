@@ -7,7 +7,7 @@ space.target=0.8
 blm=10
 
 [release]
-number.planning.units=225
+number.planning.units=100
 amount.target=0.2
 space.target=0.8
 blm=10
