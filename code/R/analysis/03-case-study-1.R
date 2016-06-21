@@ -138,7 +138,9 @@ cs1.prioritisations <- llply(
 		'Amount & niche targets'=list(cs1.params.LST[[MODE]]$amount.target,cs1.params.LST[[MODE]]$space.target)
 	),
 	function(y) {
-		update(cs1.ru, amount.target=y[[1]], space.target=y[[2]], solve=TRUE)
+		update(cs1.ru, amount.target=y[[1]], space.target=y[[2]],
+		Threads=general.params.LST[[MODE]]$threads, MIPGap=general.params.LST[[MODE]]$MIPGap,
+		solve=TRUE)
 	}
 )
 names(cs1.prioritisations) <- c('Amount targets','Amount & niche targets')

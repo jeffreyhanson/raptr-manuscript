@@ -126,7 +126,7 @@ parallel_extract <- function(x, y, threads=1, ...) {
 	# get extra args
 	args.LST <- list(...)
 	fids <- seq_along(y@polygons)
-	tids <- rep(seq_len(threads), ceiling(length(fids)/threads))
+	tids <- rep(seq_len(threads), each=ceiling(length(fids)/threads))
 	tids <- tids[seq_along(fids)]
 	fids <- split(fids, factor(tids))
 	## main proc
