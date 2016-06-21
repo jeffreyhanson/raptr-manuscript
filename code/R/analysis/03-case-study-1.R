@@ -109,23 +109,16 @@ cs1.spaces <- llply(seq_along(cs1.params.LST[[MODE]]$common.names), .fun=functio
 	## extract coordinates in environmental space
 	curr.species.geo.points <- SpatialPoints(coords=randomPoints(cs1.spp.RST[[i]], n=200), proj4string=cs1.spp.RST[[i]]@crs)
 	curr.species.env.points <- extract(cs1.bioclim.RAST,curr.species.geo.points)
-	# omit outlying points in the randomly generated points
+	# put environmental coordinates on same scale as planning units
+	curr.species.env.points<-sweep(curr.species.env.points,MARGIN=2,FUN='-',curr.pu.coords.mean)
+	curr.species.env.points<-sweep(curr.species.env.points,MARGIN=2,FUN='/',curr.pu.coords.sd)
+	# omit outlying coordinates
 	curr.species.env.points.sp <- SpatialPoints(curr.species.env.points)
 	curr.species.env.points.mcp <- mcp(curr.species.env.points.sp, percent=cs1.params.LST[[MODE]]$mcp.percent)
 	curr.species.env.points <- curr.species.env.points[gIntersects(curr.species.env.points.sp,curr.species.env.points.mcp,byid=TRUE)[1,],]
-	# z-score coodinates
-	curr.species.env.points.mean <- apply(curr.species.env.points, 2, mean)
-	curr.species.env.points.sd <- apply(curr.species.env.points, 2, sd)
-	curr.species.env.points<-sweep(curr.species.env.points,MARGIN=2,FUN='-',curr.species.env.points.mean)
-	curr.species.env.points<-sweep(curr.species.env.points,MARGIN=2,FUN='/',curr.species.env.points.sd)
 	# generate demand points
-	raw.curr.species.dps <- make.DemandPoints(curr.species.env.points,  n=cs1.params.LST[[MODE]]$dp.number, quantile=cs1.params.LST[[MODE]]$dp.quantile, kernel.method='hypervolume', bandwidth=cs1.params.LST[[MODE]]$dp.bandwidth)
-	raw.curr.species.dps@coords<-sweep(raw.curr.species.dps@coords,MARGIN=2,FUN='*',curr.species.env.points.sd)
-	raw.curr.species.dps@coords<-sweep(raw.curr.species.dps@coords,MARGIN=2,FUN='+',curr.species.env.points.mean)
-	## put demand points on the same scale as the planning unit coordinates
-	curr.species.dps <- raw.curr.species.dps
-	curr.species.dps@coords<-sweep(curr.species.dps@coords,MARGIN=2,FUN='-',curr.pu.coords.mean)
-	curr.species.dps@coords<-sweep(curr.species.dps@coords,MARGIN=2,FUN='/',curr.pu.coords.sd) 
+	curr.species.dps <- make.DemandPoints(curr.species.env.points,  n=cs1.params.LST[[MODE]]$dp.number, quantile=cs1.params.LST[[MODE]]$dp.quantile, kernel.method='hypervolume', bandwidth=cs1.params.LST[[MODE]]$dp.bandwidth)
+	## assemble attribute space
 	return(
 		AttributeSpace(
 			planning.unit.points=PlanningUnitPoints(coords=curr.pu.coords,ids=curr.ids),
