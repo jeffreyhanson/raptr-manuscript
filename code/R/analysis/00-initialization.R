@@ -12,6 +12,10 @@ if (length(args)>0) {
 
 # load CRAN packages
 suppressMessages(library(stats))
+suppressMessages(library(RColorBrewer))
+suppressMessages(library(hexbin))
+suppressMessages(library(fields))
+suppressMessages(library(ape))
 suppressMessages(library(Hmisc))
 suppressMessages(library(data.table))
 suppressMessages(library(grid))

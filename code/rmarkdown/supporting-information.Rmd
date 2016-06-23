@@ -10,9 +10,7 @@ output:
     includes:
       in_header: [preamble-latex.tex, preamble-latex3.tex]
 ---
-## Supporting Information
-All data and code is stored in an online repository (\url{www.github.com/paleo13/rapr-manuscript}) to replicate analyses in this study. See the \textit{README} file for instructions.
-
+# Supporting Information
 
 ```{r, include=FALSE}
 # set wd
@@ -26,3 +24,169 @@ try(session::restore.session('data/final/results.rda'))
 # set options
 options(error=NULL)
 ```
+
+## Reliable formulation
+The reliable formulation explicitly considers the probability that the planning units are inhabited. As a consequence, it may deliver prioritisations that will sufficiently represent an attribute space even if the features do not inhabit several of the planning units when the prioritisation is implemented. This behaviour is achieved by siting back-up planning units near selected planning units with low occupancy probabilities in the attribute space(s). To ensure that prioritisations are robust against multiple planning units being uninhabited, the problem assigns planning units at multiple backup levels. 
+
+Backup levels levels are defined as $r$-levels [similar to failure levels in @r18]. The first backup $r$-level is used to calculate the level of representation when all of the selected planning units are occupied by all $f \in F$. For this scenario, the closest selected planning unit to each demand point $i$ for attribute space $s$ is assigned at $r$-level$=0$. This scenario essentially represents $Y_{fsij}$ in the unreliable formulation. The second backup $r$-level is used to assess the level of representation when the closest planning unit to each demand point $i$ is unoccupied. For this scenario, the second closest planning units are assigned at $r$-level$=1$. The third backup $r$-level is used to assess representation when the first two closest planning units are unoccupied. The third closest planning units are assigned at $r$-level$=2$. Continuing on, in this manner, the selected planning units in a prioritisation are assigned to each demand point $i \in I$, attribute space $s \in S$, and each feature $f \in F$ at an $r$-level.
+
+A final backup $r$-level when $r=R$ is used to assess the level of representation when the features $f \in F$ do not occupy any selected planning units in a prioritisation. Each demand point $i \in I$ for each $s \in S$ and $f \in F$ is assigned to an "imaginary" planning unit $j=J$ at $r=R$. The distance variables associated with this imaginary planning unit $d_{fsiJ}$ denote the loss of biological value associated with failing to secure a representative sample of feature $f$ in attribute space $s$. However, the $d$ variables are in distance units which are meaningless in this context. Thus these variables are calculated using a failure multiplier ($M$) and the maximum distance between the planning units and the demand points for $f \in F$, $s \in S$ (4).
+
+\begin{align*}
+& d_{fsiJ} = M \max\limits_{0 \leq i \leq I-1, 0 \leq j \leq J-1} d_{fsij} & \forall & 0 \leq f \leq F-1, \tag{4} \\
+& & & 0 \leq s \leq S-1\\
+\end{align*}
+
+Moderately-sized conservation planning problems often include several thousand planning units. It is currently not be feasible to solve this problem when considering all possible failure scenarios. As a consequence, the $R$ variable can be any $1 \leq R \leq J-1$. For instance, when $R=3$ only 2 backup levels are considered in addition to the final backup level. Cui et al. [-@r16] found that $R=5$ yields similar solutions to $R=J$ when $J >> 5$. However, in most costs the decision maker will likely be limited to $R=1$ to obtain prioritisations in a feasible amount of time.
+
+The control variables for the reliable formulation are the $B$ (1a), $T_{s}$ (1b), $\tau_{sa}$ (1c), $R$, and $M$ variables.
+
+\begin{align*}
+R &= \parbox{25em}{number of failure levels} \tag{5a} \\
+%
+M &= \parbox{25em}{failure multiplier} \tag{5b}\\
+%
+\end{align*}
+
+The decision variables are the $X_j$ (2a), $Y_{fsijr}$, $P_{fsijr}$ variables.
+
+\begin{align*}
+Y_{fsijr} &= \begin{cases}
+		1, & \parbox{25em}{if demand point $i$ is assigned to planning unit $j$ for feature $f$ in space $s$ at back-up level $r$. } \tag{6a} \\
+		0, & \parbox{25em}{otherwise} \\
+	\end{cases} \\
+%
+P_{fsijr} &= \parbox{25em}{probability that demand point $i$ is assigned to planning unit $j$ at back-up level $r$ for feature $f$ and space $s$} \tag{6a}\\
+%
+\end{align*}
+
+The reliable formulation (RRAP) is a multi-objective optimisation problem.
+
+\begin{align*}
+& \text{(RRAP)} & \text{Min } & \text{(3a)}\\
+%
+& & \text{s.t. } & \text{(3b)}\\
+%
+& & & 1 - \frac{\sum_{i=0}^{I-1} \sum_{j=0}^{J-1} \left( \lambda_{fsi} d_{fsij} P_{fsijr} Y_{fsij} \right)^2}{\sum_{i=0}^{I-1} \left( \lambda_{fsi} \delta_{fsi} \right)^2 } \geq T_{fs}  & \forall & 0 \leq f \leq F-1, \tag{7a}\\
+& & & & & 0 \leq s \leq S-1\\
+%
+& & & \sum_{j=0}^{J-1} Y_{fsijr} = 1 & \forall & 0 \leq f \leq F-1, \tag{7b}\\
+& & & & & 0 \leq s \leq S-1,\\
+& & & & & 0 \leq i \leq I-1,\\
+& & & & & 0 \leq r \leq R\\
+%
+& & & \sum_{r=0}^{R} Y_{fsijr} = 1 & \forall & 0 \leq f \leq F-1, \tag{7c}\\
+& & & & & 0 \leq s \leq S-1,\\
+& & & & & 0 \leq i \leq I-1,\\
+& & & & & 0 \leq j \leq J\\
+%
+& & & \sum_{r=0}^{R-1} Y_{fsijr} \leq X_j & \forall & 0 \leq f \leq F-1, \tag{7d}\\
+& & & & & 0 \leq s \leq S-1,\\
+& & & & & 0 \leq i \leq I-1,\\
+& & & & & 0 \leq j \leq J-1\\
+%
+& & & Y_{fsiJR} = 1 & \forall & 0 \leq f \leq F-1, \tag{7e}\\
+& & & & & 0 \leq s \leq S-1,\\
+& & & & & 0 \leq i \leq I-1\\
+%
+& & & P_{fsij0} = q_{fj} & \forall & 0 \leq f \leq F-1, \tag{7f}\\
+& & & & & 0 \leq s \leq S-1,\\
+& & & & & 0 \leq i \leq I-1,\\
+& & & & & 0 \leq j \leq J\\
+%
+& & & P_{fsijr} = \left(1 - \right) \sum_{k=0}^{J-1} \frac{1 - q_k}{q_k} P_{f,s,i,k,r-1} Y_{f,s,i,k,r-1}  & \forall & 0 \leq f \leq F-1, \tag{7g}\\
+& & & & & 0 \leq s \leq S-1,\\
+& & & & & 0 \leq i \leq I-1,\\
+& & & & & 0 \leq j \leq J,\\
+& & & & & 1 \leq r \leq R\\
+%
+& & & X_j, Y_{fsijr} \in {0,1} & \forall & 0 \leq f \leq F-1, \tag{7h}\\
+& & & & & 0 \leq s \leq S-1,\\
+& & & & & 0 \leq i \leq I-1,\\
+& & & & & 0 \leq j \leq J,\\
+& & & & & 0 \leq r \leq R\\
+\end{align*}
+
+The objective function for the reliable formulation is the same as for the unreliable formation (3a). Similar to the unreliable formulation, constraints (3b) and (7a) ensure that the amount-based and space-based targets are met. Constraint (7b--7c) ensure that each planning unit is only assigned to one backup $r$-level for $i \in I$. Constraints (7d) ensure that only selected planning units are assigned to demand points $i \in I$. Constraints (7e) ensure that the imaginary planning unit is always assigned to the highest backup $r$-level. Constraints (7f--7g) determine the probability that planning unit $j$ will be used to sample demand point $i \in I$ for $s \in S$ and $f \in F$ [see @r16 for more information]. Constraints (7h) ensure that the $X$ and $Y$ variables are binary.
+
+The reliable formulation is non-linear. However, the non-linear components can be linearised. First--as discussed in the main text--the expression $X_j X_k$ in (3a) can be linearised using methods described by Beyer et al. [-@r426]. Second, the expression $P_{fsijr} Y_{jsijr}$ in (7a) can be linearised using techniques described by Sherali and Alameddine [-@r20] as implemented in Cui et al. [-@r16].
+
+## Figures 
+```{r, echo=FALSE, fig.height=8, fig.width=8.5, fig.cap='Attribute spaces used in the first case-study. Each panel shows a the distribution of a solution in environmental space and how it samples the realised niche for a different species. The left column of panels shows the solution generated using amount targets. The right column of panels shows the solution generated using amount and niche targets. Each column of panels corresponds to a different species. Hexagons show the distribution of demand points. The color of each heaxgon denotes the weighted frequency of demand points inside it. Points represent the environmental conditions associated with planning units inside the species geographic range that were selected for preservation in a given solution.'}
+## prepare data
+cs1.pu.niche.DF <- ddply(
+	cs1.spp.DF,
+	c('Species', 'Prioritisation'),
+	function(x) {
+		# init
+		curr.prioritisation <- cs1.prioritisations[[as.character(x$Prioritisation)]]
+		curr.spp.pos <- match(x$Species[1], curr.prioritisation@data@species[[1]])
+		curr.sel.pos <- which(curr.prioritisation@data@attribute.spaces[[1]]@spaces[[curr.spp.pos]]@planning.unit.points@ids %in% which(as.logical(selections(curr.prioritisation))))
+		# extract planning units
+		curr.DF <- curr.prioritisation@data@attribute.spaces[[1]]@spaces[[curr.spp.pos]]@planning.unit.points@coords %>% as.data.frame()
+		names(curr.DF) <- c('Niche1', 'Niche2')
+		curr.DF$Species <-x$Species[[1]]
+		curr.DF$Prioritisation <-x$Prioritisation[[1]]
+		curr.DF$Solution <- 'discarded'
+		curr.DF$Solution[curr.sel.pos] <- 'selected'
+		# return data
+		return(curr.DF)
+	}
+)
+cs1.pu.niche.DF <- filter(cs1.pu.niche.DF, Solution=='selected')
+
+cs1.dp.niche.DF <- ddply(
+	cs1.spp.DF,
+	c('Species', 'Prioritisation'),
+	function(x) {
+		# init
+		curr.prioritisation <- cs1.prioritisations[[as.character(x$Prioritisation)]]
+		curr.spp.pos <- match(x$Species[1], curr.prioritisation@data@species[[1]])
+		# extract demand points
+		curr.DF <- curr.prioritisation@data@attribute.spaces[[1]]@spaces[[curr.spp.pos]]@demand.points@coords %>% as.data.frame()
+		names(curr.DF) <- c('Niche1', 'Niche2')
+		curr.DF$weight <- curr.prioritisation@data@attribute.spaces[[1]]@spaces[[curr.spp.pos]]@demand.points@weights
+		# return data
+		return(curr.DF)
+	}
+)
+cs1.pu.niche.DF$Prioritisation <- factor(as.character(cs1.pu.niche.DF$Prioritisation), levels=names(cs1.prioritisations))
+cs1.dp.niche.DF$Prioritisation <- factor(as.character(cs1.dp.niche.DF$Prioritisation), levels=names(cs1.prioritisations))
+
+# make letter data.frame
+cs1.letters.DF <- expand.grid(
+	Species=levels(cs1.pu.niche.DF$Species),
+	Prioritisation=levels(cs1.pu.niche.DF$Prioritisation)
+) %>% arrange(Species, Prioritisation)
+cs1.letters.DF$letter <- paste0('(', letters[seq_len(nrow(cs1.letters.DF))], ')')
+cs1.letters.DF <- cbind(
+	cs1.letters.DF,
+	rbind(
+		cs1.pu.niche.DF %>% select(Species, Prioritisation, Niche1, Niche2),
+		cs1.dp.niche.DF %>% select(Species, Prioritisation, Niche1, Niche2)
+	) %>% summarise(
+		Niche1=min(Niche1)+(abs(diff(range(Niche1)))*0.01),
+		Niche2=min(Niche2)+(abs(diff(range(Niche2)))*0.95)
+	) %>% data.frame()
+)
+
+## make plots
+ggplot() +
+	stat_summary_hex(data=cs1.dp.niche.DF, aes(x=Niche1, y=Niche2, z=weight), bins=15, fun=function(z) {sum(z)}) +
+	geom_point(data=cs1.pu.niche.DF, aes(x=Niche1, y=Niche2), fill='#00441b', pch=21, color='black') +
+	geom_text(data=cs1.letters.DF, aes(x=Niche1, y=Niche2, label=letter), color='black') +
+	theme_classic() +
+	theme(
+		strip.background = element_rect(fill='grey20'),
+		strip.text = element_text(color='white')
+	) +
+	xlab('Niche (axis 1)') + ylab('Niche (axis 2)') +
+	scale_fill_gradientn(name='Total demand\npoint weight', colors=colorRampPalette(brewer.pal(6, 'PuBu')[-1])(100)) +
+	facet_grid(Species ~ Prioritisation)
+```
+
+## Tables
+
+
+
+## References

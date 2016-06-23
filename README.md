@@ -35,14 +35,40 @@ To rerun all computational analyses, run `make clean && make all`.
 	+ pandoc-citeproc
 	+ LaTeX
 * R packages
-	+ rmarkdown
+	+ stats
+	+ hexbin
+	+ RColorBrewer
+	+ fields
+	+ ape
 	+ Hmisc
+	+ data.table
+	+ grid
+	+ gridExtra
+	+ plotrix
+	+ plyr
+	+ dplyr
+	+ tidyr
+	+ pander
+	+ vegan
+	+ rgeos
+	+ testthat
+	+ parallel
+	+ rworldxtra
+	+ doParallel
+	+ english
+	+ session
+	+ maptools
+	+ RcppTOML
 	+ knitr
-	+ lazyweave
-	+ ALA4R
+	+ lazyWeave
+	+ broom
+	+ adehabitatHR
 * R GitHub packages
-	+ paleo13/rgurobi
-	+ paleo13/rapr
+	+ AtlasOfLivingAustralia/ALA4R
+	+ paleo13/spThin
+	+ paleo13/bayescanr
+	+ paleo13/structurer
+	+ paleo13/ggplot2
 * LaTeX packages
 	+ amsfonts
 	+ amsmath

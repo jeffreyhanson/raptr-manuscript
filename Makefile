@@ -17,7 +17,7 @@ clean:
 	@rm data/intermediate/pcadapt -rf
 	@rm data/intermediate/ala_cache -rf
 	@rm code/rmarkdown/article_files/figure-latex/*.pdf -f
-	@rm code/rmarkdown/supporting_information_files/figure-latex/*.pdf -f
+	@rm code/rmarkdown/supporting-information_files/figure-latex/*.pdf -f
 	@rm code/rmarkdown/figures_files/figure-latex/*.pdf -f
 	@rm code/rmarkdown/figures.tex -f
 	@rm code/rmarkdown/figures.md -f

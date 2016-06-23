@@ -151,7 +151,9 @@ cs1.spp.DF <- ldply(
 	.fun=function(i) {
 		mutate(
 			extractResults(cs1.prioritisations[[i]]),
-			Prioritisation=names(cs1.prioritisations)[i]
+			Prioritisation=names(cs1.prioritisations)[i],
+			amount.held=amount.held*100,
+			niche=niche*100
 		)
 	}
 )

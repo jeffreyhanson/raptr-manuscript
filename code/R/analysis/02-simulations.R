@@ -109,7 +109,7 @@ sim.prioritisations <- llply(
 			'Amount & space\ntargets and BLM'=c(sim.params.LST[[MODE]]$space.target, sim.params.LST[[MODE]]$blm)
 		),
 			function(j) {
-				sim.ru %>% spp.subset(x) %>% update(space.target=j[[1]], blm=j[[2]], solve=TRUE,
+				sim.ru %>% spp.subset(x) %>% update(space.target=j[[1]], BLM=j[[2]], solve=TRUE,
 				threads=general.params.LST[[MODE]]$threads, MIPGap=general.params.LST[[MODE]]$MIPGap)
 			}
 		)
@@ -124,8 +124,10 @@ sim.spp.DF <- ldply(
 		data.frame(
 			species=rep(as.character(sim.species[[1]][[i]]), 4),
 			prioritisation=c('Amount\ntargets', 'Amount &\nspace targets', 'Amount target\nand BLM', 'Amount & space\ntargets and BLM'),
-			amount.held=sapply(sim.prioritisations[[i]], function(s) {amount.held(s)[1]}),
-				space.held=sapply(sim.prioritisations[[i]], function(s) {space.held(s)[1]})
+			amount.held=sapply(sim.prioritisations[[i]], function(s) {amount.held(s)[1]})*100,
+			space.held=sapply(sim.prioritisations[[i]], function(s) {space.held(s)[1]})*100,
+			score=sapply(sim.prioritisations[[i]], function(s) {score(s)[1]}),
+			n=sapply(sim.prioritisations[[i]], function(s) {sum(selections(s))})
 		)
 	}
 )

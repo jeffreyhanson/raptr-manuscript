@@ -1,5 +1,5 @@
 % load packages
-\usepackage{amsmath,amsfonts,float,makecell,titletoc,tocloft,natbib,pdfpages,lineno,booktabs}
+\usepackage{amsmath,amsfonts,float,makecell,titletoc,titlesec,tocloft,titling,natbib,pdfpages,lineno,booktabs}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage[utf8]{inputenc}
@@ -9,10 +9,35 @@
 \usepackage[labelfont={small,bf}, labelsep=space, font={small}]{caption}
 
 % format toc
-\renewcommand\cftsubsecfont{\normalfont\normalsize\bfseries}
+%\renewcommand\cftsubsecfont{\normalfont\normalsize\bfseries}
 % \renewcommand\cftsubsubsecfont{\normalfont\normalsize\bfseries}
 % \renewcommand\cftparafont{\normalfont\normalsize\bfseries}
 % \renewcommand\cftsubparafont{\normalfont\normalsize\itshape}
+
+% line numbers
+\linenumbers
+
+% format abstract
+\renewcommand{\abstractname}{Summary}
+\renewenvironment{abstract}
+ {\small
+  \begin{center}
+  \bfseries \abstractname\vspace{-.5em}\vspace{0pt}
+  \end{center}
+  \list{} {%
+   \setlength{\leftmargin}{2mm}
+   \setlength{\rightmargin}{\leftmargin}%
+  }%
+  \item\relax}
+{\endlist}
+
+% format section headers
+\titleformat*{\section}{\Large\bfseries}
+\titleformat{\subsection}[display]
+	{\large\sffamily\lsstyle}
+	{\subsectiontitlename\ \thesubsection}
+	{0.5em}{}
+\titleformat*{\subsubsection}{\large\itshape}
 
 % make figures static
 \let\origfigure\figure

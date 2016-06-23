@@ -153,7 +153,9 @@ cs2.spp.DF <- ldply(
 	.fun=function(i) {
 		mutate(
 			extractResults(cs2.prioritisations[[i]]),
-			Prioritisation=c('Amount','Genetic')[i]
+			Prioritisation=c('Amount','Genetic')[i],
+			amount.held=amount.held*100,
+			genetic=genetic*100
 		)
 	}
 )

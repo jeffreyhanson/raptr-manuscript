@@ -3,12 +3,12 @@ title = "simulation parameters"
 [debug]
 number.planning.units=100
 amount.target=0.2
-space.target=0.9
+space.target=0.75
 blm=10
 
 [release]
 number.planning.units=100
 amount.target=0.2
-space.target=0.9
-blm=10
+space.target=0.75
+blm=1
 
