@@ -2,7 +2,7 @@
 # set parameters for inference 
 # MODE=release 
 # set parameters for debugging code
-MODE=debug
+MODE=release
 
 # set misc parameters
 COMMIT_ID=$(shell git ls-remote https://github.com/paleo13/rapr-manuscript.git HEAD | grep -o '^\S*')
