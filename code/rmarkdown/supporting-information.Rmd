@@ -18,11 +18,18 @@ knitr::opts_knit$set(root.dir=normalizePath('../..'))
 ```
 
 ```{r, include=FALSE}
+## initialization
 # load .rda file
 try(session::restore.session('data/final/results.rda'))
 
 # set options
 options(error=NULL)
+
+## prelimary processing
+# redefine file paths for rasters
+for (i in seq_len(nlayers(cs1.bioclim.RAST)))
+	cs1.bioclim.RAST@layers[[i]]@file@name  <- paste0(getwd(), strsplit(cs1.bioclim.RAST@layers[[i]]@file@name, 'rapr-manuscript')[[1]][[2]])
+
 ```
 
 ## Reliable formulation
@@ -187,6 +194,42 @@ ggplot() +
 
 ## Tables
 
+```{r, echo=FALSE, results='asis'}
+# make table
+term.CHR <- c(
+	'$F$', 'set of biodiversity features (indexed by $f$)',
+	'$J$', 'set of planning units (indexed by $j$)',
+	'$q_{fj}$', 'probability of feature $f$ occupying planning unit $j$',
+	'$e_{jk}$', 'shared edge between planning unit $j$ and planning unit $k$. Note that when $j==k$ this used to parametrise exposed edges with no neighbours.',
+	'$S$', 'set of attribute spaces (indexed by $S$)',
+	'$I_{fsi}$', 'set of demand points (indexed by $i$) for a feature $f$ in attribute space $s$',
+	'$\\lambda_{fsi}$', 'set of weights for demand point $i$ for feature $f$ in attribute space $s$.',
+	'$d_{fsij}$', 'distance between demand point $i$ and planning unit $j$ for feature $f$ in attribute space $s$.',
+	'$\\delta_{fsi}$', 'the distance between each demand point $i$ and the centroid of the demand points $I$ for feature $f$ in attribute space $s$.',
+	'$T_f$', 'amount target for feature $f$.',
+	'$\\tau_{fs}$', 'space-based target for feature $f$ in attribute space $s$.',
+	'$X_j$', 'binary decision variable controlling if a planning unit is selected for preservation (1) or discarded (0).',
+	'$Y_{fsij}$', 'binary decision variable indicating if planning unit $j$ is assigned to demand point $i$ for species $s$ in a attribute space $s$ when determing the amount of the attribute space sampled by the selected planning units.'
+)
+term.DF <- data.frame(
+	Symbol=term.CHR[seq(1, length(term.CHR), 2)],
+	Description=term.CHR[seq(2, length(term.CHR), 2)]
+)
+term.DF$Description <- paste0('\\parbox[t][][t]{15cm}{', term.DF$Description, '}')
 
+# render table
+curr.file <- tempfile(fileext='.tex')
+tmp <- latex(
+		term.DF,
+		file=curr.file, 
+		digits=2, rowname=NULL, first.hline.double=FALSE, booktabs=TRUE, here=TRUE,
+		colheads=c('Symbol', 'Description'), col.just=c('c', 'l'),
+		caption='Symbols and descriptions of terms used in the formulation of the unreliable representative and adequate prioritisation (URAP) problem.'
+	)
+readLines(curr.file)[-1] %>% paste0(collapse='\n') %>% 
+	gsub(pattern='toprule', replacement='toprule[1pt]', fixed=TRUE) %>%
+	gsub(pattern='bottomrule', replacement='bottomrule[1pt]', fixed=TRUE) %>%
+	cat()
+```
 
-## References
+# References

@@ -62,12 +62,6 @@ article/figures.pdf: code/rmarkdown/figures.Rmd code/rmarkdown/preamble-latex.te
 	rm article/figures.tex -f
 	rm article/figures.md -f
 
-article/tables.pdf: code/rmarkdown/tables.Rmd code/rmarkdown/preamble-latex.tex code/rmarkdown/preamble-latex2.tex
-	R -e "rmarkdown::render('code/rmarkdown/tables.Rmd')"
-	mv code/rmarkdown/tables.pdf article/
-	rm code/rmarkdown/tables.tex -f
-	rm code/rmarkdown/tables.md -f
-
 article/supporting-information.pdf: code/rmarkdown/supporting-information.Rmd code/rmarkdown/preamble-latex.tex code/rmarkdown/preamble-latex3.tex
 	R -e "rmarkdown::render('code/rmarkdown/supporting-information.Rmd')"
 	mv code/rmarkdown/supporting-information.pdf article/

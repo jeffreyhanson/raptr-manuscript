@@ -40,26 +40,32 @@ knitr::opts_knit$set(root.dir=normalizePath('../..'))
 ```
 
 ```{r, include=FALSE}
+## initialization
 # load .rda file
 try(session::restore.session('data/final/results.rda'))
 
 # set options
 options(error=NULL)
+
+## preliminary processing
+for (i in seq_len(nlayers(cs1.bioclim.RAST)))
+	cs1.bioclim.RAST@layers[[i]]@file@name  <- paste0(getwd(), strsplit(cs1.bioclim.RAST@layers[[i]]@file@name, 'rapr-manuscript')[[1]][[2]])
+
 ```
 
 <!--  title page -->
 Short running title: Representative and adequate prioritisations \newline
-Word count: XXXXX \newline
-Number of references: XXXX \newline
-Number of figures: XXXX \newline
-Number of tables: XXXX \newline
-Number of textboxes: XXXX \newline
-Number of equations: XXXX \newline
+Word count: 322 / 350 \newline
+Number of references: 34 \newline
+Number of figures: 8 \newline
+Number of tables: 0 \newline
+Number of textboxes: 0 \newline
+Number of equations: 8 \newline
 \newpage
 
 # Introduction
 <!-- conservation and reserve networks -->
-The overarching aim of conservation is to maximise the long-term persistence of biodiversity [@r423; @r255]. To achieve this, conservation actions must preserve biodiversity patterns (eg. species, populations) and the processes that sustain them. One of the major tangible achievements of modern conservation has been the act of setting aside areas for preservation [@r440]. Reserve networks buffer species from threatening processes [eg. urbanisation; @r255] and set the stage for direct management interventions [eg. captive breeding and reintroduction programs; @r290]. However, the resources available for conservation action are limited, and so reserve networks must be sited in places that satisfy conservation objectives for minimum cost [@r255]. To achieve this, reserve selection is often formulated as an optimisation problem and then solved to identify cost-effective candidate reserve systems [prioritisations; @r255].
+The overarching aim of conservation is to maximise the long-term persistence of biodiversity [@r423; r255]. To achieve this, conservation actions must preserve biodiversity patterns (eg. species, populations) and the processes that sustain them. One of the major tangible achievements of modern conservation has been the act of setting aside areas for preservation [@r440]. Reserve networks buffer species from threatening processes [eg. urbanisation; @r255] and set the stage for direct management interventions [eg. captive breeding and reintroduction programs; @r290]. However, the resources available for conservation action are limited, and so reserve networks must be sited in places that satisfy conservation objectives for minimum cost [@r255]. To achieve this, reserve selection is often formulated as an optimisation problem and then solved to identify cost-effective candidate reserve systems [prioritisations; @r255].
 
 <!-- biodiversity processes are important -->
 To fulfill the overarching aims of conservation, reserve networks must preserve both ecological and evolutionary processes [@r3; @r255]. Ecological processes, such as predator-prey interactions, pollination, and decomposition, are required for biodiversity to persist over short time-scales. Typically, they operate over small geographic domains--with exceptions such as migration and refugial habitats--and can be preserved using suitably large planning units [@r446] that each contain a discrete unit of habitat [@r448]. On the other hand, evolutionary processes are required for biodiversity to persist over long time-scales, and they typically operate over large geographic domains. Protected areas must preserve adaptive evolutionary processes to foster resilience against environmental change [eg. climate change; @r247]. Protected areas must also preserve neutral evolutionary processes [@r5; @r67; @r63]. These processes are associated with the breakdown of gene flow between populations. They are important for maintaining genetic diversity, and avoiding inbreeding depression. In recent decades, a wealth of data on biodiversity processes has become available to conservation planners [eg. bioclimatic, genetic, and trait data; @r33; @r453; @r460]. Yet this data is only rarely used to guide conservation planning [@r61]. This is due to that fact that existing reserve selection tools focus on preserving biodiversity patterns or processes--but not both.
@@ -91,11 +97,11 @@ Targets are used to ensure that prioritisations adequately preserve each species
 The control variables for the unreliable formulation are the $B$, $T_{s}$, and $\tau_{sa}$ variables.
 
 \begin{align*}
-T_s &= \text{amount target for feature $f$} \tag{1a}\\
+T_s &= \text{amount target for feature $f$} \tag*{eqn 1a}\\
 %
-\tau_{sa} &= \text{representation target for feature $f$ in attribute space $a$} \tag{1b}\\
+\tau_{sa} &= \text{representation target for feature $f$ in attribute space $a$} \tag*{eqn 1b}\\
 %
-B &= \text{boundary length modifier (BLM): penalise fragmented solutions} \tag{1c}\\
+B &= \text{boundary length modifier (BLM): penalise fragmented solutions} \tag*{eqn 1c}\\
 \end{align*}
 
 The decision variables are the $X_j$ and $Y_{fsij}$ variables.
@@ -103,12 +109,12 @@ The decision variables are the $X_j$ and $Y_{fsij}$ variables.
 \begin{align*}
 X_j
 	&= \begin{cases}
-		1, & \parbox{25em}{if planning unit $j$ is selected for conservation action} \tag{2a} \\
+		1, & \parbox{25em}{if planning unit $j$ is selected for conservation action} \tag*{eqn 2a} \\
 		0, & \parbox{25em}{otherwise} \\
 	\end{cases} \\
 %
 Y_{fsij} &= \begin{cases}
-		1, & \parbox{25em}{if demand point $i$ is assigned to planning unit $j$ for feature $f$ in space $s$. } \tag{2b} \\
+		1, & \parbox{25em}{if demand point $i$ is assigned to planning unit $j$ for feature $f$ in space $s$. } \tag*{eqn 2b} \\
 		0, & \parbox{25em}{otherwise} \\
 	\end{cases} \\
 \end{align*}
@@ -118,23 +124,23 @@ Each demand point $i \in I$ for feature $f \in F$ and space $s \in S$ is assigne
 The unreliable formulation (URAP) is a defined as a multi-objective optimisation problem.
 
 \begin{align*}
-& \text{(URAP)} & \text{Min } & \sum_{j=0}^{J-1} \left( X_j C_j \right) + \sum_{j=0}^{J-1} \sum_{k=j}^{J-1} X_j \left( 1-X_k \right) \left( B e_{jk} \right) + & & \tag{3a} \\
+& \text{(URAP)} & \text{Min } & \sum_{j=0}^{J-1} \left( X_j C_j \right) + \sum_{j=0}^{J-1} \sum_{k=j}^{J-1} X_j \left( 1-X_k \right) \left( B e_{jk} \right) + & & \tag*{eqn 3a} \\
 %
-& & \text{s.t. } & \sum_{j=0}^{J-1} A_j q_{fj} \geq T_{f} & \forall & 0 \leq f \leq F-1 \tag{3b}\\
+& & \text{s.t. } & \sum_{j=0}^{J-1} A_j q_{fj} \geq T_{f} & \forall & 0 \leq f \leq F-1 \tag*{eqn 3b}\\
 %
-& & & 1 - \frac{\sum_{i=0}^{I-1} \sum_{j=0}^{J-1} \left( \lambda_{fsi} d_{fsij} Y_{fsij} \right)^2}{\sum_{i=0}^{I-1} \left( \lambda_{fsi} \delta_{fsi} \right)^2 } \geq \tau_{fs}  & \forall & 0 \leq f \leq F-1, \tag{3c}\\
+& & & 1 - \frac{\sum_{i=0}^{I-1} \sum_{j=0}^{J-1} \left( \lambda_{fsi} d_{fsij} Y_{fsij} \right)^2}{\sum_{i=0}^{I-1} \left( \lambda_{fsi} \delta_{fsi} \right)^2 } \geq \tau_{fs}  & \forall & 0 \leq f \leq F-1, \tag*{eqn 3c}\\
 & & & & & 0 \leq s \leq S-1\\
 %
-& & & \sum_{j=0}^{J-1} Y_{fsij} = 1 & \forall & 0 \leq f \leq F-1, \tag{3d}\\
+& & & \sum_{j=0}^{J-1} Y_{fsij} = 1 & \forall & 0 \leq f \leq F-1, \tag*{eqn 3d}\\
 & & & & & 0 \leq s \leq S-1, \\
 & & & & & 0 \leq i \leq I-1\\
 %
-& & & Y_{fsij} \leq X_j & \forall & 0 \leq f \leq F-1, \tag{3e}\\
+& & & Y_{fsij} \leq X_j & \forall & 0 \leq f \leq F-1, \tag*{eqn 3e}\\
 & & & & & 0 \leq s \leq S-1, \\
 & & & & & 0 \leq i \leq I-1,\\
 & & & & & 0 \leq j \leq J-1\\
 %
-& & & X_j, Y_{fsij} \in {0,1} & \forall & 0 \leq f \leq F-1, \tag{3f}\\
+& & & X_j, Y_{fsij} \in {0,1} & \forall & 0 \leq f \leq F-1, \tag*{eqn 3f}\\
 & & & & & 0 \leq s \leq S-1,\\
 & & & & & 0 \leq i \leq I-1\\
 %
@@ -151,12 +157,20 @@ To understand the behaviour of the unreliable problem and showcase its value, we
 
 ## SIMULATION STUDY
 ### Methods
-We simulated a hypothetical study area with planning units arranged in $`r sqrt(sim.params.LST[[MODE]]$number.planning.units)` \times `r sqrt(sim.params.LST[[MODE]]$number.planning.units)`$ square grid (Fig. 2). We then simulated three species across this study area. The first species was simulated to represent a hyper-generalist--occurring in all planning units with equal probability (Fig. 2a). This species' distribution was based on a uniform distribution (eqn 8a). The second species was simulated to represent a species with an idealised distribution (Fig. 2b). It has a core range area, and is less likely to be found in areas that are distant from the core area. This species' distribution was simulated using the probability density function of a single multivariate normal distribution (eqn 8b). The third species represents a species with two distinct populations (Fig. 2c). This species' distribution was simulated to depict a bimodal distribution, based on the combination of the probability density functions of two multivariate normal distributions (eqn 8c). The probability that each species inhabited a given planning unit was calculated using the $X, Y$ coordinates of the planning unit and eqns 8a--8c. We used a geographic attribute space to showcase the behavior of the problem. For each species, demand points were generated by calculating the centroids of each planning units and their weights were set as the probability that the planning units were occupied. 
+We simulated a hypothetical study area with planning units arranged in $`r sqrt(sim.params.LST[[MODE]]$number.planning.units)` \times `r sqrt(sim.params.LST[[MODE]]$number.planning.units)`$ square grid (Fig. 2). We then simulated three species across this study area. The first species was simulated to represent a hyper-generalist--occurring in all planning units with equal probability (Fig. 2a). This species' distribution was based on a uniform distribution (eqn 8a). The second species was simulated to represent a species with an idealised distribution (Fig. 2b). It has a core range area, and is less likely to be found in areas that are distant from the core area. This species' distribution was simulated using the probability density function of a single multivariate normal distribution (eqn 8c). The third species represents a species with two distinct populations (Fig. 2c). This species' distribution was simulated to depict a bimodal distribution, based on the combination of the probability density functions of two multivariate normal distributions (eqn 8d). The probability that each species inhabited a given planning unit was calculated using the $X, Y$ coordinates of the planning unit and eqns 8a--8d. We used a geographic attribute space to showcase the behavior of the problem. For each species, demand points were generated by calculating the centroids of each planning units and their weights were set as the probability that the planning units were occupied. 
 
 \begin{align*}
-& P (\text{uniform species} | x, y) &= 0.1 & \tag{8a}\\
-& P (\text{normal species} | x, y) &= XXXX & \tag{8b}\\
-& P (\text{uniform species} | x, y) &= XXX & \tag{8c}\\
+\\
+P \left( \text{uniformly distributed species} | \left( x, y \right) \right) &= 0.1 \tag*{eqn 8a} \\
+%
+f \left(z, \mu, \Sigma \right) &= \left(2 \pi \right) ^{-1} | \Sigma | e ^{- \frac{1}{2} \left(z - \mu \right)' \Sigma ^{-1} \left(z - \mu \right)} \tag*{eqn 8b} \\
+%
+P \left( \text{normally distributed species} | \left( x , y \right)  \right) &= \frac{f \left( \left[ \begin{smallmatrix} x \\ y \end{smallmatrix} \right] \, \left[ \begin{smallmatrix} 0.0 \\ 0.0 \end{smallmatrix} \right] \, \left[ \begin{smallmatrix} 12.58&0 \\ 0&12.5 \end{smallmatrix} \right] \right)}{2} \tag*{eqn 8c} \\
+%
+P \left( \text{bimodally distributed species} | \left(  x,y \right) \right) &= \text{Max} \begin{cases}
+f \left(\left[ \begin{smallmatrix} x \\ y \end{smallmatrix} \right] \, \left[ \begin{smallmatrix} -3.75 \\ -3.75 \end{smallmatrix} \right] \, \left[ \begin{smallmatrix} 10&0 \\ 0&10 \end{smallmatrix} \right] \right), \\ \frac{f \left( \left[ \begin{smallmatrix} x \\ y \end{smallmatrix} \right] \, \left[ \begin{smallmatrix} 3.75 \\ 3.75 \end{smallmatrix} \right] \, \left[ \begin{smallmatrix} 8&0 \\ 0&8 \end{smallmatrix} \right] \right)} {2} \\
+\end{cases} \tag*{eqn 8d} \\
+%
 \end{align*}
 
 We generated four solutions for each species. First to represent solutions generated using conventional conservation planning methods, we generated solutions using only `r sim.params.LST[[MODE]]$amount.target*100` % amount targets. Second to show how the addition of geographic targets can affect a prioritisation, we generated solutions using `r (sim.params.LST[[MODE]]$amount.target*100)` % amount targets and `r (sim.params.LST[[MODE]]$space.target*100)` % geographic targets. Third to represent solutions using conventional planning methods that penalise for fragmentation, we generated solutions using `r (sim.params.LST[[MODE]]$amount.target*100)` % amount targets and a boundary length modifier of `r sim.params.LST[[MODE]]$blm`. Fourth to illustrate the combined affect using geographic targets and penalising fragmentation, we generated solutions using using `r (sim.params.LST[[MODE]]$amount.target*100)` % amount targets and `r (sim.params.LST[[MODE]]$space.target*100)` % geographic targets and a boundary length modifier of `r sim.params.LST[[MODE]]$blm`.
@@ -181,7 +195,7 @@ The solution generated using `r sim.params.LST[[MODE]]$amount.target*100` % amou
 
 ## CASE STUDY 1
 ### Methods
-Here we investigated how space-based targets can be used in a multi-species planning context to generate a prioritisation that sufficiently preserves the realised niche for several species. We selected Queensland, Australia as the study area. This region is ideal for exploring the potential of niche-based targets because it contains a broad range of different habitats. We obtained data for 19 bioclimatic variables across the region [at $30^{\prime \prime}$ resolution from \url{www.worldclim.org}; @r33] and subject them to a principal components analysis (using ArcMap 10.3.1). We used the first `r as.character(as.english(cs1.params.LST[[MODE]]$n.pc.layers))` principle components (cumulatively explained `r round(cs1.pca.DF[[4]][cs1.params.LST[[MODE]]$n.pc.layers],1)` % of the total variation) to characterise the environmental variation across the study area (Fig. 4).
+Here we investigated how space-based targets can be used in a multi-species planning context to generate a prioritisation that sufficiently preserves the realised niche for several species. By preserving the populations in suitable habitats with different with environmental conditions, conservation planners can preserve the species' adaptive landscape and foster resilience against environmental change [@r63]. We selected Queensland, Australia as the study area. This region is ideal for exploring the potential of niche-based targets because it contains a broad range of different habitats. We obtained data for 19 bioclimatic variables across the region [at $30^{\prime \prime}$ resolution from \url{www.worldclim.org}; @r33] and subject them to a principal components analysis (using ArcMap 10.3.1). We used the first `r as.character(as.english(cs1.params.LST[[MODE]]$n.pc.layers))` principle components (cumulatively explained `r round(cs1.pca.DF[[4]][cs1.params.LST[[MODE]]$n.pc.layers],1)` % of the total variation) to characterise the environmental variation across the study area (Fig. 4).
 
 We used four bird species in this case study: blue-winged kookaburra (_Dacelo leachii_), brown-backed honeyeater (_Ramsayornis modestus_), the brown falcon (_Falco berigora_), and the pale headed rosella (_Platycercus adscitus_). We used these bird species because they have different evolutionary histories and life-history strategies. We then mapped the extent of occurrence for each species (Fig. 5). To do this, we obtained observation data from the Atlas of Living Australia across the whole of Australia [using the \texttt{ALA4R R} package; @r453], spatially thinned the data to omit points within `r cs1.params.LST[[MODE]]$thin.distance/1000` km$^2$ of each other to ameliorate the effects of sampling bias [using the developmental version of the \texttt{spThin R} package; \url{www.github.com/mlammens/spThin}; @r454], and fit `r cs1.params.LST[[MODE]]$mcp.percent` % minimum convex polygons [using the \texttt{adehabitatHR R} package; @r455]. We used this method because it is reproducible using freely available data and moderately accurate. 
 
@@ -190,7 +204,7 @@ We generated `r cs1.params.LST[[MODE]]$dp.number` demand points for each species
 We generated two solutions. The first solution was generated using `r cs1.params.LST[[MODE]]$amount.target*100` % amount-based targets for all species. The second solution was generated the same amount-based target with an additional `r cs1.params.LST[[MODE]]$space.target*100` % niche-based for each species. 
 
 ### Results
-Generally, the solution generated using amount targets preserved a representative sample of each the `r length(cs1.params.LST[[MODE]]$species.names)` bird species' niches--with exception to `r ifelse(length(amount.not.represented.species.names)>1, as.character(as.english(length(amount.represented.species.names))), 'a single')` bird species. Specifically, this solution sampled over `r cs1.params.LST[[MODE]]$space.target*100` % of the realised niche of `r parsed.representative.space.held.names`. Yet it failed to achieve this for `r parsed.not.representative.space.held.names`. 
+Generally, the solution generated using amount targets preserved a representative sample of each the `r length(cs1.params.LST[[MODE]]$species.names)` bird species' niches--with exception to `r ifelse(length(amount.not.represented.species.names)>1, as.character(as.english(length(amount.represented.species.names))), 'a single')` bird species. Specifically, this solution sampled over `r cs1.params.LST[[MODE]]$space.target*100` % of the realised niche of `r parsed.representative.space.held.names`. Yet it failed to achieve this for `r parsed.not.representative.space.held.names`. This result suggests that prioritisations generated using conventional methods may preserve a representative sample of most species realised niches (Figure S1). However, despite this, there may yet be species for which only a small fraction of their realised niche is preserved. By explictly using space targets, conservation planners can generate prioritisations that guaranteeably preserve a representative sample of species' niches.
 
 ## CASE STUDY 2
 ### Methods
@@ -223,3 +237,4 @@ All data, code, and results are stored in an online repository (\url{www.github.
 
 # References
 
+\bibliography{references}

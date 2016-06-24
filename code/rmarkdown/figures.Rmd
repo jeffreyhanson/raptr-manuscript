@@ -17,13 +17,19 @@ knitr::opts_knit$set(root.dir=normalizePath('../..'))
 ```
 
 ```{r, include=FALSE}
+## initialization
 # load .rda file
 try(session::restore.session('data/final/results.rda'))
 
 # set options
 options(error=NULL)
 
-# prelimary processing
+## prelimary processing
+# redefine file paths for rasters
+for (i in seq_len(nlayers(cs1.bioclim.RAST)))
+	cs1.bioclim.RAST@layers[[i]]@file@name  <- paste0(getwd(), strsplit(cs1.bioclim.RAST@layers[[i]]@file@name, 'rapr-manuscript')[[1]][[2]])
+
+# fortify polygons
 sim.pus.FPLY <- fortify(sim.pus)
 aus.FPLY <- fortify(aus.PLY)
 cs1.pus.FPLY <- fortify(cs1.pus)
