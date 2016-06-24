@@ -61,8 +61,10 @@ if (length(amount.not.represented.species.names)>1) {
 		}
 	)
 	parsed.not.representative.space.held.names <- paste0(paste(parsed.not.representative.space.held.names[-length(parsed.not.representative.space.held.names)], collapse=', '), ', and the ', last(parsed.not.representative.space.held.names))
-} else {
+} else if (length(amount.not.represented.species.names)==1) {
 	parsed.not.representative.space.held.names <- paste0(amount.not.represented.species.names, '(', round(filter(cs1.spp.DF, Prioritisation=='Amount targets', Species==amount.not.represented.species.names)$niche,2), ' %)')
+} else {
+	parsed.not.representative.space.held.names=c()
 }
 
 ## save workspace
