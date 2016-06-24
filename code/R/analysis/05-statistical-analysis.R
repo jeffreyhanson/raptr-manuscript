@@ -38,21 +38,34 @@ cs1.nmds.MoransI <- llply(
 )
 
 # calculate numbers and generate vectors for article
-amount.represented.species.names <- filter(cs1.spp.DF, Prioritisation=='Amount targets', niche >= cs1.params.LST[[MODE]]$'space.target')$Species
-amount.not.represented.species.names <- filter(cs1.spp.DF, Prioritisation=='Amount targets', niche<cs1.params.LST[[MODE]]$'space.target')$Species
+amount.represented.species.names <- filter(cs1.spp.DF, Prioritisation=='Amount targets', niche >= (cs1.params.LST[[MODE]]$'space.target'*100))$Species
+amount.not.represented.species.names <- filter(cs1.spp.DF, Prioritisation=='Amount targets', niche<(cs1.params.LST[[MODE]]$'space.target'*100))$Species
 
 if (length(amount.represented.species.names)>1) {
-	parsed.representative.space.held.names <- paste0(paste(amount.represented.species.names[-length(amount.represented.species.names)], collapse=', '), ', and ', last(amount.represented.species.names))
+	parsed.representative.space.held.names <- sapply(
+		as.character(amount.represented.species.names),
+		function(x) {
+			paste0(tolower(x), ' (', round(filter(cs1.spp.DF, Prioritisation=='Amount targets', Species==x)$niche,2), ' %)')		
+		}
+	)
+	parsed.representative.space.held.names <- paste0(paste(parsed.representative.space.held.names[-length(parsed.representative.space.held.names)], collapse=', '), ', and the ', last(parsed.representative.space.held.names))
 } else {
-	parsed.representative.space.held.names <- amount.represented.species.names
+	parsed.representative.space.held.names <- paste0(amount.represented.species.names, ' (', round(filter(cs1.spp.DF, Prioritisation=='Amount targets', Species==amount.represented.species.names)$niche,2), ' %)')
 }
 
 if (length(amount.not.represented.species.names)>1) {
-	parsed.not.representative.space.held.names  <- paste0(paste(amount.not.represented.species.names[-length(amount.not.represented.species.names)], collapse=', '), ', and ', last(amount.not.represented.species.names))
+	parsed.not.representative.space.held.names <- sapply(
+		as.character(amount.not.represented.species.names),
+		function(x) {
+			paste0(tolower(x), ' (', round(filter(cs1.spp.DF, Prioritisation=='Amount targets', Species==x)$niche,2), ' %)')		
+		}
+	)
+	parsed.not.representative.space.held.names <- paste0(paste(parsed.not.representative.space.held.names[-length(parsed.not.representative.space.held.names)], collapse=', '), ', and the ', last(parsed.not.representative.space.held.names))
 } else {
-	parsed.not.representative.space.held.names <- amount.not.represented.species.names
+	parsed.not.representative.space.held.names <- paste0(amount.not.represented.species.names, '(', round(filter(cs1.spp.DF, Prioritisation=='Amount targets', Species==amount.not.represented.species.names)$niche,2), ' %)')
 }
 
 ## save workspace
 save.session('data/intermediate/05-statistical-analysis.rda', compress='xz')
  
+
