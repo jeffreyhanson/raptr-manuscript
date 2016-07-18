@@ -28,7 +28,7 @@ options(error=NULL)
 ## prelimary processing
 # redefine file paths for rasters
 for (i in seq_len(nlayers(cs1.bioclim.RAST)))
-	cs1.bioclim.RAST@layers[[i]]@file@name  <- paste0(getwd(), strsplit(cs1.bioclim.RAST@layers[[i]]@file@name, 'rapr-manuscript')[[1]][[2]])
+	cs1.bioclim.RAST@layers[[i]]@file@name  <- paste0(getwd(), strsplit(cs1.bioclim.RAST@layers[[i]]@file@name, 'raptr-manuscript')[[1]][[2]])
 
 ```
 
@@ -220,12 +220,12 @@ term.DF$Description <- paste0('\\parbox[t][][t]{15cm}{', term.DF$Description, '}
 # render table
 curr.file <- tempfile(fileext='.tex')
 tmp <- latex(
-		term.DF,
-		file=curr.file, 
-		digits=2, rowname=NULL, first.hline.double=FALSE, booktabs=TRUE, here=TRUE,
-		colheads=c('Symbol', 'Description'), col.just=c('c', 'l'),
-		caption='Symbols and descriptions of terms used in the formulation of the unreliable representative and adequate prioritisation (URAP) problem.'
-	)
+	term.DF,
+	file=curr.file, 
+	digits=2, rowname=NULL, first.hline.double=FALSE, booktabs=TRUE, here=TRUE,
+	colheads=c('Symbol', 'Description'), col.just=c('c', 'l'),
+	caption='Symbols and descriptions of terms used in the formulation of the unreliable representative and adequate prioritisation (URAP) problem.'
+)
 readLines(curr.file)[-1] %>% paste0(collapse='\n') %>% 
 	gsub(pattern='toprule', replacement='toprule[1pt]', fixed=TRUE) %>%
 	gsub(pattern='bottomrule', replacement='bottomrule[1pt]', fixed=TRUE) %>%

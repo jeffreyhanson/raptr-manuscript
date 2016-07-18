@@ -27,7 +27,7 @@ options(error=NULL)
 ## prelimary processing
 # redefine file paths for rasters
 for (i in seq_len(nlayers(cs1.bioclim.RAST)))
-	cs1.bioclim.RAST@layers[[i]]@file@name  <- paste0(getwd(), strsplit(cs1.bioclim.RAST@layers[[i]]@file@name, 'rapr-manuscript')[[1]][[2]])
+	cs1.bioclim.RAST@layers[[i]]@file@name  <- paste0(getwd(), strsplit(cs1.bioclim.RAST@layers[[i]]@file@name, 'raptr-manuscript')[[1]][[2]])
 
 # fortify polygons
 sim.pus.FPLY <- fortify(sim.pus)
@@ -50,7 +50,7 @@ countries.FPLY <- countriesHigh[
 
 ## Figures
 
-```{r, echo=FALSE, message=FALSE, fig.height=2, fig.width=2, fig.cap="Example of an attribute space. This environmental attribute space has dimensions relating to annual temperature ($^{\\circ}$C) and rainfall (ml) values. Letters denote the environmental conditions associated with the geographic locations where four hypothetical populations are found. Points represent demand points. In this space, populations closer to each other are considered more similar to each other."}
+```{r, echo=FALSE, message=FALSE, fig.height=2, fig.width=2, fig.cap="Example of an attribute space. This environmental attribute space has dimensions relating to annual temperature ($^{\\circ}$C) and rainfall (mm) values. Letters denote the environmental conditions associated with the geographic locations where four hypothetical populations are found. Points represent demand points. In this space, populations closer to each other are considered more similar to each other."}
 ## generate data
 # population data
 populations <- data.frame(
@@ -78,7 +78,7 @@ ggplot(aes(x=temperature, y=rainfall), data=populations) +
 	theme(axis.line.x=element_line(), axis.line.y=element_line())
 ```
 
-```{r, echo=FALSE, messages=FALSE, results='hide', fig.height=1.5, fig.width=4.5, fig.cap='Simulation study data set. Squares denote planning units. Each panel shows the distribution for a different simulated species. The color of each planning unit indicates the probability that a given species inhabits it. Panel (a) shows the uniformly distributed species, panel (b) shows the normally distributed species, and panel (c) shows the bimodally distributed species.'}
+```{r, echo=FALSE, messages=FALSE, results='hide', fig.height=1.5, fig.width=4.5, fig.cap='Simulated distributions of three species. Squares denote planning units. The color of each planning unit indicates the probability that each species inhabits it. Panel (a) shows the uniformly distributed species, panel (b) shows the normally distributed species, and panel (c) shows the bimodally distributed species.'}
 # prepare data
 sim.pus.occ.FPLY <- ldply(
 	seq_len(nrow(sim.species)),
@@ -111,7 +111,7 @@ ggplot() +
 	facet_wrap(~ species, ncol=3)
 ```
 
-```{r, echo=FALSE, fig.height=3.5, fig.width=5, fig.cap=paste0('Simulation study prioritisations. Each panel shows a prioritisation generated for a single species using a set of parameters. Squares denote planning units. Dark green planning units were selected for protection and pale green planning units were discarded. Each row of panels corresponds to a different species. The top row of panels (a, d, g, j) shows prioritisations generated for the uniformly distributed species, middle row of panels (b, e, h, k) for the normally distributed species, and the bottom row of panels (c, f, i, l) for the bimodally distributed species. Each column of panels correpsonds to a different set of parameters used to generate the prioritisation. The left column of panels (a--c) shows prioritizations generated using only ',(sim.params.LST[[MODE]]$amount.target*100),' % amount targets, the middle-left column of panels (d--f) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets, the middle-right column of panels (g--i) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount based targets and a boundary length modifier (BLM) of ',sim.params.LST[[MODE]]$blm,', and the right column of panels (j--l) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets and also a boundary length modifier of ',(sim.params.LST[[MODE]]$blm),'.')}
+```{r, echo=FALSE, fig.height=3.5, fig.width=5, fig.cap=paste0('Simulation study prioritisations. Each panel shows a prioritisation generated for a single species using a set of parameters. Squares denote planning units, with dark green showing those planning units selected for protection in a particular prioritisation. The top row of panels (a, d, g, j) shows prioritisations generated for the uniformly distributed species, middle row of panels (b, e, h, k) for the normally distributed species, and the bottom row of panels (c, f, i, l) for the bimodally distributed species. Each column of panels corresponds to a different set of parameters used to generate the prioritisation. The left column of panels (a--c) shows prioritizations generated using only ',(sim.params.LST[[MODE]]$amount.target*100),' % amount targets, the middle-left column of panels (d--f) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets, the middle-right column of panels (g--i) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount based targets and a boundary length modifier (BLM) of ',sim.params.LST[[MODE]]$blm,', and the right column of panels (j--l) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets and also a boundary length modifier of ',(sim.params.LST[[MODE]]$blm),'.')}
 # prepare data
 sim.pus.sel.FPLY <- ldply(
 	seq_len(nrow(sim.spp.DF)),
@@ -191,7 +191,7 @@ p2 <- ggplot() +
 grid.arrange(p1, p2, ncol=2)
 ```
 
-```{r, echo=FALSE, fig.height=4.5, fig.width=4.0, fig.cap='Extent of occurence for species used in the first case-study. Squares denote planning units. Each panel shows the distribution of a different species. For a given species, planning units that is inhabits are shown bright blue and those that it does not are shown in dark blue.'}
+```{r, echo=FALSE, fig.height=4.5, fig.width=4.0, fig.cap='Distribution of the species used in the first case-study. Squares denote planning units. Each panel shows the distribution of a different species.'}
 # prepare data
 cs1.pus.occ.FPLY <- ldply(
 	seq_along(cs1.params.LST[[MODE]]$common.names),
@@ -265,7 +265,7 @@ ggplot() +
 	facet_wrap(~ Prioritisation, ncol=2)
 ```
 
-```{r, echo=FALSE, fig.height=4.5, fig.width=4.5, fig.cap=paste0('Study area and data used in the second case-study. Squares denote planning units. Panel (a) shows all grid cells surveyed by the IntraBioDiv project. Grid cells occupied by ',cs2.params.LST[[MODE]]$common.name,' are shown in bright blue. The subsequent panels contain only the grid cells that were occupied by the species. Panel (b) shows the opportunity cost of each planning unit (estimated as the total human population density). Panels (b--c) show the spatial distribution of the ordinated genetic data. These values describe the typical genetic characteristics of individuals in each planning unit. Planning units with similar values/color have contain individuals with similar loci polymorphisms.')}
+```{r, echo=FALSE, fig.height=4.5, fig.width=4.5, fig.cap=paste0('Study area and data used in the second case-study. Squares denote planning units. Panel (a) shows all grid cells surveyed by the IntraBioDiv project. Grid cells occupied by ',cs2.params.LST[[MODE]]$common.name,' are shown in bright blue. The subsequent panels contain only the grid cells that were occupied by the species. Panel (b) shows the opportunity cost of each planning unit (estimated as the total human population density). Panels (c--d) show the spatial distribution of the ordinated genetic data. These values describe the typical genetic characteristics of individuals in each planning unit. Planning units with similar values/colors contain individuals with similar loci polymorphisms.')}
 # prepare full grid data
 cs2.spp.grid.FPLY <- cs2.grid.FPLY
 cs2.spp.grid.FPLY$Title <- 'Occupancy'
@@ -369,7 +369,7 @@ p4 <- ggplot() +
 grid.arrange(p1, p2, p3, p4, ncol=2)
 ```
 
-```{r, echo=FALSE, fig.height=5, fig.width=5, fig.cap=paste0('Prioritisations for the genetic case-study in the European Alps. Panels (a--b) show prioritisations generated using different parameters. Squares denote planning units shown in geographic space. Panel (a) shows the planning units selected when using ',cs2.params.LST[[MODE]]$amount.target*100,' % amount targets. Panel (b) shows the planning units selected selected when using ',cs2.params.LST[[MODE]]$amount.target*100,' % amount targets and ',cs2.params.LST[[MODE]]$genetic.target*100,' % genetic targets. Panels (c--d) show the solutions in the genetic space. Each point corresponds to a planning unit. The coordinates of the points represent the typical genetic characeristics of individuals sampled in planning units (based on an NMDS of the binary loci data). Planning units associated with points that are closer togeather contain individuals with more similar genetic characteristics than planning units that are further apart. In all panels, dark green planning units were selected for protection, and pale green planning units were discarded.')}
+```{r, echo=FALSE, fig.height=5, fig.width=5, fig.cap=paste0('Prioritisations for the genetic case-study in the European Alps. Panels (a--b) show prioritisations generated using different parameters. Squares denote planning units shown in geographic space. Panel (a) shows the planning units selected when using ',cs2.params.LST[[MODE]]$amount.target*100,' % amount targets. Panel (b) shows the planning units selected when using ',cs2.params.LST[[MODE]]$amount.target*100,' % amount targets and ',cs2.params.LST[[MODE]]$genetic.target*100,' % genetic targets. Panels (c--d) show the solutions in the genetic space. Each point corresponds to a planning unit. The coordinates of the points represent the typical genetic characeristics of individuals sampled in that planning unit (based on an NMDS of the binary loci data). Planning units associated with points that are closer togeather contain individuals with more similar genetic characteristics than planning units that are further apart. In all panels, dark green planning units were selected for protection, and pale green planning units were discarded.')}
 # prepare spatial data
 cs2.sel.grid.sub.FPLY <- cs2.grid.sub.FPLY
 cs2.sel.grid.sub.FPLY$Title1 <-'Amount target'
@@ -399,8 +399,8 @@ cs2.sel.space.DF$Amount.genetic.selection <- 'discarded'
 cs2.sel.space.DF$Amount.genetic.selection[cs2.sel.space.DF$id %in% which(as.logical(selections(cs2.prioritisations[[2]])))] <- 'selected'
 
 cs2.sel.space.letters.DF <- data.frame(
-	x=min(cs2.sel.space.DF$d1) + (diff(range(cs2.sel.space.DF$d1))*0.05),
-	y=min(cs2.sel.space.DF$d2) + (diff(range(cs2.sel.space.DF$d2))*1),
+	x=min(cs2.sel.space.DF$d1) + (diff(range(cs2.sel.space.DF$d1))*0.3),
+	y=min(cs2.sel.space.DF$d2) + (diff(range(cs2.sel.space.DF$d2))*0.95),
 	letter=c('(c)', '(d)')
 )
 
