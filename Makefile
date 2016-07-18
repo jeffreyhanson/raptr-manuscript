@@ -5,7 +5,7 @@
 MODE=debug
 
 # set misc parameters
-COMMIT_ID=$(shell git ls-remote https://github.com/paleo13/rapr-manuscript.git HEAD | grep -o '^\S*')
+COMMIT_ID=$(shell git ls-remote https://github.com/paleo13/raptr-manuscript.git HEAD | grep -o '^\S*')
 
 # main operations
 all: clean analysis manuscript
@@ -53,7 +53,7 @@ si: article/supporting-information.pdf
 article/article.pdf: code/rmarkdown/article.Rmd code/rmarkdown/references.bib code/rmarkdown/preamble-latex.tex code/rmarkdown/reference-style.csl
 	R -e "rmarkdown::render('code/rmarkdown/article.Rmd', clean=FALSE)"
 	cd code/rmarkdown && \
-	/usr/bin/pandoc +RTS -K512m -RTS article.utf8.md --to docx --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output /home/jeff/GitHub/rapr-manuscript/code/rmarkdown/article.docx --template /home/jeff/R/x86_64-pc-linux-gnu-library/3.3/rmarkdown/rmd/latex/default.tex --highlight-style tango --latex-engine pdflatex --include-in-header preamble-latex.tex --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc && \
+	/usr/bin/pandoc +RTS -K512m -RTS article.utf8.md --to docx --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output /home/jeff/GitHub/raptr-manuscript/code/rmarkdown/article.docx --template /home/jeff/R/x86_64-pc-linux-gnu-library/3.3/rmarkdown/rmd/latex/default.tex --highlight-style tango --latex-engine pdflatex --include-in-header preamble-latex.tex --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc && \
 	rm article.knit.md && \
 	rm article.utf8.md && \
 	cd ../..

@@ -1,13 +1,13 @@
-rapr: Representative and Adequate Prioritisations in R
-======================================================
+raptr: Representative and Adequate Prioritisation Toolkit in R
+==============================================================
 
 [Jeffrey O. Hanson](www.jeffrey-hanson.com), Jonathan R. Rhodes, Hugh P. Possingham, Richard A. Fuller
 
 Correspondance should be addressed to [jeffrey.hanson@uqconnect.edu.au](mailto:jeffrey.hanson@uqconnect.edu.au)
 
-Source code for the manuscript entitled "_rapr: Representative and Adequate Prioritisations in R_" and analyses contained therein. 
+Source code for the manuscript entitled "_raptr: Representative and Adequate Prioritisation Toolkit in R_" and analyses contained therein. 
 
-The source code for the [_rapr_ R package can be found here](www.github.com/paleo13/rapr).
+The source code for the [_raptr_ R package can be found here](www.github.com/paleo13/raptr).
 
 To rerun all computational analyses, run `make clean && make all`.
 

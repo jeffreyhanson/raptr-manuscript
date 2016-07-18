@@ -7,7 +7,7 @@
 #' @param genetic.space \code{AttributeSpace} object with genetic space data.
 #' @param amount.target \code{numeric} amount-based target
 #' @param genetic.target \code{numeric} genetic-based target
-#' @seealso \code{\link[rapr]{AttributeSpace}}.
+#' @seealso \code{\link[raptr]{AttributeSpace}}.
 #' @export
 make.targets <- function(species, genetic.spaces, amount.target=0.2, genetic.target=0.2) {
 	# amount targets
