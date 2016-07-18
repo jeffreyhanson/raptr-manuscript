@@ -35,7 +35,7 @@ clean:
 	@rm code/rmarkdown/tables.tex -f
 	@rm code/rmarkdown/tables.docx -f
 	@rm code/rmarkdown/tables.pdf -f
-	@rm article/*.csv -f
+	@rm article/* -f
 
 pull_ms:
 	git fetch
