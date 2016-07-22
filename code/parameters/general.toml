@@ -2,7 +2,8 @@ title = "general parameters"
 
 [debug]
 threads = 1
+MIPGap = 0.99
 
 [release]
 threads = 1
-
+MIPGap = 0.1
