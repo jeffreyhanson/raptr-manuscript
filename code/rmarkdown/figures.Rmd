@@ -8,7 +8,7 @@ output:
     fig_caption: yes
     keep_tex: yes
     includes:
-      in_header: [preamble-latex.tex, preamble-latex2.tex]
+      in_header: [preamble.tex, figures-preamble.tex]
 ---
 
 ```{r, include=FALSE}

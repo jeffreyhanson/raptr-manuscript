@@ -8,7 +8,7 @@ output:
     fig_caption: yes
     keep_tex: yes
     includes:
-      in_header: [preamble-latex.tex, preamble-latex3.tex]
+      in_header: [preamble.tex, si-preamble.tex]
 ---
 # Supporting Information
 
