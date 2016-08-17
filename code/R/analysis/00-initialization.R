@@ -7,20 +7,18 @@ if (length(args)>0) {
 		MODE <- strsplit(grep('MODE', args, value=TRUE), '=', fixed=TRUE)[[1]][[2]]
 }
 
-### set parameters
-if (!exists('MODE')) MODE <- 'debug'
-cat('MODE = ',MODE,'\n')
-
 #### Load pacakges
 # load bioconductor packages
 # set checkpoint
 if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
-if (!'RcppTOML' %in% installed.packages()[,'Package']) install.packages('RcppTOML')
 if (!file.exists('~/.checkpoint')) dir.create('~/.checkpoint')
-general.params.LST <- RcppTOML::parseTOML('code/parameters/general.toml')
-checkpoint::checkpoint(general.params.LST[[MODE]]$checkpoint_date, R.version=general.params.LST[[MODE]]$checkpoint_R_version)
+checkpoint::checkpoint('2016-07-25', R.version='3.3.1')
 if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
-if (!'RcppTOML' %in% installed.packages()[,'Package']) install.packages('RcppTOML')
+
+### set parameters
+if (!exists('MODE')) MODE <- 'debug'
+cat('MODE = ',MODE,'\n')
+general.params.LST <- RcppTOML::parseTOML('code/parameters/general.toml')
 
 # load CRAN packages
 library(stats)

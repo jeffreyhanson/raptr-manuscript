@@ -1,6 +1,6 @@
 ## load .rda
+checkpoint::checkpoint('2016-07-25', R.version='3.3.1', scanForPackages=FALSE)
 session::restore.session('data/intermediate/01-load-data.rda')
-checkpoint(general.params.LST[[MODE]]$checkpoint_date, R.version=general.params.LST[[MODE]]$checkpoint_R_version, scanForPackages=FALSE)
 
 ## load parameters
 cs1.params.LST <- parseTOML('code/parameters/case-study-1.toml')
@@ -49,13 +49,13 @@ cs1.subset.records.LST <- llply(cs1.records.LST, function(x) {
 	# extract valid records
 	x <- dplyr::filter(
 		x$data,
-		speciesOutsideExpertRange==FALSE,
 		inferredDuplicateRecord==FALSE,
 		coordinateUncertaintyInMetres<=10000,
 		is.finite(longitude),
 		is.finite(latitude)
 	)
 	if ('speciesOutsideExpertRange' %in% names(x)) x <- filter(x, speciesOutsideExpertRange==FALSE)
+	if ('habitatMismatch' %in% names(x)) x <- filter(x, habitatMismatch==FALSE)
 	# subset to first n records (used for debugging parameters)
 	if (nrow(x) > cs1.params.LST[[MODE]]$max.records) x <- x[seq_len(cs1.params.LST[[MODE]]$max.records),]
 	# return subsetted data
