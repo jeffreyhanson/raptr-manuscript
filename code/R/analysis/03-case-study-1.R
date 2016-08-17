@@ -48,7 +48,7 @@ cs1.subset.records.LST <- llply(cs1.records.LST, function(x) {
 	# extract valid records
 	x <- dplyr::filter(
 		x$data,
-		habitatMismatch==FALSE,
+		speciesOutsideExpertRange==FALSE,
 		inferredDuplicateRecord==FALSE,
 		coordinateUncertaintyInMetres<=10000,
 		is.finite(longitude),

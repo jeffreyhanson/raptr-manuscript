@@ -46,8 +46,10 @@ library(broom)
 library(adehabitatHR)
 
 ## load github packages
-if (!'ALA4R' %in% installed.packages()[,'Package'])
+if (!'ALA4R' %in% installed.packages()[,'Package']) {
+	withr::with_libpaths(.libPaths()[1], install.packages('bitops'))
 	withr::with_libpaths(.libPaths()[1], devtools::install_github('AtlasOfLivingAustralia/ALA4R', dependencies=TRUE))
+}
 library(ALA4R)
 
 
@@ -57,7 +59,7 @@ library(spThin)
 
 # install raptr
 if (!'raptr' %in% installed.packages()[,'Package']) {
-	install.packages(c('adehabitatLT', 'adehabitatHS', 'deldir', 'R.utils', 'geometry', 'KernSmooth', 'misc3d', 'multicool', 'fastcluster'))
+	withr::with_libpaths(.libPaths()[1], install.packages(c('adehabitatLT', 'adehabitatHS', 'deldir', 'R.utils', 'geometry', 'KernSmooth', 'misc3d', 'multicool', 'fastcluster', 'rgdal', 'raster', 'PBSmapping', 'RJSONIO', 'R.methodsS3', 'R.oo')))
 	devtools::install_github('paleo13/raptr', dependencies=TRUE)
 }
 library(raptr)
