@@ -1,9 +1,13 @@
 title = "general parameters"
 
 [debug]
+checkpoint_date= "2016-07-25"
+checkpoint_R_version = "3.3.1"
 threads = 1
 MIPGap = 0.99
 
 [release]
+checkpoint_date= "2016-07-25"
+checkpoint_R_version = "3.3.1"
 threads = 1
 MIPGap = 0.1

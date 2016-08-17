@@ -1,5 +1,6 @@
 ## load .rda
 session::restore.session('data/intermediate/01-load-data.rda')
+checkpoint(general.params.LST[[MODE]]$checkpoint_date, R.version=general.params.LST[[MODE]]$checkpoint_R_version, scanForPackages=FALSE)
 
 ## load parameters
 cs2.params.LST <- parseTOML('code/parameters/case-study-2.toml')

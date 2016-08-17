@@ -2,15 +2,13 @@
 session::restore.session('data/intermediate/04-case-study-2.rda')
 load('data/intermediate/03-case-study-1.rda')
 load('data/intermediate/02-simulations.rda')
+checkpoint(general.params.LST[[MODE]]$checkpoint_date, R.version=general.params.LST[[MODE]]$checkpoint_R_version, scanForPackages=FALSE)
 
 ## simulation study
 
 ## case-study 1
 
-
-
 ## case-study 2
-
 # generate inverse distance matrix
 cs2.pu.centroids <- gCentroid(cs2.grid.sub.PLY, byid=TRUE) %>% spTransform(CRS('+init=epsg:4326'))
 cs2.pu.inv.dists <- cs2.pu.centroids@coords %>% rdist.earth
