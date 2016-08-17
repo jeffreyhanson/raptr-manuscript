@@ -15,11 +15,6 @@ if (!file.exists('~/.checkpoint')) dir.create('~/.checkpoint')
 checkpoint::checkpoint('2016-07-25', R.version='3.3.1')
 if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
 
-### set parameters
-if (!exists('MODE')) MODE <- 'debug'
-cat('MODE = ',MODE,'\n')
-general.params.LST <- RcppTOML::parseTOML('code/parameters/general.toml')
-
 # load CRAN packages
 library(stats)
 library(checkpoint)
@@ -91,6 +86,11 @@ if (!'gurobi' %in% installed.packages()[,'Package']) {
 # manually install custom fork of ggplot2 for plotting
 devtools::install_github('paleo13/ggplot2', force=TRUE)
 library(ggplot2)
+
+### set parameters
+if (!exists('MODE')) MODE <- 'debug'
+cat('MODE = ',MODE,'\n')
+general.params.LST <- RcppTOML::parseTOML('code/parameters/general.toml')
 
 ## misc settings
 # set pander options
