@@ -9,51 +9,73 @@ if (length(args)>0) {
 	
 #### Load pacakges
 # load bioconductor packages
+# set checkpoint
+library(checkpoint)
+if (!file.exists('~/.checkpoint')) dir.create('~/.checkpoint')
+checkpoint('2016-07-25', R.version='3.3.0')
 
 # load CRAN packages
-suppressMessages(library(stats))
-suppressMessages(library(RColorBrewer))
-suppressMessages(library(hexbin))
-suppressMessages(library(fields))
-suppressMessages(library(ape))
-suppressMessages(library(Hmisc))
-suppressMessages(library(data.table))
-suppressMessages(library(grid))
-suppressMessages(library(gridExtra))
-suppressMessages(library(plotrix))
-suppressMessages(library(plyr))
-suppressMessages(library(dplyr))
-suppressMessages(library(tidyr))
-suppressMessages(library(pander))
-suppressMessages(library(vegan))
-suppressMessages(library(rgeos))
-suppressMessages(library(testthat))
-suppressMessages(library(parallel))
-suppressMessages(library(rworldxtra))
-suppressMessages(library(doParallel))
-suppressMessages(library(english))
-suppressMessages(library(session))
-suppressMessages(library(maptools))
-suppressMessages(library(RcppTOML))
-suppressMessages(library(knitr))
-suppressMessages(library(lazyWeave))
-suppressMessages(library(broom))
-suppressMessages(library(adehabitatHR))
+library(stats)
+library(RColorBrewer)
+library(hexbin)
+library(fields)
+library(ape)
+library(Hmisc)
+library(data.table)
+library(grid)
+library(gridExtra)
+library(plotrix)
+library(plyr)
+library(dplyr)
+library(tidyr)
+library(pander)
+library(vegan)
+library(rgeos)
+library(testthat)
+library(parallel)
+library(rworldxtra)
+library(doParallel)
+library(english)
+library(session)
+library(maptools)
+library(RcppTOML)
+library(knitr)
+library(lazyWeave)
+library(broom)
+library(adehabitatHR)
 
 ## load github packages
 # devtools::install_github('AtlasOfLivingAustralia/ALA4R')
-suppressMessages(library(ALA4R))
-# devtools::install_github('paleo13/spThin')
-suppressMessages(library(spThin))
-# devtools::install_github('paleo13/raptr')
-suppressMessages(library(raptr))
-# devtools::install_github('paleo13/bayescanr')
-suppressMessages(library(bayescanr))
-# devtools::install_github('paleo13/structurer')
-suppressMessages(library(structurer))
-# devtools::install_github('paleo13/ggplot2')
-suppressMessages(library(ggplot2))
+library(ALA4R)
+if (!'ALA4R' %in% install.packages()[,'Package'])
+	withr::with_libpaths(.libPaths()[1], devtools::install_github('AtlasOfLivingAustralia/ALA4R', dependencies=TRUE))
+library(ALA4R)
 
+
+if (!'spThin' %in% install.packages()[,'Package'])
+	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/spThin', dependencies=TRUE))
+library(spThin)
+
+# install raptr
+if (!'raptr' %in% install.packages()[,'Package']) {
+	install.packages(c('adehabitatLT', 'adehabitatHS', 'deldir', 'R.utils', 'geometry', 'KernSmooth', 'misc3d', 'multicool', 'fastcluster'))
+	devtools::install_github('paleo13/raptr', dependencies=TRUE)
+}
+library(raptr)
+
+if (!'bayescanr' %in% install.packages()[,'Package'])
+	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/bayescanr', dependencies=TRUE))
+library(bayescanr)
+
+if (!'structurer' %in% install.packages()[,'Package'])
+	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/structurer', dependencies=TRUE))
+library(structurer)
+
+# manually install custom fork of ggplot2 for plotting
+devtools::install_github('paleo13/ggplot2', force=TRUE)
+library(ggplot2)
+
+## misc settings
 # set pander options
 panderOptions('knitr.auto.asis', FALSE)
 
