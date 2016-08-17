@@ -67,7 +67,7 @@ library(spThin)
 
 # install raptr
 if (!'raptr' %in% installed.packages()[,'Package']) {
-	withr::with_libpaths(.libPaths()[1], install.packages(c('adehabitatLT', 'adehabitatHS', 'deldir', 'R.utils', 'geometry', 'KernSmooth', 'misc3d', 'multicool', 'fastcluster', 'rgdal', 'raster', 'PBSmapping', 'RJSONIO', 'R.methodsS3', 'R.oo', 'RgoogleMaps')))
+	withr::with_libpaths(.libPaths()[1], install.packages(c('adehabitatLT', 'adehabitatHS', 'deldir', 'R.utils', 'geometry', 'KernSmooth', 'misc3d', 'multicool', 'fastcluster', 'rgdal', 'raster', 'PBSmapping', 'RJSONIO', 'R.methodsS3', 'R.oo', 'RgoogleMaps', 'png', 'gdalUtils', 'rgl', 'shape')))
 	devtools::install_github('paleo13/raptr', dependencies=TRUE)
 }
 library(raptr)
