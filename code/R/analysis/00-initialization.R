@@ -46,8 +46,6 @@ library(broom)
 library(adehabitatHR)
 
 ## load github packages
-# devtools::install_github('AtlasOfLivingAustralia/ALA4R')
-library(ALA4R)
 if (!'ALA4R' %in% installed.packages()[,'Package'])
 	withr::with_libpaths(.libPaths()[1], devtools::install_github('AtlasOfLivingAustralia/ALA4R', dependencies=TRUE))
 library(ALA4R)
