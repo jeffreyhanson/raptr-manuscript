@@ -10,6 +10,7 @@ if (length(args)>0) {
 #### Load pacakges
 # load bioconductor packages
 # set checkpoint
+if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
 library(checkpoint)
 if (!file.exists('~/.checkpoint')) dir.create('~/.checkpoint')
 checkpoint('2016-07-25', R.version='3.3.0')
@@ -47,27 +48,27 @@ library(adehabitatHR)
 ## load github packages
 # devtools::install_github('AtlasOfLivingAustralia/ALA4R')
 library(ALA4R)
-if (!'ALA4R' %in% install.packages()[,'Package'])
+if (!'ALA4R' %in% installed.packages()[,'Package'])
 	withr::with_libpaths(.libPaths()[1], devtools::install_github('AtlasOfLivingAustralia/ALA4R', dependencies=TRUE))
 library(ALA4R)
 
 
-if (!'spThin' %in% install.packages()[,'Package'])
+if (!'spThin' %in% installed.packages()[,'Package'])
 	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/spThin', dependencies=TRUE))
 library(spThin)
 
 # install raptr
-if (!'raptr' %in% install.packages()[,'Package']) {
+if (!'raptr' %in% installed.packages()[,'Package']) {
 	install.packages(c('adehabitatLT', 'adehabitatHS', 'deldir', 'R.utils', 'geometry', 'KernSmooth', 'misc3d', 'multicool', 'fastcluster'))
 	devtools::install_github('paleo13/raptr', dependencies=TRUE)
 }
 library(raptr)
 
-if (!'bayescanr' %in% install.packages()[,'Package'])
+if (!'bayescanr' %in% installed.packages()[,'Package'])
 	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/bayescanr', dependencies=TRUE))
 library(bayescanr)
 
-if (!'structurer' %in% install.packages()[,'Package'])
+if (!'structurer' %in% installed.packages()[,'Package'])
 	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/structurer', dependencies=TRUE))
 library(structurer)
 
