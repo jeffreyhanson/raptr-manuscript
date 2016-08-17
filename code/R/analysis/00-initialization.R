@@ -17,8 +17,10 @@ cat('MODE = ',MODE,'\n')
 if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
 if (!'RcppTOML' %in% installed.packages()[,'Package']) install.packages('RcppTOML')
 if (!file.exists('~/.checkpoint')) dir.create('~/.checkpoint')
-general.params.LST <- parseTOML('code/parameters/general.toml')
-checkpoint(general.params.LST[[MODE]]$checkpoint_date, R.version=general.params.LST[[MODE]]$checkpoint_R_version)
+general.params.LST <- Rcpp::parseTOML('code/parameters/general.toml')
+checkpoint::checkpoint(general.params.LST[[MODE]]$checkpoint_date, R.version=general.params.LST[[MODE]]$checkpoint_R_version)
+if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
+if (!'RcppTOML' %in% installed.packages()[,'Package']) install.packages('RcppTOML')
 
 # load CRAN packages
 library(stats)
