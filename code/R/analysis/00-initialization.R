@@ -13,7 +13,7 @@ if (length(args)>0) {
 if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
 library(checkpoint)
 if (!file.exists('~/.checkpoint')) dir.create('~/.checkpoint')
-checkpoint('2016-07-25', R.version='3.3.0')
+checkpoint('2016-07-25', R.version='3.3.1')
 
 # load CRAN packages
 library(stats)
