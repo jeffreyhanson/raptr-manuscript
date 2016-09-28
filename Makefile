@@ -4,11 +4,8 @@
 # set parameters for debugging code
 MODE=debug
 
-# set misc parameters
-COMMIT_ID=$(shell git ls-remote https://github.com/paleo13/raptr-manuscript.git HEAD | grep -o '^\S*')
-
 # main operations
-all: clean analysis manuscript
+all: analysis manuscript
 
 clean:
 	@rm -f *.aux *.bbl *.blg *.log *.pdf *.bak *~ *.Rout */*.Rout */*.pdf */*.aux */*.log *.rda */*.rda */*/*.rda data/intermediate/*.rda data/intermediate/*.Rout data/intermediate/*.rds
@@ -52,14 +49,14 @@ si: article/supporting-information.pdf
 
 article/article.pdf: code/rmarkdown/article.Rmd code/rmarkdown/references.bib code/rmarkdown/preamble.tex code/rmarkdown/reference-style.csl
 	R -e "rmarkdown::render('code/rmarkdown/article.Rmd', clean=FALSE)"
+	R -e "sapply(dir('code/rmarkdown/article_files/figure-latex', full.names=TRUE), function(x) {system(paste('convert -density 300 -quality 85', x, gsub('.pdf', '.png', x, fixed=TRUE)))})"
+	R -e "x <- readLines('code/rmarkdown/article.tex'); pos <- grep('\\\\includegraphics', x, fixed=TRUE); x[pos] <- gsub('}', '.png}', x[pos], fixed=TRUE); writeLines(x, 'code/rmarkdown/article.tex')"
 	cd code/rmarkdown && \
-	/usr/bin/pandoc +RTS -K512m -RTS article.utf8.md --to docx --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output /home/jeff/GitHub/raptr-manuscript/code/rmarkdown/article.docx --template /home/jeff/R/x86_64-pc-linux-gnu-library/3.3/rmarkdown/rmd/latex/default.tex --highlight-style tango --latex-engine pdflatex --include-in-header preamble.tex --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc && \
+	pandoc +RTS -K512m -RTS article.tex -o article.docx --highlight-style tango --latex-engine pdflatex --include-in-header preamble.tex --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc && \
 	rm article.knit.md && \
 	rm article.utf8.md && \
 	cd ../..
-	mv code/rmarkdown/article.pdf article/
 	mv code/rmarkdown/article.docx article/
-	mv code/rmarkdown/article.tex article/
 
 article/figures.pdf: code/rmarkdown/figures.Rmd code/rmarkdown/preamble.tex code/rmarkdown/figures-preamble.tex
 	R -e "rmarkdown::render('code/rmarkdown/figures.Rmd')"
