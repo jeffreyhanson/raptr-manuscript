@@ -18,44 +18,52 @@ if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('check
 # load CRAN packages
 library(stats)
 library(checkpoint)
+library(session)
+library(data.table)
+library(RcppTOML)
+
+library(parallel)
+library(doParallel)
+
 library(RColorBrewer)
 library(hexbin)
-library(fields)
-library(ape)
-library(Hmisc)
-library(data.table)
 library(grid)
 library(gridExtra)
 library(plotrix)
+
 library(plyr)
 library(dplyr)
 library(tidyr)
-library(pander)
-library(vegan)
-library(rgeos)
 library(testthat)
-library(parallel)
+
+
+library(rgeos)
 library(rworldxtra)
-library(doParallel)
-library(english)
-library(session)
 library(maptools)
-library(RcppTOML)
+library(adehabitatHR)
+
+library(vegan)
+library(fields)
+library(ape)
+
+library(Hmisc)
+library(pander)
+library(english)
 library(knitr)
 library(lazyWeave)
 library(broom)
-library(adehabitatHR)
+
 
 ## load github packages
 if (!'ALA4R' %in% installed.packages()[,'Package']) {
 	withr::with_libpaths(.libPaths()[1], install.packages('bitops'))
-	withr::with_libpaths(.libPaths()[1], devtools::install_github('AtlasOfLivingAustralia/ALA4R', dependencies=TRUE))
+	withr::with_libpaths(.libPaths()[1], devtools::install_github('AtlasOfLivingAustralia/ALA4R', dependencies=NA))
 }
 library(ALA4R)
 
 
 if (!'spThin' %in% installed.packages()[,'Package'])
-	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/spThin', dependencies=TRUE))
+	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/spThin', dependencies=NA))
 library(spThin)
 
 # install raptr
@@ -75,8 +83,8 @@ library(structurer)
 
 if (!'gurobi' %in% installed.packages()[,'Package']) {
 	# find gurobi R package
-	gurobi.PTH <- dir('/opt', 'gurobi', full.names=TRUE)[1]
-	gurobi.PTH <- paste0(gurobi.PTH, '/linux64/R')
+	gurobi.PTH <- dir('/opt', 'gurobi', full.names=TRUE)
+	gurobi.PTH <- paste0(gurobi.PTH[length(gurobi.PTH)], '/linux64/R')
 	gurobi.PTH <- dir(gurobi.PTH, 'gurobi', full.names=TRUE)[1]
 	# install pkgs
 	withr::with_libpaths(.libPaths()[1], install.packages('slam'))
