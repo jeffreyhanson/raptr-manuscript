@@ -61,16 +61,16 @@ library(spThin)
 # install raptr
 if (!'raptr' %in% installed.packages()[,'Package']) {
 	withr::with_libpaths(.libPaths()[1], install.packages(c('adehabitatLT', 'adehabitatHS', 'deldir', 'R.utils', 'geometry', 'KernSmooth', 'misc3d', 'multicool', 'fastcluster', 'rgdal', 'raster', 'PBSmapping', 'RJSONIO', 'R.methodsS3', 'R.oo', 'RgoogleMaps', 'png', 'gdalUtils', 'rgl', 'shape')))
-	devtools::install_github('paleo13/raptr', dependencies=TRUE)
+	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/raptr', dependencies=NA))
 }
 library(raptr)
 
 if (!'bayescanr' %in% installed.packages()[,'Package'])
-	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/bayescanr', dependencies=TRUE))
+	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/bayescanr', dependencies=NA))
 library(bayescanr)
 
 if (!'structurer' %in% installed.packages()[,'Package'])
-	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/structurer', dependencies=TRUE))
+	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/structurer', dependencies=NA))
 library(structurer)
 
 if (!'gurobi' %in% installed.packages()[,'Package']) {
