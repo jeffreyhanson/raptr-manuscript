@@ -40,10 +40,7 @@ knitr::opts_knit$set(root.dir=normalizePath('../..'))
 ## initialization
 # load .rda file
 checkpoint::checkpoint('2016-07-25', R.version='3.3.1', scanForPackages=FALSE)
-try(session::restore.session('data/final/results.rda'))
-
-# set options
-options(error=NULL)
+session::restore.session('data/final/results.rda')
 
 ## preliminary processing
 for (i in seq_len(nlayers(cs1.bioclim.RAST)))
@@ -234,7 +231,7 @@ To maximise the long-term persistence of biodiversity, decision makers need to i
 JOH is funded by an Australian Postgraduate Award (APA) scholarship. RAF has an Australian Research Council Future Fellowship. This work was supported by the Centre of Excellence for Environmental Decisions (CEED) and the Landscape Ecology and Conservation Group (LEC) at The University of Queensland.
 
 # Data accessibility
-The \texttt{raptr R} package can be downloaded from The Comphrehensive R Archive Netowrk (\url{https://cran.r-project.org/}). All data, code, and results are stored in an online repository (\url{www.github.com/paleo13/raptr-manuscript}) to permit replication and validation of this study.
+The \texttt{raptr R} package can be downloaded from The Comphrehensive R Archive Network (\url{https://cran.r-project.org/}). All data, code, and results are stored in an online repository (\url{www.github.com/paleo13/raptr-manuscript}) to permit replication and validation of this study.
 
 # References
 
