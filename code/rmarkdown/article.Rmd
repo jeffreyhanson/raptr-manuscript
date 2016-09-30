@@ -92,15 +92,13 @@ Targets are used to ensure that prioritisations adequately preserve each species
 
 The control variables for the unreliable formulation are the $B$, $T_{s}$, and $\tau_{sa}$ variables.
 
-\begin{equation}
-\begin{aligned}
+\begin{align*}
 T_s &= \text{amount target for feature $f$} \tag*{eqn 1a}\\
 %
 \tau_{sa} &= \text{representation target for feature $f$ in attribute space $a$} \tag*{eqn 1b}\\
 %
 B &= \text{boundary length modifier (BLM): penalise fragmented solutions} \tag*{eqn 1c}\\
-\end{aligned}
-\end{equation}
+\end{align*}
 
 The decision variables are the $X_j$ and $Y_{fsij}$ variables.
 
