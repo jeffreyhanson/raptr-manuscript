@@ -131,12 +131,14 @@
             <text macro="editor-translator" prefix=" "/>
           </group>
           <text prefix=" " suffix="." macro="publisher"/>
+          <text value="555555"/>
         </if>
         <else-if type="thesis">
           <group suffix=".">
             <text macro="title" prefix=" " suffix="."/>
             <text variable="genre" prefix=" " suffix=" thesis,"/>
             <text prefix=" " macro="publisher"/>
+            <text value="4444444"/>
           </group>
         </else-if>
         <else-if type="chapter paper-conference" match="any">
@@ -157,6 +159,7 @@
             </group>
             <text variable="collection-title"/>
             <text macro="publisher"/>
+            <text value="33333333"/>
           </group>
         </else-if>
         <else-if type="manual">
