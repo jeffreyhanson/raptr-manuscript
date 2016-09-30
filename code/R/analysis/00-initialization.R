@@ -52,6 +52,7 @@ library(english)
 library(knitr)
 library(lazyWeave)
 library(broom)
+library(rmarkdown)
 
 
 ## load github packages

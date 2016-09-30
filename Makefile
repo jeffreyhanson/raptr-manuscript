@@ -50,14 +50,14 @@ figures: article/figures.pdf
 si: article/supporting-information.pdf
 
 article/article.pdf: code/rmarkdown/article.Rmd code/rmarkdown/references.bib code/rmarkdown/preamble.tex code/rmarkdown/reference-style.csl
-	R -e "rmarkdown::render('code/rmarkdown/article.Rmd')"
+	R -e "checkpoint::checkpoint('2016-07-25', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/article.Rmd')"
 	mv code/rmarkdown/article.pdf article/
 	mv code/rmarkdown/article.tex article/
 	rm article/article.md -f
 	rm article/article.utf8.md -f
 
 article/article.docx: code/rmarkdown/article.Rmd code/rmarkdown/references.bib code/rmarkdown/preamble.tex code/rmarkdown/reference-style.csl
-	R -e "rmarkdown::render('code/rmarkdown/article.Rmd', clean=FALSE)"
+	R -e "checkpoint::checkpoint('2016-07-25', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/article.Rmd', clean=FALSE)"
 	R -e "sapply(dir('code/rmarkdown/article_files/figure-latex', full.names=TRUE), function(x) {system(paste('convert -density 300 -quality 85', x, gsub('.pdf', '.png', x, fixed=TRUE)))})"
 	R -e "x <- readLines('code/rmarkdown/article.tex'); pos <- grep('\\\\includegraphics', x, fixed=TRUE); x[pos] <- gsub('}', '.png}', x[pos], fixed=TRUE); writeLines(x, 'code/rmarkdown/article.tex')"
 	cd code/rmarkdown && \
