@@ -125,20 +125,18 @@
         <date-part name="year"/>
       </date>
       <choose>
-        <if type="bill book graphic legal_case motion_picture report song" match="any">
+        <if type="bill graphic legal_case motion_picture report song" match="any">
           <group suffix=".">
             <text macro="title" prefix=" "/>
             <text macro="editor-translator" prefix=" "/>
           </group>
           <text prefix=" " suffix="." macro="publisher"/>
-          <text value="555555"/>
         </if>
         <else-if type="thesis">
           <group suffix=".">
             <text macro="title" prefix=" " suffix="."/>
             <text variable="genre" prefix=" " suffix=" thesis,"/>
             <text prefix=" " macro="publisher"/>
-            <text value="4444444"/>
           </group>
         </else-if>
         <else-if type="chapter paper-conference" match="any">
@@ -159,10 +157,9 @@
             </group>
             <text variable="collection-title"/>
             <text macro="publisher"/>
-            <text value="33333333"/>
           </group>
         </else-if>
-        <else-if type="manual">
+        <else-if type="book">
           <group suffix=". " prefix=" " delimiter=" ">
             <text macro="title"/>
           </group>
@@ -170,7 +167,6 @@
             <text variable="container-title"/>
             <text variable="note"/>
             <text variable="url"/>
-            <text value="111111"/>
           </group>
         </else-if>
         <else>
@@ -182,7 +178,6 @@
             <text variable="container-title" font-style="italic"/>
             <text variable="volume" font-weight="bold"/>
             <text variable="page"/>
-            <text value="2222222"/>
           </group>
         </else>
       </choose>
