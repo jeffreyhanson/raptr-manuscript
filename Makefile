@@ -68,13 +68,13 @@ article/article.docx: code/rmarkdown/article.Rmd code/rmarkdown/references.bib c
 	mv code/rmarkdown/article.docx article/
 
 article/figures.pdf: code/rmarkdown/figures.Rmd code/rmarkdown/preamble.tex code/rmarkdown/figures-preamble.tex
-	R -e "rmarkdown::render('code/rmarkdown/figures.Rmd')"
+	R -e "checkpoint::checkpoint('2016-07-25', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/figures.Rmd')"
 	mv code/rmarkdown/figures.pdf article/
 	mv code/rmarkdown/figures.tex article/
 	rm article/figures.md -f
 
 article/supporting-information.pdf: code/rmarkdown/supporting-information.Rmd code/rmarkdown/preamble.tex code/rmarkdown/si-preamble.tex
-	R -e "rmarkdown::render('code/rmarkdown/supporting-information.Rmd')"
+	R -e "checkpoint::checkpoint('2016-07-25', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/supporting-information.Rmd')"
 	mv code/rmarkdown/supporting-information.pdf article/
 	mv code/rmarkdown/supporting-information.tex article/
 	rm code/rmarkdown/supporting-information.md -f

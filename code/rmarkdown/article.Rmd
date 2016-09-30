@@ -51,8 +51,8 @@ for (i in seq_len(nlayers(cs1.bioclim.RAST)))
 <!--  title page -->
 Short running title: Representative and adequate prioritisations \newline
 Abstract word count: 348 / 350  
-Total word count: 5481 / 7000
-Number of references: 37
+Total word count: 5481 / 7000  
+Number of references: 37  
 Number of figures: 8  
 Number of tables: 0  
 Number of textboxes: 0  
@@ -231,7 +231,7 @@ To maximise the long-term persistence of biodiversity, decision makers need to i
 JOH is funded by an Australian Postgraduate Award (APA) scholarship. RAF has an Australian Research Council Future Fellowship. This work was supported by the Centre of Excellence for Environmental Decisions (CEED) and the Landscape Ecology and Conservation Group (LEC) at The University of Queensland.
 
 # Data accessibility
-The \texttt{raptr R} package can be downloaded from The Comphrehensive R Archive Network (\url{https://cran.r-project.org/}). All data, code, and results are stored in an online repository (\url{www.github.com/paleo13/raptr-manuscript}) to permit replication and validation of this study.
+The \texttt{raptr R} package can be downloaded from The Comphrehensive R Archive Network (\url{https://cran.r-project.org/}). All data, code, and results are stored in an online repository (\url{https://www.github.com/paleo13/raptr-manuscript}) to permit replication and validation of this study.
 
 # References
 
