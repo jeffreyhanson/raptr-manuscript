@@ -164,8 +164,8 @@
             <text macro="title"/>
           </group>
           <group delimiter=", " suffix=".">
-            <text variable="container-title">
-            <text value="TEST">
+            <text variable="container-title"/>
+            <text value="TEST"/>
           </group>
         </else-if>
         <else>
