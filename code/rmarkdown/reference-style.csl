@@ -94,6 +94,9 @@
       </else>
     </choose>
   </macro>
+  <macro name="note">
+    <text variable="note"/>
+  </macro>
   <macro name="publisher">
     <group delimiter=", ">
       <text variable="publisher"/>

@@ -12,6 +12,7 @@ gurobi.log
 
 # system files
 .directory
+*.kate-swp
 
 # cache
 data/intermediate/*
