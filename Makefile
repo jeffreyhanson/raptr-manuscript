@@ -34,10 +34,6 @@ clean:
 	@rm code/rmarkdown/tables.pdf -f
 	@rm article/* -f
 
-pull_ms:
-	git fetch
-	git checkout '$(COMMIT_ID)' code/rmarkdown
-
 # commands for generating manuscript
 manuscript: article docx figures si
 
