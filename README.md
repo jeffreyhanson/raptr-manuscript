@@ -9,7 +9,7 @@ Correspondance should be addressed to [jeffrey.hanson@uqconnect.edu.au](mailto:j
 
 Source code for the manuscript entitled "_raptr: Representative and Adequate Prioritisation Toolkit in R_" and analyses contained therein. 
 
-The source code for the [_raptr_ R package can be found here](www.github.com/paleo13/raptr).
+The source code for the [_raptr_ R package can be found here](www.github.com/jeffreyhanson/raptr).
 
 To rerun all computational analyses, run `make clean && make all`.
 
