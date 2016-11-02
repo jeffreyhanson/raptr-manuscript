@@ -63,9 +63,7 @@ if (!'ALA4R' %in% installed.packages()[,'Package']) {
 }
 library(ALA4R)
 
-
-if (!'spThin' %in% installed.packages()[,'Package'])
-	withr::with_libpaths(.libPaths()[1], devtools::install_github('jeffreyhanson/spThin', dependencies=NA))
+withr::with_libpaths(.libPaths()[1], devtools::install_github('jeffreyhanson/spThin', dependencies=NA))
 library(spThin)
 
 if (!'bayescanr' %in% installed.packages()[,'Package'])
