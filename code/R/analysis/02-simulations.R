@@ -127,7 +127,7 @@ sim.spp.DF <- ldply(
 			prioritisation=c('Amount\ntargets', 'Amount &\nspace targets', 'Amount target\nand BLM', 'Amount & space\ntargets and BLM'),
 			amount.held=sapply(sim.prioritisations[[i]], function(s) {amount.held(s)[1]})*100,
 			space.held=sapply(sim.prioritisations[[i]], function(s) {space.held(s)[1]})*100,
-			score=sapply(sim.prioritisations[[i]], function(s) {score(s)[1]}),
+			score=sapply(sim.prioritisations[[i]], function(s) {raptr:::score.RapSolved(s)[1]}), # need to call method explicitly due to conflicts in NAMESPACE
 			n=sapply(sim.prioritisations[[i]], function(s) {sum(selections(s))})
 		)
 	}

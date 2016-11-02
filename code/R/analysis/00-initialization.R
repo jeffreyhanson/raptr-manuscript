@@ -102,8 +102,10 @@ panderOptions('knitr.auto.asis', FALSE)
 # set seed for reproducibility
 set.seed(500)
 
-# set default select method
+# set default method
 select <- dplyr::select
+rename <- dplyr::rename
+extract <- raster::extract
 
 ### Load functions
 for (x in dir(file.path('code', 'R', 'functions'), full.names=TRUE)) source(x)
