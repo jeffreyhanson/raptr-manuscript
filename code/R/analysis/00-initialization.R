@@ -58,7 +58,7 @@ library(rmarkdown)
 
 ## load github packages
 if (!'ALA4R' %in% installed.packages()[,'Package']) {
-	withr::with_libpaths(.libPaths()[1], install.packages('bitops'))
+  withr::with_libpaths(.libPaths()[1], c(install.packages('bitops', 'RCurl')))
 	withr::with_libpaths(.libPaths()[1], devtools::install_github('AtlasOfLivingAustralia/ALA4R', dependencies=NA))
 }
 library(ALA4R)
