@@ -1,5 +1,5 @@
  ## load .rda
-checkpoint::checkpoint('2016-07-25', R.version='3.3.1', scanForPackages=FALSE)
+checkpoint::checkpoint('2016-11-01', R.version='3.3.1', scanForPackages=FALSE)
 session::restore.session('data/intermediate/05-statistical-analysis.rda')
 
 ## save workspace

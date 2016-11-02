@@ -19,7 +19,7 @@ knitr::opts_knit$set(root.dir=normalizePath('../..'))
 ```{r, include=FALSE}
 ## initialization
 # load .rda file
-checkpoint::checkpoint('2016-07-25', R.version='3.3.1', scanForPackages=FALSE)
+checkpoint::checkpoint('2016-11-01', R.version='3.3.1', scanForPackages=FALSE)
 try(session::restore.session('data/final/results.rda'))
 
 # set options

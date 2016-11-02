@@ -12,7 +12,7 @@ if (length(args)>0) {
 # set checkpoint
 if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
 if (!file.exists('~/.checkpoint')) dir.create('~/.checkpoint')
-checkpoint::checkpoint('2016-07-25', R.version='3.3.1')
+checkpoint::checkpoint('2016-11-01', R.version='3.3.1')
 if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
 
 # load CRAN packages
@@ -37,6 +37,7 @@ library(tidyr)
 library(testthat)
 
 
+library(raptr)
 library(rgeos)
 library(rworldxtra)
 library(maptools)
@@ -64,22 +65,15 @@ library(ALA4R)
 
 
 if (!'spThin' %in% installed.packages()[,'Package'])
-	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/spThin', dependencies=NA))
+	withr::with_libpaths(.libPaths()[1], devtools::install_github('jeffreyhanson/spThin', dependencies=NA))
 library(spThin)
 
-# install raptr
-if (!'raptr' %in% installed.packages()[,'Package']) {
-	withr::with_libpaths(.libPaths()[1], install.packages(c('adehabitatLT', 'adehabitatHS', 'deldir', 'R.utils', 'geometry', 'KernSmooth', 'misc3d', 'multicool', 'fastcluster', 'rgdal', 'raster', 'PBSmapping', 'RJSONIO', 'R.methodsS3', 'R.oo', 'RgoogleMaps', 'png', 'gdalUtils', 'rgl', 'shape')))
-	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/raptr', dependencies=NA))
-}
-library(raptr)
-
 if (!'bayescanr' %in% installed.packages()[,'Package'])
-	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/bayescanr', dependencies=NA))
+	withr::with_libpaths(.libPaths()[1], devtools::install_github('jeffreyhanson/bayescanr', dependencies=NA))
 library(bayescanr)
 
 if (!'structurer' %in% installed.packages()[,'Package'])
-	withr::with_libpaths(.libPaths()[1], devtools::install_github('paleo13/structurer', dependencies=NA))
+	withr::with_libpaths(.libPaths()[1], devtools::install_github('jeffreyhanson/structurer', dependencies=NA))
 library(structurer)
 
 if (!'gurobi' %in% installed.packages()[,'Package']) {
@@ -93,7 +87,7 @@ if (!'gurobi' %in% installed.packages()[,'Package']) {
 }
 
 # manually install custom fork of ggplot2 for plotting
-devtools::install_github('paleo13/ggplot2', force=TRUE)
+devtools::install_github('jeffreyhanson/ggplot2', force=TRUE)
 library(ggplot2)
 
 ### set parameters
