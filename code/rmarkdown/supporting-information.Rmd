@@ -33,21 +33,21 @@ for (i in seq_len(nlayers(cs1.bioclim.RAST)))
 
 ```
 
-# Appendix S1: Reliable formulation
-The reliable formulation explicitly considers the probability that the planning units are inhabited. As a consequence, it may deliver prioritisations that will sufficiently represent an attribute space even if the features do not inhabit several of the planning units when the prioritisation is implemented. This behaviour is achieved by siting back-up planning units near selected planning units with low occupancy probabilities in the attribute space(s). To ensure that prioritisations are robust against multiple planning units being uninhabited, the problem assigns planning units at multiple backup levels. 
+## Appendix S1
+The reliable formulation explicitly considers the probability that planning units are inhabited by features. As a consequence, it may deliver prioritisations that will sufficiently represent an attribute space even if the features do not inhabit several of the planning units when the prioritisation is implemented. This behaviour is achieved by siting back-up planning units near selected planning units with low occupancy probabilities in the attribute space(s). To ensure that prioritisations are robust against multiple planning units being uninhabited, the problem assigns planning units at multiple backup levels. 
 
 Backup levels levels are defined as $r$-levels [similar to failure levels in @r18]. The first backup $r$-level is used to calculate the level of representation when all of the selected planning units are occupied by all $f \in F$. For this scenario, the closest selected planning unit to each demand point $i$ for attribute space $s$ is assigned at $r$-level$=0$. This scenario essentially represents $Y_{fsij}$ in the unreliable formulation. The second backup $r$-level is used to assess the level of representation when the closest planning unit to each demand point $i$ is unoccupied. For this scenario, the second closest planning units are assigned at $r$-level$=1$. The third backup $r$-level is used to assess representation when the first two closest planning units are unoccupied. The third closest planning units are assigned at $r$-level$=2$. Continuing on, in this manner, the selected planning units in a prioritisation are assigned to each demand point $i \in I$, attribute space $s \in S$, and each feature $f \in F$ at an $r$-level.
 
-A final backup $r$-level when $r=R$ is used to assess the level of representation when the features $f \in F$ do not occupy any selected planning units in a prioritisation. Each demand point $i \in I$ for each $s \in S$ and $f \in F$ is assigned to an "imaginary" planning unit $j=J$ at $r=R$. The distance variables associated with this imaginary planning unit $d_{fsiJ}$ denote the loss of biological value associated with failing to secure a representative sample of feature $f$ in attribute space $s$. However, the $d$ variables are in distance units which are meaningless in this context. Thus these variables are calculated using a failure multiplier ($M$) and the maximum distance between the planning units and the demand points for $f \in F$, $s \in S$ (4).
+A final backup $r$-level when $r=R$ is used to assess the level of representation when the features $f \in F$ do not occupy any selected planning units in a prioritisation. Each demand point $i \in I$ for each $s \in S$ and $f \in F$ is assigned to an "imaginary" planning unit $j=J$ at $r=R$. The distance variables associated with this imaginary planning unit $d_{fsiJ}$ denote the loss of biological value associated with failing to secure a representative sample of feature $f$ in attribute space $s$. However, the $d$ variables are in distance units which effectively meaningless in this context. Thus these variables are calculated using a failure multiplier ($M$) and the maximum distance between the planning units and the demand points for $f \in F$, $s \in S$ (4).
 
 \begin{align*}
 & d_{fsiJ} = M \max\limits_{0 \leq i \leq I-1, 0 \leq j \leq J-1} d_{fsij} & \forall & 0 \leq f \leq F-1, \tag*{eqn 4} \\
 & & & 0 \leq s \leq S-1\\
 \end{align*}
 
-Moderately-sized conservation planning problems often include several thousand planning units. It is currently not be feasible to solve this problem when considering all possible failure scenarios. As a consequence, the $R$ variable can be any $1 \leq R \leq J-1$. For instance, when $R=3$ only 2 backup levels are considered in addition to the final backup level. Cui et al. [-@r16] found that $R=5$ yields similar solutions to $R=J$ when $J >> 5$. However, in most costs the decision maker will likely be limited to $R=1$ to obtain prioritisations in a feasible amount of time.
+Moderately-sized conservation planning problems often include several thousand planning units. It is currently not be feasible to solve this problem when considering all possible failure scenarios. As a consequence, the $R$ variable can be any $1 \leq R \leq J-1$. For instance, when $R=3$ only 2 backup levels are considered in addition to the final backup level. Cui et al. [-@r16] found that $R=5$ yields similar solutions to $R >> 5$. However, in most cases the decision maker will likely be limited to $R=1$ to obtain prioritisations in a feasible amount of time.
 
-The control variables for the reliable formulation are the $B$ (eqn 1a), $T_{s}$ (eqn 1b), $\tau_{sa}$ (eqn 1c), $R$, and $M$ variables.
+The control variables for the reliable formulation are the $B$ (eqn 1a), $T_{s}$ (eqn 1b), $\tau_{fs}$ (eqn 1c), $R$, and $M$ variables.
 
 \begin{align*}
 R &= \parbox{25em}{number of failure levels} \tag*{eqn 5a} \\
@@ -117,7 +117,7 @@ The reliable formulation (RRAP) is a multi-objective optimisation problem.
 
 The objective function for the reliable formulation is the same as for the unreliable formation (eqn 3a). Similar to the unreliable formulation, constraints (eqn 3b) and (eqn 7a) ensure that the amount-based and space-based targets are met. Constraint (eqns 7b--7c) ensure that each planning unit is only assigned to one backup $r$-level for $i \in I$. Constraints (eqn 7d) ensure that only selected planning units are assigned to demand points $i \in I$. Constraints (eqn 7e) ensure that the imaginary planning unit is always assigned to the highest backup $r$-level. Constraints (eqns 7f--7g) determine the probability that planning unit $j$ will be used to sample demand point $i \in I$ for $s \in S$ and $f \in F$ [see @r16 for more information]. Constraints (eqn 7h) ensure that the $X$ and $Y$ variables are binary.
 
-The reliable formulation is non-linear. However, the non-linear components can be linearised. First--as discussed in the main text--the expression $X_j X_k$ in (eqn 3a) can be linearised using methods described by Beyer et al. [-@r426]. Second, the expression $P_{fsijr} Y_{jsijr}$ in (eqn 7a) can be linearised using techniques described by Sherali and Alameddine [-@r20] as implemented in Cui et al. [-@r16].
+The reliable formulation is non-linear. However, the non-linear components can be linearised. First--as discussed in the main text--the expression $X_j X_k$ in (eqn 3a) can be linearised using methods described by Beyer et al. [-@r426]. Second, the expression $P_{fsijr} Y_{fsijr}$ in (eqn 7a) can be linearised using techniques described by Sherali and Alameddine [-@r20] as implemented in Cui et al. [-@r16].
 
 ## Figures 
 ```{r, echo=FALSE, fig.height=8, fig.width=8.5, fig.cap='Attribute spaces used in the first case-study. Each panel shows a the distribution of a solution in environmental space and how it samples the realised niche for a different species. The left column of panels shows the solution generated using amount targets. The right column of panels shows the solution generated using amount and niche targets. Each column of panels corresponds to a different species. Hexagons show the distribution of demand points. The color of each heaxgon denotes the weighted frequency of demand points inside it. Points represent the environmental conditions associated with planning units inside the species geographic range that were selected for preservation in a given solution.'}
@@ -204,13 +204,13 @@ term.CHR <- c(
 	'$e_{jk}$', 'shared edge between planning unit $j$ and planning unit $k$. Note that when $j==k$ this used to parametrise exposed edges with no neighbours.',
 	'$S$', 'set of attribute spaces (indexed by $S$)',
 	'$I_{fsi}$', 'set of demand points (indexed by $i$) for a feature $f$ in attribute space $s$',
-	'$\\lambda_{fsi}$', 'set of weights for demand point $i$ for feature $f$ in attribute space $s$.',
-	'$d_{fsij}$', 'distance between demand point $i$ and planning unit $j$ for feature $f$ in attribute space $s$.',
-	'$\\delta_{fsi}$', 'the distance between each demand point $i$ and the centroid of the demand points $I$ for feature $f$ in attribute space $s$.',
-	'$T_f$', 'amount target for feature $f$.',
-	'$\\tau_{fs}$', 'space-based target for feature $f$ in attribute space $s$.',
-	'$X_j$', 'binary decision variable controlling if a planning unit is selected for preservation (1) or discarded (0).',
-	'$Y_{fsij}$', 'binary decision variable indicating if planning unit $j$ is assigned to demand point $i$ for species $s$ in a attribute space $s$ when determing the amount of the attribute space sampled by the selected planning units.'
+	'$\\lambda_{fsi}$', 'set of weights for demand point $i$ for feature $f$ in attribute space $s$',
+	'$d_{fsij}$', 'distance between demand point $i$ and planning unit $j$ for feature $f$ in attribute space $s$',
+	'$\\delta_{fsi}$', 'the distance between each demand point $i$ and the centroid of the demand points $I$ for feature $f$ in attribute space $s$',
+	'$T_f$', 'amount target for feature $f$',
+	'$\\tau_{fs}$', 'space-based target for feature $f$ in attribute space $s$',
+	'$X_j$', 'binary decision variable controlling if a planning unit is selected for preservation (1) or discarded (0)',
+	'$Y_{fsij}$', 'binary decision variable indicating if planning unit $j$ is assigned to demand point $i$ for species $s$ in a attribute space $s$ when determing the amount of the attribute space sampled by the selected planning units'
 )
 term.DF <- data.frame(
 	Symbol=term.CHR[seq(1, length(term.CHR), 2)],

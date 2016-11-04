@@ -266,7 +266,7 @@ ggplot() +
 	facet_wrap(~ Prioritisation, ncol=2)
 ```
 
-```{r, echo=FALSE, fig.height=4.5, fig.width=4.5, fig.cap=paste0('Study area and data used in the second case-study. Squares denote planning units. Panel (a) shows all grid cells surveyed by the IntraBioDiv project. Grid cells occupied by ',cs2.params.LST[[MODE]]$common.name,' are shown in bright blue. The subsequent panels contain only the grid cells that were occupied by the species. Panel (b) shows the opportunity cost of each planning unit (estimated as the total human population density). Panels (c--d) show the spatial distribution of the ordinated genetic data. These values describe the typical genetic characteristics of individuals in each planning unit. Planning units with similar values/colors contain individuals with similar loci polymorphisms.')}
+```{r, echo=FALSE, fig.height=4.5, fig.width=4.5, fig.cap=paste0('Study area and data used in the second case-study. Squares denote planning units. Panel (a) shows all grid cells surveyed by the IntraBioDiv project. Grid cells occupied by ',tolower(cs2.params.LST[[MODE]]$common.name),' are shown in bright blue. The subsequent panels contain only the grid cells that were occupied by the species. Panel (b) shows the opportunity cost of each planning unit (estimated as the total human population density). Panels (c--d) show the spatial distribution of the ordinated genetic data. These values describe the typical genetic characteristics of individuals in each planning unit. Planning units with similar values/colors contain individuals with similar loci polymorphisms.')}
 # prepare full grid data
 cs2.spp.grid.FPLY <- cs2.grid.FPLY
 cs2.spp.grid.FPLY$Title <- 'Occupancy'
