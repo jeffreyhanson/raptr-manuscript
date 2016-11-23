@@ -1,14 +1,10 @@
 ---
-fontsize: 11pt
-documentclass: article
 bibliography: references.bib
 csl: reference-style.csl
 output:
   rmarkdown::pdf_document:
     fig_caption: yes
     keep_tex: yes
-    includes:
-      in_header: [preamble.tex, figures-preamble.tex]
 ---
 
 ```{r, include=FALSE}
@@ -49,7 +45,7 @@ countries.FPLY <- countriesHigh[
 
 ```
 
-## Figures
+# Figures
 
 ```{r, echo=FALSE, message=FALSE, fig.height=2, fig.width=2, fig.cap="Example of an attribute space. This environmental attribute space has dimensions relating to annual temperature ($^{\\circ}$C) and rainfall (mm) values. Letters denote the environmental conditions associated with the geographic locations where four hypothetical populations are found. Points represent demand points. In this space, populations closer to each other are considered more similar to each other."}
 ## generate data
@@ -112,7 +108,7 @@ ggplot() +
 	facet_wrap(~ species, ncol=3)
 ```
 
-```{r, echo=FALSE, fig.height=3.5, fig.width=5, fig.cap=paste0('Simulation study prioritisations. Each panel shows a prioritisation generated for a single species using a set of parameters. Squares denote planning units, with dark green showing those planning units selected for protection in a particular prioritisation. The top row of panels (a, d, g, j) shows prioritisations generated for the uniformly distributed species, middle row of panels (b, e, h, k) for the normally distributed species, and the bottom row of panels (c, f, i, l) for the bimodally distributed species. Each column of panels corresponds to a different set of parameters used to generate the prioritisation. The left column of panels (a--c) shows prioritizations generated using only ',(sim.params.LST[[MODE]]$amount.target*100),' % amount targets, the middle-left column of panels (d--f) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets, the middle-right column of panels (g--i) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount based targets and a boundary length modifier (BLM) of ',sim.params.LST[[MODE]]$blm,', and the right column of panels (j--l) for prioritisations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets and also a boundary length modifier of ',(sim.params.LST[[MODE]]$blm),'.')}
+```{r, echo=FALSE, fig.height=3.5, fig.width=5, fig.cap=paste0('Simulation study prioritizations. Each panel shows a prioritization generated for a single species using a set of parameters. Squares denote planning units, with dark green showing those planning units selected for protection in a particular prioritisation. The top row of panels (a, d, g, j) shows prioritizations generated for the uniformly distributed species, middle row of panels (b, e, h, k) for the normally distributed species, and the bottom row of panels (c, f, i, l) for the bimodally distributed species. Each column of panels corresponds to a different set of parameters used to generate the prioritisation. The left column of panels (a--c) shows prioritizations generated using only ',(sim.params.LST[[MODE]]$amount.target*100),' % amount targets, the middle-left column of panels (d--f) for prioritizations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets, the middle-right column of panels (g--i) for prioritizations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount based targets and a boundary length modifier (BLM) of ',sim.params.LST[[MODE]]$blm,', and the right column of panels (j--l) for prioritizations generated using ',(sim.params.LST[[MODE]]$amount.target*100),' % amount and ',(sim.params.LST[[MODE]]$space.target*100),' % space targets and also a boundary length modifier of ',(sim.params.LST[[MODE]]$blm),'.')}
 # prepare data
 sim.pus.sel.FPLY <- ldply(
 	seq_len(nrow(sim.spp.DF)),
@@ -229,7 +225,7 @@ ggplot() +
 	facet_wrap(~ species, ncol=2)
 ```
 
-```{r, echo=FALSE, fig.height=2.5, fig.width=4.5, fig.cap=paste0('Prioritisations for the niche-based case-study in Queensland, Australia. Squares represent planning units. Dark green planning units for selected for protection and pale green units were discarded. Panel (a) shows the planning units selected when using ',cs1.params.LST[[MODE]]$amount.target*100,' % amount targets. Panel (b) shows the planning units selected selected when using ',cs1.params.LST[[MODE]]$amount.target*100,' % amount targets and ',cs1.params.LST[[MODE]]$space.target*100,' % niche targets')}
+```{r, echo=FALSE, fig.height=2.5, fig.width=4.5, fig.cap=paste0('Prioritizations for the niche-based case-study in Queensland, Australia. Squares represent planning units. Dark green planning units for selected for protection and pale green units were discarded. Panel (a) shows the planning units selected when using ',cs1.params.LST[[MODE]]$amount.target*100,' % amount targets. Panel (b) shows the planning units selected when using ',cs1.params.LST[[MODE]]$amount.target*100,' % amount targets and ',cs1.params.LST[[MODE]]$space.target*100,' % niche targets')}
 # prepare data
 cs1.pus.sel.FPLY <- ldply(
 	names(cs1.prioritisations),
@@ -370,7 +366,7 @@ p4 <- ggplot() +
 grid.arrange(p1, p2, p3, p4, ncol=2)
 ```
 
-```{r, echo=FALSE, fig.height=5, fig.width=5, fig.cap=paste0('Prioritisations for the genetic case-study in the European Alps. Panels (a--b) show prioritisations generated using different parameters. Squares denote planning units shown in geographic space. Panel (a) shows the planning units selected when using ',cs2.params.LST[[MODE]]$amount.target*100,' % amount targets. Panel (b) shows the planning units selected when using ',cs2.params.LST[[MODE]]$amount.target*100,' % amount targets and ',cs2.params.LST[[MODE]]$genetic.target*100,' % genetic targets. Panels (c--d) show the solutions in the genetic space. Each point corresponds to a planning unit. The coordinates of the points represent the typical genetic characeristics of individuals sampled in that planning unit (based on an NMDS of the binary loci data). Planning units associated with points that are closer togeather contain individuals with more similar genetic characteristics than planning units that are further apart. In all panels, dark green planning units were selected for protection, and pale green planning units were discarded.')}
+```{r, echo=FALSE, fig.height=5, fig.width=5, fig.cap=paste0('Prioritizations for the genetic case-study in the European Alps. Panels (a--b) show prioritisations generated using different parameters. Squares denote planning units shown in geographic space. Panel (a) shows the planning units selected when using ',cs2.params.LST[[MODE]]$amount.target*100,' % amount targets. Panel (b) shows the planning units selected when using ',cs2.params.LST[[MODE]]$amount.target*100,' % amount targets and ',cs2.params.LST[[MODE]]$genetic.target*100,' % genetic targets. Panels (c--d) show the solutions in the genetic space. Each point corresponds to a planning unit. The coordinates of the points represent the typical genetic characeristics of individuals sampled in that planning unit (based on an NMDS of the binary loci data). Planning units associated with points that are closer togeather contain individuals with more similar genetic characteristics than planning units that are further apart. In all panels, dark green planning units were selected for protection, and pale green planning units were discarded.')}
 # prepare spatial data
 cs2.sel.grid.sub.FPLY <- cs2.grid.sub.FPLY
 cs2.sel.grid.sub.FPLY$Title1 <-'Amount target'
@@ -448,5 +444,4 @@ p4 <- ggplot() +
 	scale_fill_manual(name='Solution', values=c('discarded'='transparent', 'selected'='#00441b'))
 # render plots
 grid.arrange(p1,p2,p3,p4,ncol=2)
-
 ```
