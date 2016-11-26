@@ -17,7 +17,7 @@ Correspondance should be addressed to [jeffrey.hanson@uqconnect.edu.au](mailto:j
 
 ### Overview
 
-This repository contains the source code for the manuscript entitled "_raptr: Representative and Adequate Prioritisation Toolkit in R_". For more information on the _raptr R_ package, [check out the offical development repository](http://www.github.com/jeffreyhanson/raptr). 
+This repository contains the source code for the manuscript entitled "_raptr: Representative and Adequate Prioritisation Toolkit in R_". For more information on the _raptr R_ package, [check out the official development repository](http://www.github.com/jeffreyhanson/raptr). 
 
 [Download the data, code, results we used and generated here](https://github.com/jeffreyhanson/raptr-manuscript/releases/latest). Alternatively, clone this repository, and rerun the entire analysis on your own computer using the system commands `make all`. 
 
