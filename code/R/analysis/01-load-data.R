@@ -1,5 +1,5 @@
 ## load .rda
-checkpoint::checkpoint('2016-11-01', R.version='3.3.1', scanForPackages=FALSE)
+checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE)
 session::restore.session('data/intermediate/00-initialization.rda')
 
 ### load simulation data

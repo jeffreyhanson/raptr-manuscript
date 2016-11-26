@@ -12,7 +12,7 @@ if (length(args)>0) {
 # set checkpoint
 if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
 if (!file.exists('~/.checkpoint')) dir.create('~/.checkpoint')
-checkpoint::checkpoint('2016-11-01', R.version='3.3.1')
+checkpoint::checkpoint('2016-11-26', R.version='3.3.1')
 if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
 
 # load CRAN packages
@@ -36,7 +36,6 @@ library(dplyr)
 library(tidyr)
 library(testthat)
 
-
 library(raptr)
 library(rgeos)
 library(rworldxtra)
@@ -54,7 +53,6 @@ library(knitr)
 library(lazyWeave)
 library(broom)
 library(rmarkdown)
-
 
 ## load github packages
 if (!'ALA4R' %in% installed.packages()[,'Package']) {
