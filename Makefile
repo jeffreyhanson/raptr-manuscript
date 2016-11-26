@@ -88,6 +88,7 @@ code/rmarkdown/text.tex: code/rmarkdown/text.Rmd code/rmarkdown/references.bib c
 	/usr/bin/pandoc +RTS -K512m -RTS text.utf8.md --to latex --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output text.tex --highlight-style tango --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
 	rm -f code/rmarkdown/text.md -f
 	rm -f code/rmarkdown/text.utf8.md
+	rm -f code/rmarkdown/text.knit.md
 
 code/rmarkdown/figures.tex: code/rmarkdown/figures.Rmd
 	-R -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/figures.Rmd', clean=FALSE)"
@@ -95,6 +96,7 @@ code/rmarkdown/figures.tex: code/rmarkdown/figures.Rmd
 	/usr/bin/pandoc +RTS -K512m -RTS figures.utf8.md --to latex --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output figures.tex --highlight-style tango --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
 	rm -f code/rmarkdown/figures.md
 	rm -f code/rmarkdown/figures.utf8.md
+	rm -f code/rmarkdown/figures.knit.md
 
 code/rmarkdown/supporting-information.tex: code/rmarkdown/supporting-information.Rmd code/rmarkdown/reference-style.csl
 	-R -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/supporting-information.Rmd', clean=FALSE)"
@@ -102,6 +104,7 @@ code/rmarkdown/supporting-information.tex: code/rmarkdown/supporting-information
 	/usr/bin/pandoc +RTS -K512m -RTS supporting-information.utf8.md --to latex --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output supporting-information.tex --highlight-style tango --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
 	rm -f code/rmarkdown/supporting-information.md
 	rm -f code/rmarkdown/supporting-information.utf8.md
+	rm -f code/rmarkdown/supporting-information.knit.md
 	
 # commands for running analysis
 analysis: data/final/results.rda

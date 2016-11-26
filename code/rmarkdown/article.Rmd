@@ -28,6 +28,7 @@ output:
       in_header: preamble.tex
 fontsize: 11pt
 documentclass: article
+subparagraph: true
 bibliography: references.bib
 csl: reference-style.csl
 ---
