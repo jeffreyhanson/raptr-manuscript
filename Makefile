@@ -54,7 +54,7 @@ article/cover-letter.pdf: code/rmarkdown/cover-letter.tex
 	rm -f  code/rmarkdown/cover-letter.out
 
 article/article.docx: code/rmarkdown/preamble.tex code/rmarkdown/text.tex code/rmarkdown/figures.tex code/rmarkdown/supporting-information.tex code/rmarkdown/article.Rmd
-	-R -e "checkpoint::checkpoint('2016-07-25', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/article.Rmd')"
+	-R -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/article.Rmd')"
 	rm -f code/rmarkdown/article.aux
 	rm -f code/rmarkdown/article.log
 	rm -f code/rmarkdown/article.sta
@@ -76,28 +76,28 @@ article/article.docx: code/rmarkdown/preamble.tex code/rmarkdown/text.tex code/r
 	rm -rf code/rmarkdown/supporting-information_files_docx
 
 article/article.pdf: code/rmarkdown/preamble.tex code/rmarkdown/text.tex code/rmarkdown/figures.tex code/rmarkdown/supporting-information.tex code/rmarkdown/article.Rmd
-	-R -e "checkpoint::checkpoint('2016-07-25', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/article.Rmd')"
+	-R -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/article.Rmd')"
 	rm -f code/rmarkdown/article.aux
 	rm -f code/rmarkdown/article.log
 	rm -f code/rmarkdown/article.sta
 	mv code/rmarkdown/article.pdf article/
 
 code/rmarkdown/text.tex: code/rmarkdown/text.Rmd code/rmarkdown/references.bib code/rmarkdown/reference-style.csl
-	-R -e "checkpoint::checkpoint('2016-07-25', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/text.Rmd', clean=FALSE)"
+	-R -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/text.Rmd', clean=FALSE)"
 	cd code/rmarkdown;\
 	/usr/bin/pandoc +RTS -K512m -RTS text.utf8.md --to latex --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output text.tex --highlight-style tango --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
 	rm -f code/rmarkdown/text.md -f
 	rm -f code/rmarkdown/text.utf8.md
 
 code/rmarkdown/figures.tex: code/rmarkdown/figures.Rmd
-	-R -e "checkpoint::checkpoint('2016-07-25', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/figures.Rmd', clean=FALSE)"
+	-R -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/figures.Rmd', clean=FALSE)"
 	cd code/rmarkdown;\
 	/usr/bin/pandoc +RTS -K512m -RTS figures.utf8.md --to latex --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output figures.tex --highlight-style tango --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
 	rm -f code/rmarkdown/figures.md
 	rm -f code/rmarkdown/figures.utf8.md
 
 code/rmarkdown/supporting-information.tex: code/rmarkdown/supporting-information.Rmd code/rmarkdown/reference-style.csl
-	-R -e "checkpoint::checkpoint('2016-07-25', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/supporting-information.Rmd', clean=FALSE)"
+	-R -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/supporting-information.Rmd', clean=FALSE)"
 	cd code/rmarkdown;\
 	/usr/bin/pandoc +RTS -K512m -RTS supporting-information.utf8.md --to latex --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output supporting-information.tex --highlight-style tango --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
 	rm -f code/rmarkdown/supporting-information.md
