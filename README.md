@@ -37,8 +37,8 @@ This repository contains the source code for the manuscript entitled "_raptr: Re
 * Operating system
 	+ Ubuntu (Trusty 14.04 LTS)
 * Programs
-	+ R (version 3.3.1)
 	+ GNU make
-	+ pandoc
-	+ pandoc-citeproc
+	+ [Gurobi (version 7.0.0; academic licenses are available for no cost)](http://www.gurobi.com/)
+	+ [pandoc (version 1.16.0.2+)](https://github.com/jgm/pandoc/releases)
 	+ LaTeX
+	+ [R (version 3.3.1)](https://www.r-project.org)
