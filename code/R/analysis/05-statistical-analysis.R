@@ -36,8 +36,8 @@ cs1.nmds.MoransI <- llply(
 )
 
 # calculate numbers and generate vectors for article
-amount.represented.species.names <- filter(cs1.spp.DF, Prioritisation=='Amount targets', niche >= (cs1.params.LST[[MODE]]$'space.target'*100))$Species
-amount.not.represented.species.names <- filter(cs1.spp.DF, Prioritisation=='Amount targets', niche<(cs1.params.LST[[MODE]]$'space.target'*100))$Species
+amount.represented.species.names <- tolower(filter(cs1.spp.DF, Prioritisation=='Amount targets', niche >= (cs1.params.LST[[MODE]]$'space.target'*100))$Species)
+amount.not.represented.species.names <- tolower(filter(cs1.spp.DF, Prioritisation=='Amount targets', niche<(cs1.params.LST[[MODE]]$'space.target'*100))$Species)
 
 if (length(amount.represented.species.names)>1) {
 	parsed.representative.space.held.names <- sapply(

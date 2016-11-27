@@ -39,10 +39,10 @@ The reliable formulation explicitly considers the probability that planning unit
 
 Backup levels levels are defined as $r$-levels [similar to failure levels in @r18]. The first backup $r$-level is used to calculate the level of representation when all of the selected planning units are occupied by all $f \in F$. For this scenario, the closest selected planning unit to each demand point $i$ for attribute space $s$ is assigned at $r$-level$=0$. This scenario essentially represents $Y_{fsij}$ in the unreliable formulation. The second backup $r$-level is used to assess the level of representation when the closest planning unit to each demand point $i$ is unoccupied. For this scenario, the second closest planning units are assigned at $r$-level$=1$. The third backup $r$-level is used to assess representation when the first two closest planning units are unoccupied. The third closest planning units are assigned at $r$-level$=2$. Continuing on, in this manner, the selected planning units in a prioritization are assigned to each demand point $i \in I$, attribute space $s \in S$, and each feature $f \in F$ at an $r$-level.
 
-A final backup $r$-level when $r=R$ is used to assess the level of representation when the features $f \in F$ do not occupy any selected planning units in a prioritisation. Each demand point $i \in I$ for each $s \in S$ and $f \in F$ is assigned to an "imaginary" planning unit $j=J$ at $r=R$. The distance variables associated with this imaginary planning unit $d_{fsiJ}$ denote the loss of biological value associated with failing to secure a representative sample of feature $f$ in attribute space $s$. However, the $d$ variables are in distance units which effectively meaningless in this context. Thus these variables are calculated using a failure multiplier ($M$) and the maximum distance between the planning units and the demand points for $f \in F$, $s \in S$ (4).
+A final backup $r$-level when $r=R$ is used to assess the level of representation when the features $f \in F$ do not occupy any selected planning units in a prioritisation. Each demand point $i \in I$ for each $s \in S$ and $f \in F$ is assigned to an "imaginary" planning unit $j=J$ at $r=R$. The distance variables associated with this imaginary planning unit $d_{fsiJ}$ denote the loss of biological value associated with failing to secure a representative sample of feature $f$ in attribute space $s$. However, the $d$ variables are in distance units which effectively meaningless in this context. Thus these variables are calculated using a failure multiplier ($M$) and the maximum distance between the planning units and the demand points for $f \in F$, $s \in S$ (eqn 5).
 
 \begin{align*}
-& d_{fsiJ} = M \max\limits_{0 \leq i \leq I-1, 0 \leq j \leq J-1} d_{fsij} & \forall & 0 \leq f \leq F-1, \tag*{eqn 4} \\
+& d_{fsiJ} = M \max\limits_{0 \leq i \leq I-1, 0 \leq j \leq J-1} d_{fsij} & \forall & 0 \leq f \leq F-1, \tag*{eqn 5} \\
 & & & 0 \leq s \leq S-1\\
 \end{align*}
 
@@ -51,9 +51,9 @@ Moderately-sized conservation planning problems often include several thousand p
 The control variables for the reliable formulation are the $B$ (eqn 1a), $T_{s}$ (eqn 1b), $\tau_{fs}$ (eqn 1c), $R$, and $M$ variables.
 
 \begin{align*}
-R &= \parbox{25em}{number of failure levels} \tag*{eqn 5a} \\
+R &= \parbox{25em}{number of failure levels} \tag*{eqn 6a} \\
 %
-M &= \parbox{25em}{failure multiplier} \tag*{eqn 5b}\\
+M &= \parbox{25em}{failure multiplier} \tag*{eqn 6b}\\
 %
 \end{align*}
 
@@ -61,11 +61,11 @@ The decision variables are the $X_j$ (eqn 2a), $Y_{fsijr}$, $P_{fsijr}$ variable
 
 \begin{align*}
 Y_{fsijr} &= \begin{cases}
-		1, & \parbox{25em}{if demand point $i$ is assigned to planning unit $j$ for feature $f$ in space $s$ at back-up level $r$. } \tag*{eqn 6a} \\
+		1, & \parbox{25em}{if demand point $i$ is assigned to planning unit $j$ for feature $f$ in space $s$ at back-up level $r$. } \tag*{eqn 7a} \\
 		0, & \parbox{25em}{otherwise} \\
 	\end{cases} \\
 %
-P_{fsijr} &= \parbox{25em}{probability that demand point $i$ is assigned to planning unit $j$ at back-up level $r$ for feature $f$ and space $s$} \tag*{eqn 6a}\\
+P_{fsijr} &= \parbox{25em}{probability that demand point $i$ is assigned to planning unit $j$ at back-up level $r$ for feature $f$ and space $s$} \tag*{eqn 7b}\\
 %
 \end{align*}
 
@@ -76,49 +76,49 @@ The reliable formulation (RRAP) is a multi-objective optimisation problem.
 %
 & & \text{s.t. } & \text{(3b)}\\
 %
-& & & 1 - \frac{\sum_{i=0}^{I-1} \sum_{j=0}^{J-1} \lambda_{fsi} {d_{fsij}}^{2} P_{fsijr} Y_{fsij}}{\sum_{i=0}^{I-1} \lambda_{fsi} {\delta_{fsi}}^{2}} \geq T_{fs}  & \forall & 0 \leq f \leq F-1, \tag*{eqn 7a}\\
+& & & 1 - \frac{\sum_{i=0}^{I-1} \sum_{j=0}^{J-1} \lambda_{fsi} {d_{fsij}}^{2} P_{fsijr} Y_{fsij}}{\sum_{i=0}^{I-1} \lambda_{fsi} {\delta_{fsi}}^{2}} \geq T_{fs}  & \forall & 0 \leq f \leq F-1, \tag*{eqn 8a}\\
 & & & & & 0 \leq s \leq S-1\\
 %
-& & & \sum_{j=0}^{J-1} Y_{fsijr} = 1 & \forall & 0 \leq f \leq F-1, \tag*{eqn 7b}\\
+& & & \sum_{j=0}^{J-1} Y_{fsijr} = 1 & \forall & 0 \leq f \leq F-1, \tag*{eqn 8b}\\
 & & & & & 0 \leq s \leq S-1,\\
 & & & & & 0 \leq i \leq I-1,\\
 & & & & & 0 \leq r \leq R\\
 %
-& & & \sum_{r=0}^{R} Y_{fsijr} = 1 & \forall & 0 \leq f \leq F-1, \tag*{eqn 7c}\\
+& & & \sum_{r=0}^{R} Y_{fsijr} = 1 & \forall & 0 \leq f \leq F-1, \tag*{eqn 8c}\\
 & & & & & 0 \leq s \leq S-1,\\
 & & & & & 0 \leq i \leq I-1,\\
 & & & & & 0 \leq j \leq J\\
 %
-& & & \sum_{r=0}^{R-1} Y_{fsijr} \leq X_j & \forall & 0 \leq f \leq F-1, \tag*{eqn 7d}\\
+& & & \sum_{r=0}^{R-1} Y_{fsijr} \leq X_j & \forall & 0 \leq f \leq F-1, \tag*{eqn 8d}\\
 & & & & & 0 \leq s \leq S-1,\\
 & & & & & 0 \leq i \leq I-1,\\
 & & & & & 0 \leq j \leq J-1\\
 %
-& & & Y_{fsiJR} = 1 & \forall & 0 \leq f \leq F-1, \tag*{eqn 7e}\\
+& & & Y_{fsiJR} = 1 & \forall & 0 \leq f \leq F-1, \tag*{eqn 8e}\\
 & & & & & 0 \leq s \leq S-1,\\
 & & & & & 0 \leq i \leq I-1\\
 %
-& & & P_{fsij0} = q_{fj} & \forall & 0 \leq f \leq F-1, \tag*{eqn 7f}\\
+& & & P_{fsij0} = q_{fj} & \forall & 0 \leq f \leq F-1, \tag*{eqn 8f}\\
 & & & & & 0 \leq s \leq S-1,\\
 & & & & & 0 \leq i \leq I-1,\\
 & & & & & 0 \leq j \leq J\\
 %
-& & & P_{fsijr} = \left(1 - \right) \sum_{k=0}^{J-1} \frac{1 - q_k}{q_k} P_{f,s,i,k,r-1} Y_{f,s,i,k,r-1}  & \forall & 0 \leq f \leq F-1, \tag*{eqn 7g}\\
+& & & P_{fsijr} = \left(1 - \right) \sum_{k=0}^{J-1} \frac{1 - q_k}{q_k} P_{f,s,i,k,r-1} Y_{f,s,i,k,r-1}  & \forall & 0 \leq f \leq F-1, \tag*{eqn 8g}\\
 & & & & & 0 \leq s \leq S-1,\\
 & & & & & 0 \leq i \leq I-1,\\
 & & & & & 0 \leq j \leq J,\\
 & & & & & 1 \leq r \leq R\\
 %
-& & & X_j, Y_{fsijr} \in {0,1} & \forall & 0 \leq f \leq F-1, \tag*{eqn 7h}\\
+& & & X_j, Y_{fsijr} \in {0,1} & \forall & 0 \leq f \leq F-1, \tag*{eqn 8h}\\
 & & & & & 0 \leq s \leq S-1,\\
 & & & & & 0 \leq i \leq I-1,\\
 & & & & & 0 \leq j \leq J,\\
 & & & & & 0 \leq r \leq R\\
 \end{align*}
 
-The objective function for the reliable formulation is the same as for the unreliable formation (eqn 3a). Similar to the unreliable formulation, constraints (eqn 3b) and (eqn 7a) ensure that the amount-based and space-based targets are met. Constraint (eqns 7b--7c) ensure that each planning unit is only assigned to one backup $r$-level for $i \in I$. Constraints (eqn 7d) ensure that only selected planning units are assigned to demand points $i \in I$. Constraints (eqn 7e) ensure that the imaginary planning unit is always assigned to the highest backup $r$-level. Constraints (eqns 7f--7g) determine the probability that planning unit $j$ will be used to sample demand point $i \in I$ for $s \in S$ and $f \in F$ [see @r16 for more information]. Constraints (eqn 7h) ensure that the $X$ and $Y$ variables are binary.
+The objective function for the reliable formulation is the same as for the unreliable formation (eqn 3a). Similar to the unreliable formulation, constraints (eqn 3b) and (eqn 8a) ensure that the amount-based and space-based targets are met. Constraint (eqns 8b--7c) ensure that each planning unit is only assigned to one backup $r$-level for $i \in I$. Constraints (eqn 8d) ensure that only selected planning units are assigned to demand points $i \in I$. Constraints (eqn 8e) ensure that the imaginary planning unit is always assigned to the highest backup $r$-level. Constraints (eqns 8f--8g) determine the probability that planning unit $j$ will be used to sample demand point $i \in I$ for $s \in S$ and $f \in F$ [see @r16 for more information]. Constraints (eqn 8h) ensure that the $X$ and $Y$ variables are binary.
 
-The reliable formulation is non-linear. However, the non-linear components can be linearized. First--as discussed in the main text--the expression $X_j X_k$ in (eqn 3a) can be linearized using methods described by Beyer et al. [-@r426]. Second, the expression $P_{fsijr} Y_{fsijr}$ in (eqn 7a) can be linearized using techniques described by Sherali and Alameddine [-@r20] as implemented in Cui et al. [-@r16].
+The reliable formulation is non-linear. However, the non-linear components can be linearized. First--as discussed in the main text--the expression $X_j X_k$ in (eqn 3a) can be linearized using methods described by Beyer et al. [-@r426]. Second, the expression $P_{fsijr} Y_{fsijr}$ in (eqn 8a) can be linearized using techniques described by Sherali and Alameddine [-@r20] as implemented in Cui et al. [-@r16].
 
 ## Figures 
 ```{r, echo=FALSE, fig.height=8, fig.width=8.5, fig.cap='Attribute spaces used in the first case-study. Each panel shows a the distribution of a solution in environmental space and how it samples the realized niche for a different species. The left column of panels shows the solution generated using amount targets. The right column of panels shows the solution generated using amount and niche targets. Each column of panels corresponds to a different species. Hexagons show the distribution of demand points. The color of each heaxgon denotes the weighted frequency of demand points inside it. Points represent the environmental conditions associated with planning units inside the species geographic range that were selected for preservation in a given solution.'}
