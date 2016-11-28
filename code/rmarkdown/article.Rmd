@@ -31,7 +31,7 @@ bibliography: references.bib
 csl: reference-style.csl
 ---
 
-Short running title: Representative and adequate prioritizations
+Short running title: Representative and adequate prioritizations  
 Tweetable abstract: Make smarter spatial conservation decisions that foster biodiversity processes using raptr R package  
 Abstract word count: 346 / 350  
 Total word count: 6974 / 7000  
