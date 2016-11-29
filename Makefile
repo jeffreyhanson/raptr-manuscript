@@ -5,7 +5,7 @@ MODE=release
 # MODE=debug
 
 # main operations
-all: analysis article cover-letter
+all: analysis article
 
 clean:
 	@rm -f *.aux *.bbl *.blg *.log *.pdf *.bak *~ *.Rout */*.Rout */*.pdf */*.aux */*.log *.rda */*.rda */*/*.rda data/intermediate/*.rda data/intermediate/*.Rout data/intermediate/*.rds
@@ -53,19 +53,17 @@ article/cover-letter.pdf: code/rmarkdown/cover-letter.tex
 	rm -f  code/rmarkdown/cover-letter.log
 	rm -f  code/rmarkdown/cover-letter.out
 
-article/article.docx: code/rmarkdown/preamble.tex code/rmarkdown/text.tex code/rmarkdown/figures.tex code/rmarkdown/supporting-information.tex code/rmarkdown/article.Rmd
+article/article.docx: code/rmarkdown/preamble.tex code/rmarkdown/text.tex code/rmarkdown/figures.tex code/rmarkdown/article.Rmd
 	-R --no-save -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/article.Rmd')"
 	rm -f code/rmarkdown/article.aux
 	rm -f code/rmarkdown/article.log
 	rm -f code/rmarkdown/article.sta
 	cd code/rmarkdown && latexpand article.tex > docx.tex
 	cp -R code/rmarkdown/figures_files code/rmarkdown/figures_files_docx
-	cp -R code/rmarkdown/supporting-information_files code/rmarkdown/supporting-information_files_docx
 	R --no-save -e "sapply(dir('code/rmarkdown/figures_files_docx/figure-latex', full.names=TRUE), function(x) {system(paste('convert -density 300 -quality 85', x, gsub('.pdf', '.png', x, fixed=TRUE)))})"
 	R --no-save -e "sapply(dir('code/rmarkdown/supporting-information_files_docx/figure-latex', full.names=TRUE), function(x) {system(paste('convert -density 300 -quality 85', x, gsub('.pdf', '.png', x, fixed=TRUE)))})"
 	R --no-save -e "x <- readLines('code/rmarkdown/docx.tex'); pos <- grep('\\\\includegraphics', x, fixed=TRUE); x[pos] <- gsub('.pdf}', '.png}', x[pos], fixed=TRUE); writeLines(x, 'code/rmarkdown/docx.tex')"
 	R --no-save -e "x <- readLines('code/rmarkdown/docx.tex'); pos <- grep('figures_files', x, fixed=TRUE); x[pos] <- gsub('figures_files', 'figures_files_docx', x[pos], fixed=TRUE); writeLines(x, 'code/rmarkdown/docx.tex')"
-	R --no-save -e "x <- readLines('code/rmarkdown/docx.tex'); pos <- grep('supporting-information_files', x, fixed=TRUE); x[pos] <- gsub('supporting-information_files', 'supporting-information_files_docx', x[pos], fixed=TRUE); writeLines(x, 'code/rmarkdown/docx.tex')"
 	cd code/rmarkdown;\
 	pandoc +RTS -K512m -RTS docx.tex -o article.docx --highlight-style tango --latex-engine pdflatex --include-in-header preamble.tex --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
 	mv code/rmarkdown/article.docx article/
@@ -73,9 +71,8 @@ article/article.docx: code/rmarkdown/preamble.tex code/rmarkdown/text.tex code/r
 	rm -f code/rmarkdown/article.utf8.md
 	rm -f code/rmarkdown/docx.tex
 	rm -rf code/rmarkdown/figures_files_docx
-	rm -rf code/rmarkdown/supporting-information_files_docx
 
-article/article.pdf: code/rmarkdown/preamble.tex code/rmarkdown/text.tex code/rmarkdown/figures.tex code/rmarkdown/supporting-information.tex code/rmarkdown/article.Rmd
+article/article.pdf: code/rmarkdown/preamble.tex code/rmarkdown/text.tex code/rmarkdown/figures.tex code/rmarkdown/article.Rmd
 	-R --no-save -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/article.Rmd')"
 	rm -f code/rmarkdown/article.aux
 	rm -f code/rmarkdown/article.log

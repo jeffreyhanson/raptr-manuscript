@@ -7,7 +7,6 @@ author: |
   | $^3$The Nature Conservancy, South Brisbane, QLD, Australia
   | Correspondance should be addressed to jeffrey.hanson@uqconnect.edu.au
 date: "`r format(Sys.time(), '%d %B %Y')`"
-tags: ["conservation", "biodiversity", "MILP", "reserve-selection", "optimization", "protected area"]
 output:
   rmarkdown::pdf_document:
     toc: false
@@ -22,8 +21,6 @@ bibliography: references.bib
 csl: reference-style.csl
 ---
 
-Short running title: Representative and adequate prioritizations  
-Short abstract: Make smarter spatial conservation decisions that foster biodiversity processes using raptr R package  
 Abstract word count: 346 / 350  
 Total word count: 6974 / 7000  
 Number of references: 42  
@@ -31,8 +28,13 @@ Number of figures: 8
 Number of tables: 0  
 Number of textboxes: 0  
 Number of equations: 4  
+Short running title: Representative and adequate prioritizations  
+Short abstract: Make smarter spatial conservation decisions using the raptr R package https.github.com/jeffreyhanson/raptr  
+Keywords: conservation, biodiversity, MILP, reserve-selection, optimization, protected area  
 
 \clearpage
+
+# Summary
 
 1. An underlying aim in conservation planning is to maximize the long-term persistence of biodiversity. To fulfill this aim, the ecological and evolutionary processes that sustain biodiversity must be preserved. One way to conserve such processes at the feature level (eg. species, ecosystem) is to preserve a representative sample of the physical attributes that underpin them across the feature's geographic distribution. For example, the long-term persistence of a species may depend on its ability to adapt to new climatic conditions. By conserving individuals with the ability to persist in a range of conditions--physical attributes associated with adaptation--protected areas can foster evolutionary processes. Despite this, current reserve selection methods overwhelmingly focus on securing an adequate proportion of features' geographic ranges and little attention has been directed towards capturing a representative sample.
 
