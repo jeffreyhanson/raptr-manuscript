@@ -36,17 +36,14 @@ Number of equations: 4
 
 1. An underlying aim in conservation planning is to maximize the long-term persistence of biodiversity. To fulfill this aim, the ecological and evolutionary processes that sustain biodiversity must be preserved. One way to conserve such processes at the feature level (eg. species, ecosystem) is to preserve a representative sample of the physical attributes that underpin them across the feature's geographic distribution. For example, the long-term persistence of a species may depend on its ability to adapt to new climatic conditions. By conserving individuals with the ability to persist in a range of conditions--physical attributes associated with adaptation--protected areas can foster evolutionary processes. Despite this, current reserve selection methods overwhelmingly focus on securing an adequate proportion of features' geographic ranges and little attention has been directed towards capturing a representative sample.
 
-2. To address this issue, we developed the \\texttt{raptr R} package to guide reserve selection using targets for representing spatially explicit variables that underpin biodiversity processes as well as more typical area protection targets. Users set "amount targets"--similar to conventional methods--to secure a sufficient proportion of the features' geographic distributions. Additionally, users set "space targets" to secure a representative sample of variation in ecologically or evolutionary relevant attributes (eg. climatic or genetic variation). We demonstrate the functionality of this package using simulations and two case studies. We generate solutions using just amount targets--representing conventional methods--and compare them with solutions generated using amount and space targets.
+2. To address this issue, we developed the \texttt{raptr R} package to guide reserve selection using targets for representing spatially explicit variables that underpin biodiversity processes as well as more typical area protection targets. Users set "amount targets"--similar to conventional methods--to secure a sufficient proportion of the features' geographic distributions. Additionally, users set "space targets" to secure a representative sample of variation in ecologically or evolutionary relevant attributes (eg. climatic or genetic variation). We demonstrate the functionality of this package using simulations and two case studies. We generate solutions using just amount targets--representing conventional methods--and compare them with solutions generated using amount and space targets.
 
 3. We show that different solutions emerge when explicitly considering within feature representation in reserve selection. Our simulations suggest that targeting representativeness is particularly important for biodiversity features that have multimodal distributions in an attribute space. The case studies show that setting space targets can result in solutions that conserve a much more representative sample of features--and this can be achieved with only a slight increase in reserve size. 
 
-4. The \\texttt{raptr R} package provides a toolkit for making spatial conservation prioritizations that secure an adequate and representative sample of features. By targeting representativeness, prioritizations may have a greater chance of achieving long-term biodiversity persistence.
+4. The \texttt{raptr R} package provides a toolkit for making spatial conservation prioritizations that secure an adequate and representative sample of features. By targeting representativeness, prioritizations may have a greater chance of achieving long-term biodiversity persistence.
 
 \clearpage 
 \input{./text.tex}
 
 \clearpage 
 \input{./figures.tex}
-
-\clearpage 
-\input{./supporting-information.tex}

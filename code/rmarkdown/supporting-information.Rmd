@@ -1,12 +1,18 @@
 ---
+title: "Supporting Information"
+fontsize: 11pt
+documentclass: article
+subparagraph: true
 bibliography: references.bib
 csl: reference-style.csl
 output:
   rmarkdown::pdf_document:
     fig_caption: yes
     keep_tex: yes
+    includes:
+      in_header: preamble.tex
 ---
-# Supporting Information
+
 
 ```{r, include=FALSE}
 # set wd
