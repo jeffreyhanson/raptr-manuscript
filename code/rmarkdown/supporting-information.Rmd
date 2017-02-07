@@ -126,7 +126,27 @@ The objective function for the reliable formulation is the same as for the unrel
 
 The reliable formulation is non-linear. However, the non-linear components can be linearized. First--as discussed in the main text--the expression $X_j X_k$ in (eqn 3a) can be linearized using methods described by Beyer et al. [-@r426]. Second, the expression $P_{fsijr} Y_{fsijr}$ in (eqn 8a) can be linearized using techniques described by Sherali and Alameddine [-@r20] as implemented in Cui et al. [-@r16].
 
-## Figures 
+
+# Appendix S2
+
+We conducted a benchmark analysis to understand how much time would be required to solve different sized conservation planning problems. Additionally, we also aimed to understand how the time required to solve a problem varied depending on which formulation was used (unreliable or reliable), and if fragmentation constraints were used.
+
+## METHODS 
+
+We generated simulated data sets conservation planning problems using varying number of features `r paste(benchmark.params.LST$number.of.features, collapse=',')` and planning units (paste(benchmark.params.LST$number.of.planning.units, collapse=',')). For a given number of planning units and features, the data was simulated using the following steps. The planning units were simulated as squares that were arranged in a grid or near-grid like fashion. The units' costs were set to one. The spatial distribution of features were generated using binary spatially autocorrelated random fields [using the \texttt{RandomFields R} package; @rXXX]. If features were associated with less than two occupied planning units, these features were set to occupy two randomly selected planning units. All occupied planning units were set to have a probability of occupancy of `r benchmark.params.LST[[MODE]]$occupancy.probability`. Similar to the simulated data sets used in the main text, a geographic attribute space was used for each feature. The features' demand points were set as the centroids of the planning units that they occupied, and were weighted by the units' probability of occupancy. All problems used amount-based targets of `r benchmark.params.LST[[MODE]]$amount.target*100` % and space-based targets of `r benchmark.params.LST[[MODE]]$space.target*100`
+
+We solved each conservation planning data set using the unreliable and reliable problem formulations (using default failure distance and level parameter) using no boundary length modifer, and using a boundary length modifier of `r max(benchmark.params.LST[[MODE]]$blm`. To assess variation in solve times, we generated and solved `r benchmark.params.LST[[MODE]]$replicates` random data sets per combination of number of features and planning units. All conservation planning problems were solved to within `r general.params.LST[[MODE]]$MIPGap * 100` % of optimality using Gurobi (version 7.0.0) and a an Intel(R) Xeon(R) CPU E5-2630 (version 3; 2.40 GHz). To provide comparable estimates for the typical user, problems were solved using `r as.english(general.params.LST[[MODE]]$threads)` threads.
+
+## RESULTS
+
+```{r, echo=FALSE, message=FALSE, fig.height=2, fig.width=2, fig.cap='insert caption here.'}
+ggplot(benchmark.results.DF, aes(x=number.planning.units, y=time, color=number.features)) +
+  geom_line() +
+  facet_wrap(~ settings)
+```
+
+
+# Figures 
 ```{r, echo=FALSE, fig.height=8, fig.width=8.5, fig.cap='Attribute spaces used in the first case-study. Each panel shows a the distribution of a solution in environmental space and how it samples the realized niche for a different species. The left column of panels shows the solution generated using amount targets. The right column of panels shows the solution generated using amount and niche targets. Each column of panels corresponds to a different species. Hexagons show the distribution of demand points. The color of each heaxgon denotes the weighted frequency of demand points inside it. Points represent the environmental conditions associated with planning units inside the species geographic range that were selected for preservation in a given solution.'}
 ## prepare data
 cs1.pu.niche.DF <- ddply(
@@ -200,7 +220,7 @@ ggplot() +
 	facet_grid(Species ~ Prioritisation)
 ```
 
-## Tables
+# Tables
 
 ```{r, echo=FALSE, results='asis'}
 # make table
@@ -240,7 +260,7 @@ readLines(curr.file)[-1] %>% paste0(collapse='\n') %>%
 	cat()
 ```
 
-## Appendix S2
+
 
 
 

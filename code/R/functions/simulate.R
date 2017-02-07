@@ -78,15 +78,21 @@ simulate_species <- function(x, n=1, model=RandomFields::RMgauss(),
 #' @return \code{RapData}.
 simulate.problem.data <- function(number.planning.units, number.features, probability.of.occupancy,
                                   amount.target=0.2, space.target=0.8) {
-  # simulate planning units
+  # simulate landscape
   curr.landscape <- raster::raster(ncol=ceiling(sqrt(number.planning.units)), nrow=ceiling(sqrt(number.planning.units))) %>%
     setValues(1) %>%  `extent<-`(c(0,1,0,1))
-  curr.pus <- rasterToPolygons(curr.landscape, n=4)
-  curr.pus <- curr.pus[seq_len(number.planning.units),]
   
   # simulate species
   curr.spp <- simulate_species(curr.landscape, n=number.features, 
                 model=RPbernoulli(RMgauss()), transform=identity)
+  
+  # change extents so that polygon boundarys are not too small
+  extent(curr.landscape) <- c(0, ceiling(sqrt(number.planning.units)), 0, ceiling(sqrt(number.planning.units)))
+  extent(curr.spp) <- extent(curr.landscape)
+  
+  # simulate pus
+  curr.pus <- rasterToPolygons(curr.landscape, n=4)
+  curr.pus <- curr.pus[seq_len(number.planning.units),]
 
   # find out which species are in which pus
   pu.pts <- gCentroid(curr.pus, byid=TRUE)
