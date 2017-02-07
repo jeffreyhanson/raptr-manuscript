@@ -1,5 +1,5 @@
 ## load .rda
-checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE)
+checkpoint::checkpoint('2016-11-26', R.version='3.3.2', scanForPackages=FALSE)
 session::restore.session('data/intermediate/04-case-study-2.rda')
 load('data/intermediate/03-case-study-1.rda')
 load('data/intermediate/02-simulations.rda')
@@ -27,7 +27,7 @@ cs1.nmds.MoransI <- llply(
 					curr.col <- curr.DF[[i]]
 					curr.pos <- which(!is.na(curr.DF[[i]]))
 					return(
-						Moran.I(curr.DF[[i]][curr.pos], cs2.pu.inv.dists[curr.pos, curr.pos])
+						Moran.I(curr.DF[[i]][curr.pos], cs2.pu.inv.dists[curr.pos, curr.pos], scale=TRUE)
 					)
 				}
 			)

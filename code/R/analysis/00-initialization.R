@@ -12,7 +12,7 @@ if (length(args)>0) {
 # set checkpoint
 if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
 if (!file.exists('~/.checkpoint')) dir.create('~/.checkpoint')
-checkpoint::checkpoint('2016-11-26', R.version='3.3.1')
+checkpoint::checkpoint('2016-11-26', R.version='3.3.2')
 if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
 
 # load CRAN packages
@@ -45,6 +45,7 @@ library(adehabitatHR)
 library(vegan)
 library(fields)
 library(ape)
+library(RandomFields)
 
 library(Hmisc)
 library(pander)

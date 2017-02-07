@@ -5,5 +5,5 @@ threads = 1
 MIPGap = 0.99
 
 [release]
-threads = 1
+threads = 4
 MIPGap = 0.1

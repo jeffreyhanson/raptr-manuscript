@@ -45,6 +45,8 @@ cover-letter: article/cover-letter.pdf
 
 article: article/article.pdf article/supporting-information.pdf
 
+rev-comments: article/reviewer-comments.pdf
+
 article/cover-letter.pdf: code/rmarkdown/cover-letter.tex
 	cd code/rmarkdown;\
 	pdflatex cover-letter.tex
@@ -54,7 +56,7 @@ article/cover-letter.pdf: code/rmarkdown/cover-letter.tex
 	rm -f  code/rmarkdown/cover-letter.out
 
 article/article.docx: code/rmarkdown/preamble.tex code/rmarkdown/text.tex code/rmarkdown/figures.tex code/rmarkdown/article.Rmd
-	-R --no-save -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/article.Rmd')"
+	-R --no-save -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.2', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/article.Rmd')"
 	rm -f code/rmarkdown/article.aux
 	rm -f code/rmarkdown/article.log
 	rm -f code/rmarkdown/article.sta
@@ -73,21 +75,21 @@ article/article.docx: code/rmarkdown/preamble.tex code/rmarkdown/text.tex code/r
 	rm -rf code/rmarkdown/figures_files_docx
 
 article/article.pdf: code/rmarkdown/preamble.tex code/rmarkdown/text.tex code/rmarkdown/figures.tex code/rmarkdown/article.Rmd
-	-R --no-save -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/article.Rmd')"
+	-R --no-save -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.2', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/article.Rmd')"
 	rm -f code/rmarkdown/article.aux
 	rm -f code/rmarkdown/article.log
 	rm -f code/rmarkdown/article.sta
 	mv code/rmarkdown/article.pdf article/
 
 article/supporting-information.pdf: code/rmarkdown/preamble.tex code/rmarkdown/supporting-information.Rmd code/rmarkdown/references.bib code/rmarkdown/reference-style.csl
-	R --no-save -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/supporting-information.Rmd')"
+	R --no-save -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.2', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/supporting-information.Rmd')"
 	rm -f code/rmarkdown/supporting-information.md
 	rm -f code/rmarkdown/supporting-information.utf8.md
 	rm -f code/rmarkdown/supporting-information.knit.md
 	mv code/rmarkdown/supporting-information.pdf article/
 
 code/rmarkdown/text.tex: code/rmarkdown/text.Rmd code/rmarkdown/references.bib code/rmarkdown/reference-style.csl
-	-R --no-save --no-save -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/text.Rmd', clean=FALSE)"
+	-R --no-save --no-save -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.2', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/text.Rmd', clean=FALSE)"
 	cd code/rmarkdown;\
 	/usr/bin/pandoc +RTS -K512m -RTS text.utf8.md --to latex --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output text.tex --highlight-style tango --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
 	rm -f code/rmarkdown/text.md -f
@@ -95,17 +97,26 @@ code/rmarkdown/text.tex: code/rmarkdown/text.Rmd code/rmarkdown/references.bib c
 	rm -f code/rmarkdown/text.knit.md
 
 code/rmarkdown/figures.tex: code/rmarkdown/figures.Rmd
-	-R --no-save -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/figures.Rmd', clean=FALSE)"
+	-R --no-save -e "checkpoint::checkpoint('2016-11-26', R.version='3.3.2', scanForPackages=FALSE);rmarkdown::render('code/rmarkdown/figures.Rmd', clean=FALSE)"
 	cd code/rmarkdown;\
 	/usr/bin/pandoc +RTS -K512m -RTS figures.utf8.md --to latex --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output figures.tex --highlight-style tango --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
 	rm -f code/rmarkdown/figures.md
 	rm -f code/rmarkdown/figures.utf8.md
 	rm -f code/rmarkdown/figures.knit.md
 
+article/reviewer-comments.pdf: code/rmarkdown/reviewer-comments.md
+	cd code/rmarkdown;\
+	/usr/bin/pandoc reviewer-comments.md --output reviewer-comments.pdf --variable 'geometry:margin=1in'
+	mv code/rmarkdown/reviewer-comments.pdf article/reviewer-comments.pdf
+
 # commands for running analysis
 analysis: data/final/results.rda
 
-data/final/results.rda: data/intermediate/05-*.rda code/R/analysis/06-*.R
+data/final/results.rda: data/intermediate/06-*.rda code/R/analysis/07-*.R
+	R CMD BATCH --no-restore --no-save code/R/analysis/07-*.R
+	mv *.Rout data/intermediate/
+
+data/intermediate/06-*.rda: data/intermediate/05-*.rda code/R/analysis/06-*.R code/parameters/benchmark.toml
 	R CMD BATCH --no-restore --no-save code/R/analysis/06-*.R
 	mv *.Rout data/intermediate/
 

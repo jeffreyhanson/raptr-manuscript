@@ -1,0 +1,29 @@
+title = "benchmark parameters"
+
+[debug]
+unreliable.number.of.features = [10, 50, 100]
+unreliable.number.of.planning.units = [10, 50, 100]
+
+reliable.number.of.features = [10, 20, 30]
+reliable.number.of.planning.units = [10, 20, 30]
+
+replicates = 2
+blm = [0, 5]
+amount.target = 0.2
+space.target = 0.5
+occupancy.probability = 0.9
+
+[release]
+unreliable.number.of.features = [10, 100, 1000, 10000, 100000]
+unreliable.number.of.planning.units = [10, 100, 1000, 10000, 100000]
+unreliable.occupancy.probability = 1
+
+reliable.number.of.features = [10, 100, 1000, 10000]
+reliable.number.of.planning.units = [10, 100, 1000, 10000]
+reliable.occupancy.probability = 0.9
+
+replicates = 10
+amount.target = 0.2
+space.target = 0.5
+occupancy.probability = 0.9
+blm = [0, 5]
