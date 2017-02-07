@@ -116,11 +116,11 @@ data/final/results.rda: data/intermediate/06-*.rda code/R/analysis/07-*.R
 	R CMD BATCH --no-restore --no-save code/R/analysis/07-*.R
 	mv *.Rout data/intermediate/
 
-data/intermediate/06-*.rda: data/intermediate/05-*.rda code/R/analysis/06-*.R code/parameters/benchmark.toml
+data/intermediate/06-*.rda: data/intermediate/02-*.rda data/intermediate/03-*.rda data/intermediate/04-*.rda data/intermediate/05-*.rda code/R/analysis/06-*.R
 	R CMD BATCH --no-restore --no-save code/R/analysis/06-*.R
 	mv *.Rout data/intermediate/
 
-data/intermediate/05-*.rda: data/intermediate/02-*.rda data/intermediate/03-*.rda data/intermediate/04-*.rda code/R/analysis/05-*.R
+data/intermediate/05-*.rda: data/intermediate/00-*.rda code/R/analysis/05-*.R code/parameters/benchmark.toml
 	R CMD BATCH --no-restore --no-save code/R/analysis/05-*.R
 	mv *.Rout data/intermediate/
 

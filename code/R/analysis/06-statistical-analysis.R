@@ -3,10 +3,7 @@ checkpoint::checkpoint('2016-11-26', R.version='3.3.2', scanForPackages=FALSE)
 session::restore.session('data/intermediate/04-case-study-2.rda')
 load('data/intermediate/03-case-study-1.rda')
 load('data/intermediate/02-simulations.rda')
-
-## simulation study
-
-## case-study 1
+load('data/intermediate/05-benchmark-analysis.rda')
 
 ## case-study 2
 # generate inverse distance matrix
