@@ -140,7 +140,17 @@ We solved each conservation planning data set using the unreliable and reliable 
 ## RESULTS
 
 ```{r, echo=FALSE, message=FALSE, fig.height=2, fig.width=2, fig.cap='insert caption here.'}
-plot(1)
+# prepare data
+plot.DF <- benchmark.results.DF %>%
+  mutate(blm = paste0('BLM = ',blm))
+
+# make plot
+ggplot(plot.DF, aes(x=number.planning.units, y=time, color=number.features)) +
+  geom_boxplot() +
+  facet_grid(formulation ~ blm) +
+  theme_classic() +
+  xlab('Number of planning units) + ylab('Solve time (s)') +
+  theme(axis.line.x=element_line(), axis.line.y=element_line())
 ```
 
 
