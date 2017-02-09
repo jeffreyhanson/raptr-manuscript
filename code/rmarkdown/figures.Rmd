@@ -15,7 +15,7 @@ knitr::opts_knit$set(root.dir=normalizePath('../..'))
 ```{r, include=FALSE}
 ## initialization
 # load .rda file
-checkpoint::checkpoint('2016-11-26', R.version='3.3.1', scanForPackages=FALSE)
+checkpoint::checkpoint('2016-11-26', R.version='3.3.2', scanForPackages=FALSE)
 try(session::restore.session('data/final/results.rda'))
 
 # set options
@@ -54,9 +54,10 @@ column.width <- 2.75591
 # population data
 populations <- data.frame(
 	population=LETTERS[1:4],
-	temperature=c(22,29,21.6,34),
-	rainfall=c(6,12,5.5,6)
+	temperature=c(35,34,31,21.6),
+	rainfall=c(4.5,5,9.5,5.5)   
 )
+
 # demand point data
 make.dp <- function(x, n, pad.percent=0.2) {
 	padding<-diff(range(x))*pad.percent
@@ -68,12 +69,12 @@ demand.points <- expand.grid(
 )
 
 ## plot data
-ggplot(aes(x=temperature, y=rainfall), data=populations) +
+ggplot(aes(x=rainfall, y=temperature), data=populations) +
 	geom_point(data=demand.points, fill='gray70') +
 	geom_text(aes(label=population), size=6) +
 	theme_classic() +
-	xlab(expression('Temperature ('*degree*'C)')) +
-	ylab('Rainfall (mm)') +
+	ylab(expression('Temperature ('*degree*'C)')) +
+	xlab('Rainfall (mm)') +
 	theme(axis.line.x=element_line(), axis.line.y=element_line())
 ```
 
