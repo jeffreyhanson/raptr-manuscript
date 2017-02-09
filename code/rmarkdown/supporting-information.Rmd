@@ -139,20 +139,25 @@ We solved each conservation planning data set using the unreliable and reliable 
 
 ## RESULTS
 
-```{r, echo=FALSE, message=FALSE, fig.height=2, fig.width=2, fig.cap='insert caption here.'}
+```{r, echo=FALSE, message=FALSE, fig.height=5.0, fig.width=4.5, fig.cap='Benchmark analysis. Boxplots show the amount of time required to solve a problem under a given set of parameters. Note that times are shown on a log_{10} scale.'}
 # prepare data
-plot.DF <- benchmark.results.DF %>%
-  mutate(blm = paste0('BLM = ',blm))
-
+plot.DF <- benchmark.DF %>%
+  mutate(blm = paste0('BLM = ',blm)) %>% 
+  mutate(number.features=factor(number.features)) %>%
+  mutate(formulation = paste0(formulation, ' formulation')) %>%
+  mutate(number.planning.units=factor(number.planning.units))
 # make plot
 ggplot(plot.DF, aes(x=number.planning.units, y=time, color=number.features)) +
   geom_boxplot() +
-  facet_grid(formulation ~ blm) +
-  theme_classic() +
-  xlab('Number of planning units) + ylab('Solve time (s)') +
-  theme(axis.line.x=element_line(), axis.line.y=element_line())
+  facet_grid(blm ~ formulation ) +
+  scale_y_continuous(trans='log10') +
+  xlab('Number of planning units') + ylab('Solve time (s)') +
+  labs(color='Number of features') +
+  theme(axis.line.x=element_line(), axis.line.y=element_line(),
+    strip.background = element_rect(fill='grey20'),
+    strip.text = element_text(color='white', size=12),
+    legend.position='bottom')
 ```
-
 
 # Figures 
 ```{r, echo=FALSE, fig.height=8, fig.width=8.5, fig.cap='Attribute spaces used in the first case-study. Each panel shows a the distribution of a solution in environmental space and how it samples the realized niche for a different species. The left column of panels shows the solution generated using amount targets. The right column of panels shows the solution generated using amount and niche targets. Each column of panels corresponds to a different species. Hexagons show the distribution of demand points. The color of each heaxgon denotes the weighted frequency of demand points inside it. Points represent the environmental conditions associated with planning units inside the species geographic range that were selected for preservation in a given solution.'}
@@ -267,9 +272,5 @@ readLines(curr.file)[-1] %>% paste0(collapse='\n') %>%
 	gsub(pattern='bottomrule', replacement='bottomrule[1pt]', fixed=TRUE) %>%
 	cat()
 ```
-
-
-
-
 
 ## References
