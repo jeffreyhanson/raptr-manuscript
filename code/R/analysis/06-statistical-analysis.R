@@ -66,6 +66,4 @@ amount.represented.species.names <- tolower(amount.represented.species.names)
 amount.not.represented.species.names <- tolower(amount.not.represented.species.names)
 
 ## save workspace
-save.session('data/intermediate/05-statistical-analysis.rda', compress='xz')
- 
-
+save.session('data/intermediate/06-statistical-analysis.rda', compress='xz')

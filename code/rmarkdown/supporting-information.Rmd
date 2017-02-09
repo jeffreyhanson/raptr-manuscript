@@ -140,9 +140,7 @@ We solved each conservation planning data set using the unreliable and reliable 
 ## RESULTS
 
 ```{r, echo=FALSE, message=FALSE, fig.height=2, fig.width=2, fig.cap='insert caption here.'}
-ggplot(benchmark.results.DF, aes(x=number.planning.units, y=time, color=number.features)) +
-  geom_line() +
-  facet_wrap(~ settings)
+plot(1)
 ```
 
 

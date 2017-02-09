@@ -72,5 +72,5 @@ benchmark.DF <- unreliable.benchmark.DF %>%
   rbind(reliable.benchmark.DF %>% mutate(formulation='reliable'))
   
 ## save workspace
-save.session('data/intermediate/06-benchmark-analysis.rda', compress='xz')
+save.session('data/intermediate/05-benchmark-analysis.rda', compress='xz')
 
