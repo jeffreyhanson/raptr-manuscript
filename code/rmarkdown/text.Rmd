@@ -113,7 +113,7 @@ The unreliable formulation is non-linear. However, the non-linear components can
 
 # Examples
 
-To understand and showcase the behavior of the unreliable problem, we conducted a simulation study and two case studies. These studies involved generating solutions using only amount targets to represent prioritizations generated using conventional methods (eg. \texttt{Marxan}), and solutions using amount and space targets using the unreliable formulation. By comparing these solutions, we can gauge the benefits of explicitly including space targets in reserve selection. All analyses were performed in \texttt{R} [version `r getRversion()`; @r192].
+To understand and showcase the behavior of the unreliable problem, we conducted a simulation study and two case studies. These studies involved generating solutions using only amount targets to represent prioritizations generated using conventional methods (eg. \texttt{Marxan}), and solutions using amount and space targets using the unreliable formulation. By comparing these solutions, we can gauge the benefits of explicitly including space targets in reserve selection. We have also conducted a benchmark analysis to estimate how long it would take to solve various sized problem (Appendix S2). All analyses were performed in \texttt{R} [version `r getRversion()`; @r192] and all optimization problems were solved to within `r general.params.LST[[MODE]]$MIPGap * 100` % of optimality.
 
 ## SIMULATION STUDY
 ### Methods

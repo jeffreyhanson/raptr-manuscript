@@ -12,9 +12,9 @@ amount.target = 0.2
 space.target = 0.5
 
 [release]
-unreliable.number.of.features = [10, 100, 1000, 10000, 25000, 50000]
-unreliable.number.of.planning.units = [10, 100, 1000, 10000, 25000, 50000]
-reliable.number.of.features = [10, 50, 100, 500]
+unreliable.number.of.features = [10, 50, 100]
+unreliable.number.of.planning.units = [10, 100, 500, 1000]
+reliable.number.of.features = [10, 50, 100]
 reliable.number.of.planning.units = [10, 50, 100, 500]
 occupancy.probability = 0.9
 replicates = 10
