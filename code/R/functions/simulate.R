@@ -18,7 +18,7 @@
 #'
 #' @return \code{\link[raster]{RasterStack-class}} object with a
 #'   layer for each species.
-#' 
+#'
 #' @seealso \code{\link[RandomFields]{RFsimulate}},
 #'   \code{\link{simulate_cost}}, \code{\link{simulate_species}}.
 #'
@@ -53,7 +53,7 @@ simulate_data <- function(x, n, model, transform=identity, ...) {
 #'
 #' Generates a random set of species using random field models. By default,
 #' the output will contain values between zero and one.
-#' 
+#'
 #' @inheritParams simulate_data
 #'
 #' @return \code{\link[raster]{RasterStack-class}} object.
@@ -67,7 +67,7 @@ simulate_species <- function(x, n=1, model=RandomFields::RMgauss(),
 
 #' Simulate problem data
 #'
-#' Simulates data for a conservation planning problem. 
+#' Simulates data for a conservation planning problem.
 #'
 #' @param number.planning.units \code{integer} number of planning units in problem.
 #' @param number.features \code{integer} number of features in problem.
@@ -81,15 +81,15 @@ simulate.problem.data <- function(number.planning.units, number.features, probab
   # simulate landscape
   curr.landscape <- raster::raster(ncol=ceiling(sqrt(number.planning.units)), nrow=ceiling(sqrt(number.planning.units))) %>%
     setValues(1) %>%  `extent<-`(c(0,1,0,1))
-  
+
   # simulate species
-  curr.spp <- simulate_species(curr.landscape, n=number.features, 
+  curr.spp <- simulate_species(curr.landscape, n=number.features,
                 model=RPbernoulli(RMgauss()), transform=identity)
-  
+
   # change extents so that polygon boundarys are not too small
   extent(curr.landscape) <- c(0, ceiling(sqrt(number.planning.units)), 0, ceiling(sqrt(number.planning.units)))
   extent(curr.spp) <- extent(curr.landscape)
-  
+
   # simulate pus
   curr.pus <- rasterToPolygons(curr.landscape, n=4)
   curr.pus <- curr.pus[seq_len(number.planning.units),]
@@ -102,7 +102,7 @@ simulate.problem.data <- function(number.planning.units, number.features, probab
   for (j in which(apply(mtx, 2, sum) < 2)) {
     mtx[sample.int(nrow(mtx), size=2),j] <- probability.of.occupancy
   }
-  
+
   # create AttributeSpace object
   curr.attr.spaces <- AttributeSpaces(
     lapply(seq_len(nlayers(curr.spp)), function(j) {
@@ -120,7 +120,7 @@ simulate.problem.data <- function(number.planning.units, number.features, probab
     }),
     name='geographic'
   )
-  
+
   # create data.frame with species and space targets
   curr.targets <- data.frame(
     species=seq_len(nlayers(curr.spp)),
@@ -139,7 +139,7 @@ simulate.problem.data <- function(number.planning.units, number.features, probab
     value=c(mtx)
   )
   curr.pu.occurrences <- curr.pu.occurrences[curr.pu.occurrences[[3]]>0,]
-  
+
   # compile data object
   curr.rd <- RapData(
     data.frame(
@@ -154,7 +154,7 @@ simulate.problem.data <- function(number.planning.units, number.features, probab
     calcBoundaryData(curr.pus),
     SpatialPolygons2PolySet(curr.pus)
   )
-  
+
   # return result
   return(curr.rd)
 }

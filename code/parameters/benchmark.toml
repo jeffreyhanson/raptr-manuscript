@@ -1,23 +1,33 @@
 title = "benchmark parameters"
 
 [debug]
-unreliable.number.of.features = [5, 10, 15, 20]
-unreliable.number.of.planning.units = [5, 10, 15, 20]
-reliable.number.of.features = [5, 10, 15, 20]
-reliable.number.of.planning.units = [5, 10, 15, 20]
+number.of.features = [[5, 10, 15, 20],
+                      [5, 10, 15, 20],
+                      [5, 10, 15, 20],
+                      [5, 10, 15, 20]]
+planning.units = [[5, 10, 15, 20],
+                  [5, 10, 15, 20],
+                  [5, 10, 15, 20],
+                  [5, 10, 15, 20]]
+formulation = ["unreliable", "unreliable", "reliable", "reliable"]
+blm = [0, 0, 5, 5]
 occupancy.probability = 0.9
 replicates = 3
-blm = [0, 5]
 amount.target = 0.2
 space.target = 0.5
 
 [release]
-unreliable.number.of.features = [10, 50, 100]
-unreliable.number.of.planning.units = [10, 100, 500, 1000]
-reliable.number.of.features = [10, 50, 100]
-reliable.number.of.planning.units = [10, 50, 100, 500]
+number.of.features = [[10, 25, 50],
+                      [10, 25, 50],
+                      [10, 25, 50],
+                      [10, 25, 50]]
+planning.units = [[10, 25, 50, 100, 1000],
+                  [10, 25, 50, 100],
+                  [10, 25, 50, 100],
+                  [10, 25, 50]]
+formulation = ["unreliable", "unreliable", "reliable", "reliable"]
+blm = [0, 0, 5, 5]
 occupancy.probability = 0.9
-replicates = 10
+replicates = 1
 amount.target = 0.2
 space.target = 0.5
-blm = [0, 5]
