@@ -12,6 +12,7 @@ if (length(args)>0) {
 # set checkpoint
 if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
 if (!file.exists('~/.checkpoint')) dir.create('~/.checkpoint')
+checkpoint::setSnapshot('2016-11-26')
 checkpoint::checkpoint('2016-11-26', R.version='3.3.2')
 if (!'checkpoint' %in% installed.packages()[,'Package']) install.packages('checkpoint')
 
@@ -87,6 +88,9 @@ if (!'gurobi' %in% installed.packages()[,'Package']) {
 devtools::install_github('jeffreyhanson/ggplot2', force=TRUE)
 library(ggplot2)
 
+# install bioconductor packages
+
+
 ### set parameters
 if (!exists('MODE')) MODE <- 'debug'
 cat('MODE = ',MODE,'\n')
@@ -110,5 +114,3 @@ for (x in dir(file.path('code', 'R', 'functions'), full.names=TRUE)) source(x)
 
 # save workspace
 save.session('data/intermediate/00-initialization.rda', compress='xz')
-
- 
