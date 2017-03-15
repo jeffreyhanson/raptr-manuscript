@@ -12,13 +12,13 @@ source('code/R/functions/simulate.R')
 benchmark.params.DF <- ldply(seq_along(benchmark.params.LST[[MODE]][['number.of.features']]), function(i) {
   expand.grid(number.features=benchmark.params.LST[[MODE]][['number.of.features']][[i]],
     number.planning.units=benchmark.params.LST[[MODE]][['number.of.planning.units']][[i]],
-    formulation = benchmark.params.LST[[MODE]][['formulation']],
-    blm = benchmark.params.LST[[MODE]][['blm']],
-    replicate = seq_len(benchmark.params.LST[[MODE]][['replicates']]))
+    formulation=benchmark.params.LST[[MODE]][['formulation']][[i]],
+    blm=benchmark.params.LST[[MODE]][['blm']][[i]],
+    replicate=seq_len(benchmark.params.LST[[MODE]][['replicates']]))
   }
 )
 
-benchmark.DF <- ldply(benchmark.params.DF, function(i) {
+benchmark.DF <- ldply(sample.int(nrow(benchmark.params.DF)), function(i) {
   # simulate data
   curr.rd <- simulate.problem.data(
     number.features=benchmark.params.DF[i,1],
@@ -35,6 +35,8 @@ benchmark.DF <- ldply(benchmark.params.DF, function(i) {
   } else {
     curr.ru <- RapUnsolved(RapReliableOpts(BLM=benchmark.params.DF[i,4]), curr.rd)
   }
+  # print problem object for logging
+  print(curr.ru)
   # solve problems
   curr.time <- system.time({curr.rs <- solve(curr.ru, curr.go)})
   # return results
