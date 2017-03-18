@@ -29,7 +29,8 @@ benchmark.DF <- ldply(sample.int(nrow(benchmark.params.DF)), function(i) {
   )
   # create unsolved problem
   curr.go <- GurobiOpts(MIPGap=general.params.LST[[MODE]][['MIPGap']],
-    Threads=general.params.LST[[MODE]][['threads']])
+    Threads=general.params.LST[[MODE]][['threads']],
+    TimeLimit = benchmark.params.LST[[MODE]]$time.limit)
   if (benchmark.params.DF[i,3] == "unreliable") {
     curr.ru <- RapUnsolved(RapUnreliableOpts(BLM=benchmark.params.DF[i,4]), curr.rd)
   } else {

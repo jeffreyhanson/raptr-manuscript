@@ -3,9 +3,9 @@ title: "raptr: Representative and Adequate Prioritization Toolkit in R"
 author: |
   | Jeffrey O. Hanson$^1$, Jonathan R. Rhodes$^2$, Hugh P. Possingham$^{1,3}$, Richard A. Fuller$^1$
   | $^1$School of Biological Sciences, The University of Queensland, Brisbane, QLD, Australia
-  | $^2$School of Geography, Planning and Environmental Management, The University of Queensland, Brisbane, QLD, Australia
+  | $^2$School of Earth and Environmental Sciences, The University of Queensland, Brisbane, QLD, Australia
   | $^3$The Nature Conservancy, South Brisbane, QLD, Australia
-  | Correspondance should be addressed to jeffrey.hanson@uqconnect.edu.au
+  | Correspondence should be addressed to jeffrey.hanson@uqconnect.edu.au
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   rmarkdown::pdf_document:
@@ -21,22 +21,22 @@ bibliography: references.bib
 csl: reference-style.csl
 ---
 
-Abstract word count: 347 / 350  
-Total word count: XXXX / 7000  
-Number of references: 42  
-Number of figures: 8  
-Number of tables: 0  
-Number of textboxes: 0  
-Number of equations: 4  
-Short running title: 
-Short abstract: Prioritize biodiversity processes and patterns using raptr https://github.com/jeffreyhanson/raptr  
+Abstract word count: 347 / 350
+Total word count: XXXX / 7000
+Number of references: 42
+Number of figures: 8
+Number of tables: 0
+Number of textboxes: 0
+Number of equations: 4
+Short running title:
+Short abstract: Prioritize biodiversity processes and patterns using raptr https://github.com/jeffreyhanson/raptr
 Keywords: conservation, biodiversity, mixed integer linear programming, optimization, protected areas
 
 \clearpage
 
 # Summary
 
-1. An underlying aim in conservation planning is to maximize the long-term persistence of biodiversity. To fulfill this aim, the ecological and evolutionary processes that sustain biodiversity must be preserved. One way to conserve such processes at the feature level (eg. species, ecosystem) is to preserve a sample of the feature (eg. individuals, areas) that is representative in terms of the intrinsic or extrinsic physical attributes that underpin the process of interest. For example, by conserving a sample of populations with local adaptations that is representative in terms of the full variation found in the species--physical attributes associated with adaptation--protected areas can foster adaptative processes by ensuring these adaptations are not lost. Despite this, current reserve selection methods overwhelmingly focus on securing an adequate amount of area or habitat for each feature. Little attention has been directed towards capturing a representative sample of each feature.
+1. An underlying aim in conservation planning is to maximize the long-term persistence of biodiversity. To fulfill this aim, the ecological and evolutionary processes that sustain biodiversity must be preserved. One way to conserve such processes at the feature level (eg. species, ecosystem) is to preserve a sample of the feature (eg. individuals, areas) that is representative in terms of the intrinsic or extrinsic physical attributes that underpin the process of interest. For example, by conserving a sample of populations with local adaptations that is representative in terms of the full variation found in the species--physical attributes associated with adaptation--protected areas can foster adaptive processes by ensuring these adaptations are not lost. Despite this, current reserve selection methods overwhelmingly focus on securing an adequate amount of area or habitat for each feature. Little attention has been directed towards capturing a representative sample of each feature.
 
 2. To address this issue, we developed the \texttt{raptr R} package to help guide reserve selection. Users set "amount targets"--similar to conventional methods--to ensure that solutions secure a sufficient proportion of area or habitat for each feature. Additionally, users set "space targets" to secure a representative sample of variation in ecologically or evolutionary relevant attributes (eg. environmental or genetic variation). We demonstrate the functionality of this package using simulations and two case studies. In these studies, we generated solutions using amount targets--representing conventional methods--and compared them with solutions generated using amount and space targets.
 
@@ -44,8 +44,8 @@ Keywords: conservation, biodiversity, mixed integer linear programming, optimiza
 
 4. The \texttt{raptr R} package provides a toolkit for making prioritizations that secure an adequate and representative sample of each feature. By using solutions that secure a representative sample of each feature, prioritizations may have a greater chance of achieving long-term biodiversity persistence.
 
-\clearpage 
+\clearpage
 \input{./text.tex}
 
-\clearpage 
+\clearpage
 \input{./figures.tex}
