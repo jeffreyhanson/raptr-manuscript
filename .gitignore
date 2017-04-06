@@ -17,7 +17,6 @@ gurobi.log
 # cache
 data/intermediate/*
 
-
 # do not ignore the following files
 !.gitkeep
 
@@ -27,4 +26,3 @@ article/reviewer-comments.pdf
 
 # packrat
 packrat/lib*/
-packrat/lib*/*
