@@ -21,16 +21,16 @@ bibliography: references.bib
 csl: reference-style.csl
 ---
 
-Abstract word count: 347 / 350
-Total word count: XXXX / 7000
-Number of references: 42
-Number of figures: 8
-Number of tables: 0
-Number of textboxes: 0
-Number of equations: 4
+Abstract word count: 347 / 350  
+Total word count: XXXX / 7000  
+Number of references: 42  
+Number of figures: 8  
+Number of tables: 0  
+Number of textboxes: 0  
+Number of equations: 4  
 Short running title:
-Short abstract: Prioritize biodiversity processes and patterns using raptr https://github.com/jeffreyhanson/raptr
-Keywords: conservation, biodiversity, mixed integer linear programming, optimization, protected areas
+Short abstract: Prioritize biodiversity processes and patterns using raptr https://github.com/jeffreyhanson/raptr  
+Keywords: conservation, biodiversity, mixed integer linear programming, optimization, protected areas  
 
 \clearpage
 

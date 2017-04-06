@@ -1,55 +1,60 @@
-## load .rda
-checkpoint::checkpoint('2016-11-26', R.version='3.3.2', scanForPackages=FALSE)
-session::restore.session('data/intermediate/00-initialization.rda')
+## load session
+session::restore.session("data/intermediate/00-initialization.rda")
 
 ## load parameters
-benchmark.params.LST <- parseTOML('code/parameters/benchmark.toml')
-
-# load simulation functions
-source('code/R/functions/simulate.R')
+benchmark_parameters <- "code/parameters/benchmark.toml" %>%
+                        RcppTOML::parseTOML() %>%
+                        `[[`(MODE)
 
 ## compile benchmark parameters
-benchmark.params.DF <- ldply(seq_along(benchmark.params.LST[[MODE]][['number.of.features']]), function(i) {
-  expand.grid(number.features=benchmark.params.LST[[MODE]][['number.of.features']][[i]],
-    number.planning.units=benchmark.params.LST[[MODE]][['number.of.planning.units']][[i]],
-    formulation=benchmark.params.LST[[MODE]][['formulation']][[i]],
-    blm=benchmark.params.LST[[MODE]][['blm']][[i]],
-    replicate=seq_len(benchmark.params.LST[[MODE]][['replicates']]))
-  }
-)
-
-benchmark.DF <- ldply(sample.int(nrow(benchmark.params.DF)), function(i) {
-  # simulate data
-  curr.rd <- simulate.problem.data(
-    number.features=benchmark.params.DF[i,1],
-    number.planning.units=benchmark.params.DF[i,2],
-    amount.target=benchmark.params.LST[[MODE]]$amount.target,
-    space.target=benchmark.params.LST[[MODE]]$space.target,
-    probability.of.occupancy=benchmark.params.LST[[MODE]]$occupancy.probability
-  )
-  # create unsolved problem
-  curr.go <- GurobiOpts(MIPGap=general.params.LST[[MODE]][['MIPGap']],
-    Threads=general.params.LST[[MODE]][['threads']],
-    TimeLimit = benchmark.params.LST[[MODE]]$time.limit)
-  if (benchmark.params.DF[i,3] == "unreliable") {
-    curr.ru <- RapUnsolved(RapUnreliableOpts(BLM=benchmark.params.DF[i,4]), curr.rd)
-  } else {
-    curr.ru <- RapUnsolved(RapReliableOpts(BLM=benchmark.params.DF[i,4]), curr.rd)
-  }
-  # print problem object for logging
-  print(curr.ru)
-  # solve problems
-  curr.time <- system.time({curr.rs <- solve(curr.ru, curr.go)})
-  # return results
-  data.frame(
-    number.features=benchmark.params.DF[i,1],
-    number.planning.units=benchmark.params.DF[i,2],
-    formulation=benchmark.params.DF[i,3],
-    blm=benchmark.params.DF[i,4],
-    replicate=benchmark.params.DF[i,5],
-    time=curr.time[['elapsed']]
-  )
+benchmark_combinations <- plyr::ldply(
+  seq_along(benchmark_parameters$number_of_features), function(i) {
+  expand.grid(
+    number_features = benchmark_parameters$number_of_features[[i]],
+    number_planning_units = benchmark_parameters$number_of_planning_units[[i]],
+    formulation = benchmark_parameters$formulation[[i]],
+    blm = benchmark_parameters$blm[[i]],
+    replicate = seq_len(benchmark_parameters$replicates))
 })
 
-## save workspace
-save.session('data/intermediate/05-benchmark-analysis.rda', compress='xz')
+## configure options to show that gurobi is installed
+options(GurobiInstalled = list(gurobi = TRUE, rgurobi = FALSE))
+
+## run benchmarks
+benchmark_results <- plyr::ldply(
+  sample.int(nrow(benchmark_combinations)), function(i) {
+  # simulate data
+  curr_rd <- simulate_problem_data(
+    number_features = benchmark_combinations[i, 1],
+    number_planning_units = benchmark_combinations[i, 2],
+    amount_target = benchmark_parameters$amount_target,
+    space_target = benchmark_parameters$space_target,
+    probability_of_occupancy = benchmark_parameters$occupancy_probability)
+  # create unsolved problem
+  curr_go <- raptr::GurobiOpts(
+    MIPGap = general_parameters$MIPGap,
+    Threads = general_parameters$threads,
+    TimeLimit = benchmark_parameters$time_limit)
+  if (benchmark_combinations[i, 3] == "unreliable") {
+    curr_ru <- raptr::RapUnsolved(raptr::RapUnreliableOpts(
+      BLM = benchmark_combinations[i, 4]), curr_rd)
+  } else {
+    curr_ru <- raptr::RapUnsolved(raptr::RapReliableOpts(
+      BLM = benchmark_combinations[i, 4]), curr_rd)
+  }
+  # solve problems
+  curr_time <- system.time({
+    curr_rs <- raptr::solve(curr_ru, curr_go)
+  })
+  # return results
+  data.frame(number_features = benchmark_combinations[i, 1],
+             number_planning_units = benchmark_combinations[i, 2],
+             formulation = benchmark_combinations[i, 3],
+             blm = benchmark_combinations[i, 4],
+             replicate = benchmark_combinations[i, 5],
+             time = curr_time[["elapsed"]])
+})
+
+## save session
+session::save.session("data/intermediate/05-benchmark-analysis.rda",
+                      compress = "xz")

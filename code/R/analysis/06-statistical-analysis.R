@@ -1,69 +1,88 @@
-## load .rda
-checkpoint::checkpoint('2016-11-26', R.version='3.3.2', scanForPackages=FALSE)
-session::restore.session('data/intermediate/04-case-study-2.rda')
-load('data/intermediate/03-case-study-1.rda')
-load('data/intermediate/02-simulations.rda')
-load('data/intermediate/05-benchmark-analysis.rda')
+## load session
+session::restore.session("data/intermediate/04-case-study-2.rda")
+load("data/intermediate/03-case-study-1.rda")
+load("data/intermediate/02-simulations.rda")
+load("data/intermediate/05-benchmark-analysis.rda")
 
 ## case-study 2
 # generate inverse distance matrix
-cs2.pu.centroids <- gCentroid(cs2.grid.sub.PLY, byid=TRUE) %>% spTransform(CRS('+init=epsg:4326'))
-cs2.pu.inv.dists <- cs2.pu.centroids@coords %>% rdist.earth
-cs2.pu.inv.dists <- 1/cs2.pu.inv.dists
-diag(cs2.pu.inv.dists) <- 0
+cs2_pu_centroids <- cs2_grid_sub_polygons %>%
+                    rgeos::gCentroid(byid = TRUE) %>%
+                    sp::spTransform(sp::CRS("+init=epsg:4326"))
+cs2_pu_inv_dists <- cs2_pu_centroids@coords %>%
+                    fields::rdist.earth()
+cs2_pu_inv_dists <- 1 / cs2_pu_inv_dists
+diag(cs2_pu_inv_dists) <- 0
 
 # calculate Morans I
-cs1.nmds.MoransI <- llply(
-	unique(cs2.spp.samples.sub.DF$species),
-	function(x) {
-		curr.DF <- select(cs2.grid.sub.DF, contains(paste0(x,'_genetic_d')))
-		return(
-			llply(
-				seq_len(ncol(curr.DF)),
-				function(i) {
-					curr.col <- curr.DF[[i]]
-					curr.pos <- which(!is.na(curr.DF[[i]]))
-					return(
-						Moran.I(curr.DF[[i]][curr.pos], cs2.pu.inv.dists[curr.pos, curr.pos], scale=TRUE)
-					)
-				}
-			)
-		)
-	}
-)
+cs1_nmds_morans_i <- plyr::llply(
+  unique(cs2_spp_samples_sub_data$species),
+  function(x) {
+    curr_data <- cs2_grid_sub_data %>%
+                 dplyr::select(dplyr::contains(paste0(x, "_genetic_d")))
+    plyr::llply(seq_len(ncol(curr_data)), function(i) {
+      curr_col <- curr_data[[i]]
+      curr_pos <- which(!is.na(curr_data[[i]]))
+      ape::Moran.I(curr_data[[i]][curr_pos],
+                   cs2_pu_inv_dists[curr_pos, curr_pos], scale = TRUE)
+    })
+})
 
 # calculate numbers and generate vectors for article
-amount.represented.species.names <- filter(cs1.spp.DF, Prioritisation=='Amount targets', niche >= (cs1.params.LST[[MODE]]$'space.target'*100))$Species
-amount.not.represented.species.names <- filter(cs1.spp.DF, Prioritisation=='Amount targets', niche<(cs1.params.LST[[MODE]]$'space.target'*100))$Species
+amount_represented_species_names <- cs1_spp_results %>%
+  dplyr::filter(Prioritisation == "Amount targets",
+                niche >= (cs1_parameters[["space_target"]] * 100)) %>%
+  `[[`("Species")
+amount_not_represented_species_names <- cs1_spp_results %>%
+  dplyr::filter(Prioritisation == "Amount targets",
+                niche < (cs1_parameters[["space_target"]] * 100)) %>%
+  `[[`("Species")
 
-if (length(amount.represented.species.names)>1) {
-	parsed.representative.space.held.names <- sapply(
-		as.character(amount.represented.species.names),
-		function(x) {
-			paste0(tolower(x), ' (', round(filter(cs1.spp.DF, Prioritisation=='Amount targets', Species==x)$niche,2), ' %)')		
-		}
-	)
-	parsed.representative.space.held.names <- paste0(paste(parsed.representative.space.held.names[-length(parsed.representative.space.held.names)], collapse=', '), ', and the ', last(parsed.representative.space.held.names))
+if (length(amount_represented_species_names) > 1) {
+  parsed_representative_space_held_names <- sapply(
+    as.character(amount_represented_species_names),
+    function(x) {
+      paste0(tolower(x), " (",
+             round(dplyr::filter(cs1_spp_results,
+                                 Prioritisation == "Amount targets",
+                                 Species == x)$niche, 2), " %)")
+  })
+  not_last <- parsed_representative_space_held_names[-length(
+              parsed_representative_space_held_names)]
+  parsed_representative_space_held_names <- paste0(paste(not_last,
+    collapse = ", "), ", and the ",
+    dplyr::last(parsed_representative_space_held_names))
 } else {
-	parsed.representative.space.held.names <- paste0(amount.represented.species.names, ' (', round(filter(cs1.spp.DF, Prioritisation=='Amount targets', Species==amount.represented.species.names)$niche,2), ' %)')
+  parsed_representative_space_held_names <- paste0(
+    amount_represented_species_names, " (",
+    round(filter(cs1_spp_results, Prioritisation == "Amount targets",
+    Species == amount_represented_species_names)$niche, 2), " %)")
 }
 
-if (length(amount.not.represented.species.names)>1) {
-	parsed.not.representative.space.held.names <- sapply(
-		as.character(amount.not.represented.species.names),
-		function(x) {
-			paste0(tolower(x), ' (', round(filter(cs1.spp.DF, Prioritisation=='Amount targets', Species==x)$niche,2), ' %)')		
-		}
-	)
-	parsed.not.representative.space.held.names <- paste0(paste(parsed.not.representative.space.held.names[-length(parsed.not.representative.space.held.names)], collapse=', '), ', and the ', last(parsed.not.representative.space.held.names))
-} else if (length(amount.not.represented.species.names)==1) {
-	parsed.not.representative.space.held.names <- paste0(amount.not.represented.species.names, '(', round(filter(cs1.spp.DF, Prioritisation=='Amount targets', Species==amount.not.represented.species.names)$niche,2), ' %)')
+if (length(amount_not_represented_species_names) > 1) {
+  parsed_not_representative_space_held_names <- sapply(
+    as.character(amount_not_represented_species_names),
+    function(x) {
+      paste0(tolower(x), " (", round(filter(cs1_spp_results,
+        Prioritisation == "Amount targets", Species == x)$niche, 2), " %)")
+  })
+  not_last <- parsed_not_representative_space_held_names[
+    -length(parsed_not_representative_space_held_names)]
+  parsed_not_representative_space_held_names <- paste0(paste(not_last,
+     collapse=", "), ", and the ",
+     dplyr::last(parsed_not_representative_space_held_names))
+} else if (length(amount_not_represented_species_names) == 1) {
+  parsed_not_representative_space_held_names <- paste0(
+    amount_not_represented_species_names, "(", round(dplyr::filter(
+      cs1_spp_results, Prioritisation == "Amount targets",
+      Species == amount_not_represented_species_names)$niche, 2), " %)")
 } else {
-	parsed.not.representative.space.held.names=c()
+  parsed_not_representative_space_held_names <- c()
 }
 
-amount.represented.species.names <- tolower(amount.represented.species.names)
-amount.not.represented.species.names <- tolower(amount.not.represented.species.names)
+amount_represented_species_names  %<>% tolower()
+amount_not_represented_species_names %<>% tolower()
 
-## save workspace
-save.session('data/intermediate/06-statistical-analysis.rda', compress='xz')
+## save session
+session::save.session("data/intermediate/06-statistical-analysis.rda",
+                      compress = "xz")

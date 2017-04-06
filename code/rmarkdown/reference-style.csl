@@ -46,7 +46,7 @@
         <names variable="editor"/>
         <names variable="translator"/>
         <choose>
-          <if type="bill book graphic legal_case motion_picture report song" match="any">
+          <if type="bill book graphic legal_case motion_picture song" match="any">
             <text variable="title" form="short" font-style="italic"/>
           </if>
           <else>
@@ -85,7 +85,7 @@
   </macro>
   <macro name="title">
     <choose>
-      <if type="bill thesis graphic legal_case motion_picture report song" match="any">
+      <if type="thesis book graphic legal_case motion_picture song" match="any">
         <text variable="title" font-style="italic"/>
         <text macro="edition" prefix=", "/>
       </if>
@@ -125,7 +125,7 @@
         <date-part name="year"/>
       </date>
       <choose>
-        <if type="bill graphic legal_case motion_picture report song" match="any">
+        <if type="bill graphic legal_case motion_picture song" match="any">
           <group suffix=".">
             <text macro="title" prefix=" "/>
             <text macro="editor-translator" prefix=" "/>
@@ -160,6 +160,17 @@
           </group>
         </else-if>
         <else-if type="book">
+          <group suffix=". " prefix=" " delimiter=" ">
+            <text macro="title"/>
+          </group>
+          <group delimiter=", " suffix=".">
+            <text variable="container-title"/>
+            <text macro="publisher"/>
+            <text variable="note"/>
+            <text variable="url"/>
+          </group>
+        </else-if>
+        <else-if type="report">
           <group suffix=". " prefix=" " delimiter=" ">
             <text macro="title"/>
           </group>

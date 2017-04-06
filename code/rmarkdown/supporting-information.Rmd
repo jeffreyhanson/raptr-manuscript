@@ -16,7 +16,7 @@ output:
 
 ```{r, include=FALSE}
 # set wd
-knitr::opts_knit$set(root.dir=normalizePath('../..'))
+knitr::opts_knit$set(root.dir = normalizePath("../.."))
 ```
 
 \setcounter{figure}{0}
@@ -24,24 +24,22 @@ knitr::opts_knit$set(root.dir=normalizePath('../..'))
 \renewcommand{\thefigure}{S\arabic{figure}}
 \renewcommand{\thetable}{S\arabic{table}}
 
-```{r, include=FALSE}
+```{r, include = FALSE}
 ## initialization
-# load .rda file
-checkpoint::checkpoint('2016-11-26', R.version='3.3.2', scanForPackages=FALSE)
-try(session::restore.session('data/final/results.rda'))
+# load session
+try(session::restore.session("data/final/results.rda"))
 
-# set options
-options(error=NULL)
-
-## prelimary processing
+## preliminary processing
 # redefine file paths for rasters
-for (i in seq_len(nlayers(cs1.bioclim.RAST)))
-	cs1.bioclim.RAST@layers[[i]]@file@name  <- paste0(getwd(), strsplit(cs1.bioclim.RAST@layers[[i]]@file@name, 'raptr-manuscript')[[1]][[2]])
+for (i in seq_len(raster::nlayers(cs1_bioclim_raster)))
+  cs1_bioclim_raster@layers[[i]]@file@name  <- paste0(getwd(),
+    strsplit(cs1_bioclim_raster@layers[[i]]@file@name,
+             "raptr-manuscript")[[1]][[2]])
 
 ```
 
 # Appendix S1
-The reliable formulation explicitly considers the probability that planning units are inhabited by features. As a consequence, it may deliver prioritizations that will sufficiently represent an attribute space even if the features do not inhabit several of the planning units when the prioritization is implemented. This behavior is achieved by siting back-up planning units near selected planning units with low occupancy probabilities in the attribute space(s). To ensure that prioritizations are robust against multiple planning units being uninhabited, the problem assigns planning units at multiple backup levels. 
+The reliable formulation explicitly considers the probability that planning units are inhabited by features. As a consequence, it may deliver prioritizations that will sufficiently represent an attribute space even if the features do not inhabit several of the planning units when the prioritization is implemented. This behavior is achieved by siting back-up planning units near selected planning units with low occupancy probabilities in the attribute space(s). To ensure that prioritizations are robust against multiple planning units being uninhabited, the problem assigns planning units at multiple backup levels.
 
 Backup levels levels are defined as $r$-levels [similar to failure levels in @r18]. The first backup $r$-level is used to calculate the level of representation when all of the selected planning units are occupied by all $f \in F$. For this scenario, the closest selected planning unit to each demand point $i$ for attribute space $s$ is assigned at $r$-level$=0$. This scenario essentially represents $Y_{fsij}$ in the unreliable formulation. The second backup $r$-level is used to assess the level of representation when the closest planning unit to each demand point $i$ is unoccupied. For this scenario, the second closest planning units are assigned at $r$-level$=1$. The third backup $r$-level is used to assess representation when the first two closest planning units are unoccupied. The third closest planning units are assigned at $r$-level$=2$. Continuing on, in this manner, the selected planning units in a prioritization are assigned to each demand point $i \in I$, attribute space $s \in S$, and each feature $f \in F$ at an $r$-level.
 
@@ -67,15 +65,15 @@ The decision variables are the $X_j$ (eqn 2a), $Y_{fsijr}$, $P_{fsijr}$ variable
 
 \begin{align*}
 Y_{fsijr} &= \begin{cases}
-		1, & \parbox{25em}{if demand point $i$ is assigned to planning unit $j$ for feature $f$ in space $s$ at back-up level $r$. } \tag*{eqn 7a} \\
-		0, & \parbox{25em}{otherwise} \\
-	\end{cases} \\
+    1, & \parbox{25em}{if demand point $i$ is assigned to planning unit $j$ for feature $f$ in space $s$ at back-up level $r$. } \tag*{eqn 7a} \\
+    0, & \parbox{25em}{otherwise} \\
+  \end{cases} \\
 %
 P_{fsijr} &= \parbox{25em}{probability that demand point $i$ is assigned to planning unit $j$ at back-up level $r$ for feature $f$ and space $s$} \tag*{eqn 7b}\\
 %
 \end{align*}
 
-The reliable formulation (RRAP) is a multi-objective optimisation problem.
+The reliable formulation (RRAP) is a multi-objective optimization problem.
 
 \begin{align*}
 & \text{(RRAP)} & \text{Min } & \text{(3a)}\\
@@ -131,150 +129,220 @@ The reliable formulation is non-linear. However, the non-linear components can b
 
 We conducted a benchmark analysis to understand how much time would be required to build and solve different sized conservation planning problems. Additionally, we also aimed to understand how the time required to execute a problem varied depending on which formulation was used (unreliable or reliable), and if fragmentation constraints were used.
 
-## METHODS 
+## METHODS
 
-We generated simulated conservation planning data sets using varying number of features `r paste(benchmark.params.LST$number.of.features, collapse=',')` and planning units (paste(benchmark.params.LST$number.of.planning.units, collapse=',')). For a given number of planning units and features, the data was simulated using the following steps. First, the planning units were simulated as squares that were arranged in a grid. All planning unit costs were set to one. The spatial distribution of features were generated using binary, spatially autocorrelated random fields [using the \texttt{RandomFields R} package; @rXXX]. If features were associated with less than two occupied planning units, these features were set to occupy two randomly selected planning units. All occupied planning units were set to have a probability of occupancy of `r benchmark.params.LST[[MODE]]$occupancy.probability`. Similar to the simulated data sets used in the main text, a geographic attribute space was used for each feature. The features' demand points were set as the centroids of the planning units that they occupied, and were weighted by the units' probability of occupancy. All problems used amount-based targets of `r benchmark.params.LST[[MODE]]$amount.target*100` % and space-based targets of `r benchmark.params.LST[[MODE]]$space.target*100`
+We generated simulated conservation planning data sets using varying number of features (`r paste(benchmark_parameters$number_of_features, collapse = ",")`) and planning units (`r paste(benchmark_parameters$number_of_planning_units, collapse = ",")`). For a given number of planning units and features, the data was simulated using the following steps. First, the planning units were simulated as squares that were arranged in a grid. All planning unit costs were set to one. The spatial distribution of features were generated using binary, spatially autocorrelated random fields [using the \texttt{RandomFields R} package; @r494; @r493]. If features were associated with less than two occupied planning units, these features were set to occupy two randomly selected planning units. All occupied planning units were set to have a probability of occupancy of `r benchmark_parameters$occupancy_probability`. Similar to the simulated data sets used in the main text, a geographic attribute space was used for each feature. The features' demand points were set as the centroids of the planning units that they occupied, and were weighted by the units' probability of occupancy. All problems used amount-based targets of `r benchmark_parameters$amount_target*100` % and space-based targets of `r benchmark_parameters$space_target*100`
 
-We solved each conservation planning data set using the unreliable and reliable problem formulations (using default failure distance and level parameter) using no boundary length modifer, and using a boundary length modifier of `r max(benchmark.params.LST[[MODE]]$blm)`. To assess variation in execution times, we generated and solved `r benchmark.params.LST[[MODE]]$replicates` random data sets per combination of number of features and planning units. All conservation planning problems were solved to within `r general.params.LST[[MODE]]$MIPGap * 100` % of optimality using Gurobi (version 7.0.0) on a system with 64 GB RAM and an Intel(R) Xeon(R) CPU (E5-2630 v3; 2.40 GHz). All problems were solved using a single thread.
+We solved each conservation planning data set using the unreliable and reliable problem formulations (using default failure distance and level parameter) using no boundary length modifier, and using a boundary length modifier of `r max(benchmark_parameters$blm)`. To assess variation in execution times, we generated and solved `r benchmark_parameters$replicates` random data sets per combination of number of features and planning units. All conservation planning problems were solved to within `r general_parameters$MIPGap * 100` % of optimality using Gurobi (version 7.0.0) on a system with 64 GB RAM and an Intel(R) Xeon (R) CPU (E5-2630 v3; 2.40 GHz). All problems were solved using a single thread.
 
 ## RESULTS AND DISCUSSION
 
-The benchmark analysis revealed that moderately-sized conservation problems can be solved in a realtively short period of time (Figure 1). As predicted, problems were solved much quicker when using the unreliable formulation than when using the reliable formulation. Additionally, the solve times varied substiantially for different data sets with the same proporties (ie. number of features and planning units). This result suggests that it may difficult to estimate exactly how long a given problem will take to solve.
+The benchmark analysis revealed that moderately-sized conservation problems can be solved in a relatively short period of time (Figure S2). As predicted, problems were solved much quicker when using the unreliable formulation than when using the reliable formulation. Additionally, the solve times varied substantially for different data sets with the same properties (ie. number of features and planning units). This result suggests that it may difficult to estimate exactly how long a given problem will take to solve.
 
-```{r, echo=FALSE, message=FALSE, fig.height=5.0, fig.width=4.5, fig.cap='Benchmark analysis. Boxplots show the amount of time required to solve a problem under a given set of parameters. Note that times are shown on a log_{10} scale.'}
-# prepare data
-plot.DF <- benchmark.DF %>%
-  mutate(blm = paste0('BLM = ',blm)) %>% 
-  mutate(number.features=factor(number.features)) %>%
-  mutate(formulation = paste0(formulation, ' formulation')) %>%
-  mutate(number.planning.units=factor(number.planning.units))
-# make plot
-ggplot(plot.DF, aes(x=number.planning.units, y=time, color=number.features)) +
-  geom_boxplot() +
-  facet_grid(blm ~ formulation ) +
-  scale_y_continuous(trans='log10') +
-  xlab('Number of planning units') + ylab('Solve time (s)') +
-  labs(color='Number of features') +
-  theme(axis.line.x=element_line(), axis.line.y=element_line(),
-    strip.background = element_rect(fill='grey20'),
-    strip.text = element_text(color='white', size=12),
-    legend.position='bottom')
-```
+We were not able to explore how long large-sized problems would take to solve because our computer system did not have enough memory. One method to reduce the problem size would be to simply use less demand points. Another method to reduce problem size would be to set a maximum distance between demand points and planning units such that demand points cannot be represented by planning units that that are too far away. Both of these method could be applied using functions provided in the \texttt{raptr R} package. Future research is needed to explore these methods and understand how the impact solution quality. Additionally, future research could involve implementing more advanced methods to solve the optimization problems [eg. as described in @r16; @r15].
 
-We were not able to explore how long large-sized problems would take to solve because our computer system did not have enough memory. One method to reduce the problem size would be to simply use less demand points. Another method to reduce problem size would be to set a maximum distance between demand points and planning units such that demand points cannot be represented by planning units that that are too far away. Both of these method could be applied using functions provided in the \texttt{raptr R} package. Future research is needed to explore these methods and understand how the impact solution quality. Additionally, future research could involve implementing more advanced methods to solve the optimization problem [eg. as described in @r16; @r15].
+\clearpage
 
-# Figures 
-```{r, echo=FALSE, fig.height=8, fig.width=8.5, fig.cap='Attribute spaces used in the first case-study. Each panel shows a the distribution of a solution in environmental space and how it samples the realized niche for a different species. The left column of panels shows the solution generated using amount targets. The right column of panels shows the solution generated using amount and niche targets. Each column of panels corresponds to a different species. Hexagons show the distribution of demand points. The color of each heaxgon denotes the weighted frequency of demand points inside it. Points represent the environmental conditions associated with planning units inside the species geographic range that were selected for preservation in a given solution.'}
+# Figures
+```{r, echo = FALSE, fig.height = 8, fig.width = 8.5, fig.cap = "Attribute spaces used in the first case-study. Each panel shows a the distribution of a solution in environmental space and how it samples the realized niche for a different species. The left column of panels shows the solution generated using amount targets. The right column of panels shows the solution generated using amount and niche targets. Each column of panels corresponds to a different species. Hexagons show the distribution of demand points. The color of each hexagon denotes the weighted frequency of demand points inside it. Points represent the environmental conditions associated with planning units inside the species geographic range that were selected for preservation in a given solution."}
 ## prepare data
-cs1.pu.niche.DF <- ddply(
-	cs1.spp.DF,
-	c('Species', 'Prioritisation'),
-	function(x) {
-		# init
-		curr.prioritisation <- cs1.prioritisations[[as.character(x$Prioritisation)]]
-		curr.spp.pos <- match(x$Species[1], curr.prioritisation@data@species[[1]])
-		curr.sel.pos <- which(curr.prioritisation@data@attribute.spaces[[1]]@spaces[[curr.spp.pos]]@planning.unit.points@ids %in% which(as.logical(selections(curr.prioritisation))))
-		# extract planning units
-		curr.DF <- curr.prioritisation@data@attribute.spaces[[1]]@spaces[[curr.spp.pos]]@planning.unit.points@coords %>% as.data.frame()
-		names(curr.DF) <- c('Niche1', 'Niche2')
-		curr.DF$Species <-x$Species[[1]]
-		curr.DF$Prioritisation <-x$Prioritisation[[1]]
-		curr.DF$Solution <- 'discarded'
-		curr.DF$Solution[curr.sel.pos] <- 'selected'
-		# return data
-		return(curr.DF)
-	}
-)
-cs1.pu.niche.DF <- filter(cs1.pu.niche.DF, Solution=='selected')
+cs1_pu_niche_data <- plyr::ddply(cs1_spp_results,
+  c("Species", "Prioritisation"),
+  function(x) {
+    # init
+    curr_prioritisation <- cs1_prioritisations[[as.character(x$Prioritisation)]]
+    curr_spp_pos <- match(x$Species[1], curr_prioritisation@data@species[[1]])
+    curr_ids <- curr_prioritisation %>%
+                slot("data") %>%
+                slot("attribute.spaces") %>%
+                `[[`(1) %>%
+                slot("spaces") %>%
+                `[[`(curr_spp_pos) %>%
+                slot("planning.unit.points") %>%
+                slot("ids")
+    curr_sel_pos <- which(curr_ids %in% which(as.logical(
+                          raptr::selections(curr_prioritisation))))
+    # extract planning units
+    curr_data <- curr_prioritisation %>%
+                slot("data") %>%
+                slot("attribute.spaces") %>%
+                `[[`(1) %>%
+                slot("spaces") %>%
+                `[[`(curr_spp_pos) %>%
+                slot("planning.unit.points") %>%
+                slot("coords") %>%
+                as.data.frame() %>%
+                magrittr::set_names(c("Niche1", "Niche2")) %>%
+                dplyr::mutate(Species = x[["Species"]][[1]],
+                              Prioritisation = x[["Prioritisation"]][[1]],
+                              Solution <- "discarded")
+    curr_data$Solution[curr_sel_pos] <- "selected"
+    # return data
+    return(curr_data)
+})
+cs1_pu_niche_data %<>% dplyr::filter(Solution == "selected")
 
-cs1.dp.niche.DF <- ddply(
-	cs1.spp.DF,
-	c('Species', 'Prioritisation'),
-	function(x) {
-		# init
-		curr.prioritisation <- cs1.prioritisations[[as.character(x$Prioritisation)]]
-		curr.spp.pos <- match(x$Species[1], curr.prioritisation@data@species[[1]])
-		# extract demand points
-		curr.DF <- curr.prioritisation@data@attribute.spaces[[1]]@spaces[[curr.spp.pos]]@demand.points@coords %>% as.data.frame()
-		names(curr.DF) <- c('Niche1', 'Niche2')
-		curr.DF$weight <- curr.prioritisation@data@attribute.spaces[[1]]@spaces[[curr.spp.pos]]@demand.points@weights
-		# return data
-		return(curr.DF)
-	}
-)
-cs1.pu.niche.DF$Prioritisation <- factor(as.character(cs1.pu.niche.DF$Prioritisation), levels=names(cs1.prioritisations))
-cs1.dp.niche.DF$Prioritisation <- factor(as.character(cs1.dp.niche.DF$Prioritisation), levels=names(cs1.prioritisations))
+cs1_dp_niche_data <- plyr::ddply(
+  cs1_spp_results,
+  c("Species", "Prioritisation"),
+  function(x) {
+    # init
+    curr_prioritisation <- cs1_prioritisations[[as.character(x$Prioritisation)]]
+    curr_spp_pos <- match(x$Species[1], curr_prioritisation@data@species[[1]])
+    # extract demand points
+    curr_data <- curr_prioritisation %>%
+                  slot("data") %>%
+                  slot("attribute.spaces") %>%
+                  `[[`(1) %>%
+                  slot("spaces") %>%
+                  `[[`(curr_spp_pos) %>%
+                  slot("demand.points") %>%
+                  slot("coords") %>%
+                  as.data.frame() %>%
+                  magrittr::set_names(c("Niche1", "Niche2"))
+    curr_data$weight <- curr_prioritisation %>%
+                        slot("data") %>%
+                        slot("attribute.spaces") %>%
+                        `[[`(1) %>%
+                        slot("spaces") %>%
+                        `[[`(curr_spp_pos) %>%
+                        slot("demand.points") %>%
+                        slot("weights")
+    # return data
+    return(curr_data)
+})
+cs1_pu_niche_data$Prioritisation <- factor(as.character(
+                                      cs1_pu_niche_data$Prioritisation),
+                                      levels = names(cs1_prioritisations))
+cs1_dp_niche_data$Prioritisation <- factor(as.character(
+                                      cs1_dp_niche_data$Prioritisation),
+                                      levels = names(cs1_prioritisations))
 
 # make letter data.frame
-cs1.letters.DF <- expand.grid(
-	Species=levels(cs1.pu.niche.DF$Species),
-	Prioritisation=levels(cs1.pu.niche.DF$Prioritisation)
-) %>% arrange(Species, Prioritisation)
-cs1.letters.DF$letter <- paste0('(', letters[seq_len(nrow(cs1.letters.DF))], ')')
-cs1.letters.DF <- cbind(
-	cs1.letters.DF,
-	rbind(
-		cs1.pu.niche.DF %>% select(Species, Prioritisation, Niche1, Niche2),
-		cs1.dp.niche.DF %>% select(Species, Prioritisation, Niche1, Niche2)
-	) %>% summarise(
-		Niche1=min(Niche1)+(abs(diff(range(Niche1)))*0.01),
-		Niche2=min(Niche2)+(abs(diff(range(Niche2)))*0.95)
-	) %>% data.frame()
-)
+cs1_letters_data <- expand.grid(Species = levels(cs1_pu_niche_data$Species),
+                                Prioritisation = levels(
+                                  cs1_pu_niche_data$Prioritisation)) %>%
+                    dplyr::arrange(Species, Prioritisation) %>%
+                    dplyr::mutate(letter = paste0("(",
+                      letters[seq_len(nrow(.))], ")"))
+
+cs1_letters_data2 <- cs1_pu_niche_data %>%
+                     dplyr::select(Species, Prioritisation, Niche1, Niche2) %>%
+                     rbind(cs1_dp_niche_data %>% dplyr::select(Species,
+                                                               Prioritisation,
+                                                               Niche1,
+                                                               Niche2)) %>%
+                     dplyr::summarise(Niche1 = min(Niche1) +
+                                               (abs(diff(range(Niche1))) *
+                                               0.01),
+                                      Niche2 = min(Niche2) +
+                                               (abs(diff(range(Niche2))) *
+                                               0.95)) %>%
+                     data.frame()
+
+cs1_letters_data %<>% cbind(cs1_letters_data2)
 
 ## make plots
-ggplot() +
-	stat_summary_hex(data=cs1.dp.niche.DF, aes(x=Niche1, y=Niche2, z=weight), bins=15, fun=function(z) {sum(z)}) +
-	geom_point(data=cs1.pu.niche.DF, aes(x=Niche1, y=Niche2), fill='#00441b', pch=21, color='black') +
-	geom_text(data=cs1.letters.DF, aes(x=Niche1, y=Niche2, label=letter), color='black') +
-	theme_classic() +
-	theme(
-		strip.background = element_rect(fill='grey20'),
-		strip.text = element_text(color='white')
-	) +
-	xlab('Niche (axis 1)') + ylab('Niche (axis 2)') +
-	scale_fill_gradientn(name='Total demand\npoint weight', colors=colorRampPalette(brewer.pal(6, 'PuBu')[-1])(100)) +
-	facet_grid(Species ~ Prioritisation)
+ggplot2::ggplot() +
+  ggplot2::stat_summary_hex(data = cs1_dp_niche_data,
+                            ggplot2::aes(x = Niche1, y = Niche2, z = weight),
+                            bins = 15, fun = function(z) sum(z)) +
+  ggplot2::geom_point(data = cs1_pu_niche_data,
+                      ggplot2::aes(x = Niche1, y = Niche2),
+                      fill = "#00441b", pch = 21, color = "black") +
+  ggplot2::geom_text(data = cs1_letters_data,
+                     ggplot2::aes(x = Niche1, y = Niche2, label = letter),
+                     color = "black") +
+  ggplot2::theme_classic() +
+  ggplot2::theme(strip.background = ggplot2::element_rect(fill = "grey20"),
+                 strip.text = ggplot2::element_text(color = "white")) +
+  ggplot2::xlab("Niche (axis 1)") +
+  ggplot2::ylab("Niche (axis 2)") +
+  ggplot2::scale_fill_gradientn(name = "Total demand\npoint weight",
+                                colors = colorRampPalette(
+                                  RColorBrewer::brewer.pal(6,
+                                                          "PuBu")[-1])(100)) +
+  ggplot2::facet_grid(Species ~ Prioritisation)
 ```
+
+```{r, echo = FALSE, message = FALSE, fig.height = 5.0, fig.width = 4.5, fig.cap = "Time required to solve different sized problems using different parameters and formulations. Points represent average times and bars show standard errors. Time is shown on a log$_{10}$ scale."}
+# prepare data
+plot_data <- benchmark_results %>%
+  dplyr::mutate(blm = paste0("BLM = ", blm)) %>%
+  dplyr::mutate(number_features = factor(number_features)) %>%
+  dplyr::mutate(formulation = paste0(formulation, " formulation")) %>%
+  dplyr::mutate(number_planning_units = factor(number_planning_units))
+# make plot
+ggplot2::ggplot(plot_data,
+                ggplot2::aes(x = number_planning_units, y = time,
+                             color = number_features)) +
+  ggplot2::stat_summary(fun.y = mean, geom = "point",
+                        position = ggplot2::position_dodge(0.95)) +
+  ggplot2::stat_summary(fun.data = ggplot2::mean_se, geom = "errorbar",
+                        position = ggplot2::position_dodge(0.95)) +
+  ggplot2::facet_grid(blm ~ formulation ) +
+  ggplot2::scale_y_continuous(trans = "log10") +
+  ggplot2::xlab("Number of planning units") +
+  ggplot2::ylab("Solve time (s)") +
+  ggplot2::labs(color = "Number of features") +
+  ggplot2::theme(
+    axis.line.x = ggplot2::element_line(),
+    axis.line.y = ggplot2::element_line(),
+    strip.background = ggplot2::element_rect(fill = "grey20"),
+    strip.text = ggplot2::element_text(color = "white"),
+    legend.position = "bottom")
+```
+
+\clearpage
 
 # Tables
 
-```{r, echo=FALSE, results='asis'}
+```{r, echo = FALSE, results = "asis"}
 # make table
-term.CHR <- c(
-	'$F$', 'set of biodiversity features (indexed by $f$)',
-	'$J$', 'set of planning units (indexed by $j$)',
-	'$q_{fj}$', 'probability of feature $f$ occupying planning unit $j$',
-	'$e_{jk}$', 'shared edge between planning unit $j$ and planning unit $k$. Note that when $j==k$ this used to parametrize exposed edges with no neighbours.',
-	'$S$', 'set of attribute spaces (indexed by $S$)',
-	'$I_{fsi}$', 'set of demand points (indexed by $i$) for a feature $f$ in attribute space $s$',
-	'$\\lambda_{fsi}$', 'set of weights for demand point $i$ for feature $f$ in attribute space $s$',
-	'$d_{fsij}$', 'distance between demand point $i$ and planning unit $j$ for feature $f$ in attribute space $s$',
-	'$\\delta_{fsi}$', 'the distance between each demand point $i$ and the centroid of the demand points $I$ for feature $f$ in attribute space $s$',
-	'$T_f$', 'amount target for feature $f$',
-	'$\\tau_{fs}$', 'space-based target for feature $f$ in attribute space $s$',
-	'$X_j$', 'binary decision variable controlling if a planning unit is selected for preservation (1) or discarded (0)',
-	'$Y_{fsij}$', 'binary decision variable indicating if planning unit $j$ is assigned to demand point $i$ for species $s$ in a attribute space $s$ when determing the amount of the attribute space sampled by the selected planning units'
+terms <- c(
+  "$F$", "set of biodiversity features (indexed by $f$)",
+  "$J$", "set of planning units (indexed by $j$)",
+  "$q_{fj}$", "probability of feature $f$ occupying planning unit $j$",
+  "$e_{jk}$", "shared edge between planning unit $j$ and planning unit $k$. Note that when $j==k$ this used to parametrize exposed edges with no neighbours.",
+  "$S$", "set of attribute spaces (indexed by $S$)",
+  "$I_{fsi}$", "set of demand points (indexed by $i$) for a feature $f$ in attribute space $s$",
+  "$\\lambda_{fsi}$", "set of weights for demand point $i$ for feature $f$ in attribute space $s$",
+  "$d_{fsij}$", "distance between demand point $i$ and planning unit $j$ for feature $f$ in attribute space $s$",
+  "$\\delta_{fsi}$", "the distance between each demand point $i$ and the centroid of the demand points $I$ for feature $f$ in attribute space $s$",
+  "$T_f$", "amount target for feature $f$",
+  "$\\tau_{fs}$", "space-based target for feature $f$ in attribute space $s$",
+  "$X_j$", "binary decision variable controlling if a planning unit is selected for preservation (1) or discarded (0)",
+  "$Y_{fsij}$", "binary decision variable indicating if planning unit $j$ is assigned to demand point $i$ for species $s$ in a attribute space $s$ when determining the amount of the attribute space sampled by the selected planning units"
 )
-term.DF <- data.frame(
-	Symbol=term.CHR[seq(1, length(term.CHR), 2)],
-	Description=term.CHR[seq(2, length(term.CHR), 2)]
+term_data <- data.frame(
+  Symbol = terms[seq(1, length(terms), 2)],
+  Description=terms[seq(2, length(terms), 2)]
 )
-term.DF$Description <- paste0('\\parbox[t][][t]{15cm}{', term.DF$Description, '}')
+term_data$Description <- paste0("\\parbox[t][][t]{15cm}{",
+                                term_data$Description, "}")
 
 # render table
-curr.file <- tempfile(fileext='.tex')
-tmp <- latex(
-	term.DF,
-	file=curr.file, 
-	digits=2, rowname=NULL, first.hline.double=FALSE, booktabs=TRUE, here=TRUE,
-	colheads=c('Symbol', 'Description'), col.just=c('c', 'l'),
-	caption='Symbols and descriptions of terms used in the formulation of the unreliable representative and adequate prioritization (URAP) problem.'
-)
-readLines(curr.file)[-1] %>% paste0(collapse='\n') %>% 
-	gsub(pattern='toprule', replacement='toprule[1pt]', fixed=TRUE) %>%
-	gsub(pattern='bottomrule', replacement='bottomrule[1pt]', fixed=TRUE) %>%
-	cat()
+curr_file <- tempfile(fileext = ".tex")
+tmp <- Hmisc::latex(term_data,
+                    file = curr_file,
+                    digits = 2, rowname = NULL, first.hline.double = FALSE,
+                    booktabs = TRUE, here = TRUE,
+                    colheads = c("Symbol", "Description"),
+                    col.just = c("c", "l"),
+                    caption = paste0("Symbols and descriptions of terms used ",
+                                     "in the formulation of the unreliable ",
+                                     "representative and adequate ",
+                                     "prioritization (URAP) problem."))
+curr_file %>%
+  readLines() %>%
+  `[`(-1) %>%
+  paste0(collapse = "\n") %>%
+  gsub(pattern = "toprule", replacement = "toprule[1pt]", fixed = TRUE) %>%
+  gsub(pattern = "bottomrule", replacement = "bottomrule[1pt]",
+       fixed = TRUE) %>%
+  cat()
 ```
+
+\clearpage
 
 ## References

@@ -4,8 +4,8 @@
 #'
 #' @seealso \code{\link[sp]{CRS}}
 #' @examples
-#' wgs1984 <- CRS('+init=epsg:4326')
-wgs1984 <- CRS('+init=epsg:4326')
+#' wgs1984
+wgs1984 <- sp::CRS("+init=epsg:4326")
 
 #' Europe Lambert Conformal Conic CRS
 #'
@@ -13,8 +13,8 @@ wgs1984 <- CRS('+init=epsg:4326')
 #'
 #' @seealso \code{\link[sp]{CRS}}
 #' @examples
-#' europeEA <- CRS('+init=esri:102014')
-europeEA <- CRS('+init=esri:102014')
+#' europe_ea
+europe_ea <- sp::CRS("+init=esri:102014")
 
 #' Europe Equidistant Conic
 #'
@@ -22,6 +22,5 @@ europeEA <- CRS('+init=esri:102014')
 #'
 #' @seealso \code{\link[sp]{CRS}}
 #' @examples
-#' europeED <- CRS('+init=esri:102031')
-europeED <- CRS('+init=esri:102031')
-
+#' europe_ed
+europe_ed <- sp::CRS("+init=esri:102031")

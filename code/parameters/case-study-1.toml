@@ -1,35 +1,37 @@
 title = "case-study 1 parameters"
 
 [debug]
-n.pc.layers = 2
-pu.size = 50000
-amount.target = 0.2
-space.target = -10000
-dp.quantile = 0.5
-dp.number = 20
-dp.bandwidth=[0.2, 0.2]
-environmental.layer.resolution = 25000
-thin.distance=10000
-max.records=1000
-mcp.percent=85
-rarefy.cell.size=1000
-species.names=['Dacelo leachii', 'Falco berigora', 'Ramsayornis modestus', 'Platycercus adscitus']
-common.names=['Blue-winged kookaburra', 'Brown falcon', 'Brown-backed honeyeater','Pale-headed rosella']
+number_pc_layers = 2
+pu_size = 50000
+amount_target = 0.2
+space_target = -10000
+dp_quantile = 0.5
+dp_number = 20
+dp_bandwidth = [0.2, 0.2]
+environmental_layer_resolution = 25000
+thin_distance = 10000
+max_records = 1000
+mcp_percent = 85
+rarefy_cell_size = 1000
+species_names = ["Dacelo leachii", "Falco berigora", "Ramsayornis modestus",
+                 "Platycercus adscitus"]
+common_names  =["Blue-winged kookaburra", "Brown falcon",
+                "Brown-backed honeyeater","Pale-headed rosella"]
 
 [release]
-n.pc.layers = 2
-pu.size = 50000
-amount.target = 0.2
-space.target = 0.75
-dp.quantile = 0.5
-dp.number = 500
-dp.bandwidth=[0.2, 0.2]
-environmental.layer.resolution = 25000
-thin.distance=10000
-max.records=1e8
-mcp.percent=85
-rarefy.cell.size=1000
-species.names=['Dacelo leachii', 'Falco berigora', 'Ramsayornis modestus', 'Platycercus adscitus']
-common.names=['Blue-winged kookaburra', 'Brown falcon', 'Brown-backed honeyeater','Pale-headed rosella']
-
- 
+number_pc_layers = 2
+pu_size = 50000
+amount_target = 0.2
+space_target = 0.75
+dp_quantile = 0.5
+dp_number = 500
+dp_bandwidth=[0.2, 0.2]
+environmental_layer_resolution = 25000
+thin_distance = 10000
+max_records = 1e8
+mcp_percent = 85
+rarefy_cell_size = 1000
+species_names = ["Dacelo leachii", "Falco berigora", "Ramsayornis modestus",
+                 "Platycercus adscitus"]
+common_names  =["Blue-winged kookaburra", "Brown falcon",
+                "Brown-backed honeyeater","Pale-headed rosella"]

@@ -17,10 +17,14 @@ gurobi.log
 # cache
 data/intermediate/*
 
+
 # do not ignore the following files
 !.gitkeep
-!*/
 
 # files with sensitive information
 code/rmarkdown/reviewer-comments.md
 article/reviewer-comments.pdf
+
+# packrat
+packrat/lib*/
+packrat/lib*/*
