@@ -15,6 +15,16 @@ library(magrittr)
 library(raster)
 library(sp)
 
+## Install gurobi R package if missing
+if (!requireNamespace("gurobi")) {
+  # find gurobi R package
+  gurobi_path <- dir("/opt", "gurobi", full.names = TRUE)
+  gurobi_path <- paste0(gurobi_path[length(gurobi_path)], "/linux64/R")
+  gurobi_path <- dir(gurobi_path, "gurobi", full.names = TRUE)[1]
+  # install pkgs
+  install.packages(gurobi_path)
+}
+
 ## Load parameters
 general_parameters <- RcppTOML::parseTOML("code/parameters/general.toml") %>%
                       `[[`(MODE)
@@ -22,7 +32,6 @@ general_parameters <- RcppTOML::parseTOML("code/parameters/general.toml") %>%
 
 ## Load functions
 for (x in dir(file.path("code", "R", "functions"), full.names = TRUE)) {
-  print(x)
   source(x)
 }
 
