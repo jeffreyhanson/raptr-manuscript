@@ -247,6 +247,12 @@ Source: CRAN
 Version: 0.6.10
 Hash: 87165608ca8aeb0958835c3c5b52b6b7
 
+Package: dismo
+Source: CRAN
+Version: 1.1-1
+Hash: 3a0bc576c9ade0c431992d41a57c3327
+Requires: raster, sp
+
 Package: doParallel
 Source: CRAN
 Version: 1.0.10
