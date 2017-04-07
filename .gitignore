@@ -26,3 +26,7 @@ article/reviewer-comments.pdf
 
 # packrat
 packrat/lib*/
+
+# data files
+!ala_cache
+!GADM_2.8_AUS_adm1.rds
