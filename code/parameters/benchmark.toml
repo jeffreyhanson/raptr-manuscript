@@ -23,7 +23,7 @@ number_of_features = [[10, 25, 50],
                       [10, 25, 50],
                       [10, 25, 50]]
 number_of_planning_units = [[10, 25, 50, 100, 500],
-                            [10, 25, 50, 100, 500],
+                            [10, 25, 50, 100],
                             [10, 25, 50],
                             [10, 25, 50]]
 formulation = ["unreliable", "unreliable", "reliable", "reliable"]

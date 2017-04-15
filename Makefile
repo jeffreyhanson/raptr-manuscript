@@ -1,14 +1,13 @@
 ## global variables
 # set parameters for inference
-# MODE=release
+MODE=release
 # set parameters for debugging code
-MODE=debug
+# MODE=debug
 
 R = /opt/R/R-3.3.2/bin/R
 
 # main operations
-
-all: analysis article
+all: install analysis article rev-comments
 
 R:
 	$(R) --no-save
@@ -49,7 +48,7 @@ push_ms:
 # commands for generating manuscript
 cover-letter: article/cover-letter.pdf
 
-article: article/article.pdf article/supporting-information.pdf
+article: article/article.pdf article/figures.pdf article/supporting-information.pdf
 
 rev-comments: article/reviewer-comments.pdf
 
@@ -61,30 +60,17 @@ article/cover-letter.pdf: code/rmarkdown/cover-letter.tex
 	rm -f  code/rmarkdown/cover-letter.log
 	rm -f  code/rmarkdown/cover-letter.out
 
-article/article.docx: code/rmarkdown/preamble.tex code/rmarkdown/text.tex code/rmarkdown/figures.tex code/rmarkdown/article.Rmd
+article/article.docx: code/rmarkdown/preamble.tex code/rmarkdown/article.Rmd
 	$(R) --no-save -e "rmarkdown::render('code/rmarkdown/article.Rmd')"
-	rm -f code/rmarkdown/article.aux
-	rm -f code/rmarkdown/article.log
-	rm -f code/rmarkdown/article.sta
-	cd code/rmarkdown && latexpand article.tex > docx.tex
-	cp -R code/rmarkdown/figures_files code/rmarkdown/figures_files_docx
-	$(R) --no-save -e "sapply(dir('code/rmarkdown/figures_files_docx/figure-latex', full.names=TRUE), function(x) {system(paste('convert -density 300 -quality 85', x, gsub('.pdf', '.png', x, fixed=TRUE)))})"
-	$(R) --no-save -e "sapply(dir('code/rmarkdown/supporting-information_files_docx/figure-latex', full.names=TRUE), function(x) {system(paste('convert -density 300 -quality 85', x, gsub('.pdf', '.png', x, fixed=TRUE)))})"
-	$(R) --no-save -e "x <- readLines('code/rmarkdown/docx.tex'); pos <- grep('\\\\includegraphics', x, fixed=TRUE); x[pos] <- gsub('.pdf}', '.png}', x[pos], fixed=TRUE); writeLines(x, 'code/rmarkdown/docx.tex')"
-	$(R) --no-save -e "x <- readLines('code/rmarkdown/docx.tex'); pos <- grep('figures_files', x, fixed=TRUE); x[pos] <- gsub('figures_files', 'figures_files_docx', x[pos], fixed=TRUE); writeLines(x, 'code/rmarkdown/docx.tex')"
-	cd code/rmarkdown;\
-	pandoc +RTS -K512m -RTS docx.tex -o article.docx --highlight-style tango --latex-engine pdflatex --include-in-header preamble.tex --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
-	mv code/rmarkdown/article.docx article/
+	rm -f code/rmarkdown/article.md
 	rm -f code/rmarkdown/article.knit.md
 	rm -f code/rmarkdown/article.utf8.md
-	rm -f code/rmarkdown/docx.tex
-	rm -rf code/rmarkdown/figures_files_docx
+	rm -f code/rmarkdown/article.tex
+	mv code/rmarkdown/article.pdf article/
 
-article/article.pdf: code/rmarkdown/preamble.tex code/rmarkdown/text.tex code/rmarkdown/figures.tex code/rmarkdown/article.Rmd
+article/article.pdf: code/rmarkdown/preamble.tex code/rmarkdown/article.Rmd
 	$(R) --no-save -e "rmarkdown::render('code/rmarkdown/article.Rmd')"
-	rm -f code/rmarkdown/article.aux
-	rm -f code/rmarkdown/article.log
-	rm -f code/rmarkdown/article.sta
+	rm -f code/rmarkdown/article.tex
 	mv code/rmarkdown/article.pdf article/
 
 article/supporting-information.pdf: code/rmarkdown/preamble.tex code/rmarkdown/supporting-information.Rmd code/rmarkdown/references.bib code/rmarkdown/reference-style.csl
@@ -92,23 +78,16 @@ article/supporting-information.pdf: code/rmarkdown/preamble.tex code/rmarkdown/s
 	rm -f code/rmarkdown/supporting-information.md
 	rm -f code/rmarkdown/supporting-information.utf8.md
 	rm -f code/rmarkdown/supporting-information.knit.md
+	rm -f code/rmarkdown/supporting-information.tex
 	mv code/rmarkdown/supporting-information.pdf article/
 
-code/rmarkdown/text.tex: code/rmarkdown/text.Rmd code/rmarkdown/references.bib code/rmarkdown/reference-style.csl
-	$(R) --no-save --no-save -e "rmarkdown::render('code/rmarkdown/text.Rmd', clean=FALSE)"
-	cd code/rmarkdown;\
-	/usr/bin/pandoc +RTS -K512m -RTS text.utf8.md --to latex --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output text.tex --highlight-style tango --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
-	rm -f code/rmarkdown/text.md -f
-	rm -f code/rmarkdown/text.utf8.md
-	rm -f code/rmarkdown/text.knit.md
-
-code/rmarkdown/figures.tex: code/rmarkdown/figures.Rmd
-	$(R) --no-save -e "rmarkdown::render('code/rmarkdown/figures.Rmd', clean=FALSE)"
-	cd code/rmarkdown;\
-	/usr/bin/pandoc +RTS -K512m -RTS figures.utf8.md --to latex --from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash --output figures.tex --highlight-style tango --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
+article/figures.pdf: code/rmarkdown/figures.Rmd
+	$(R) --no-save -e "rmarkdown::render('code/rmarkdown/figures.Rmd')"
 	rm -f code/rmarkdown/figures.md
 	rm -f code/rmarkdown/figures.utf8.md
 	rm -f code/rmarkdown/figures.knit.md
+	rm -f code/rmarkdown/figures.tex
+	mv code/rmarkdown/figures.pdf article/
 
 article/reviewer-comments.pdf: code/rmarkdown/reviewer-comments.md
 	cd code/rmarkdown;\
@@ -149,3 +128,10 @@ data/intermediate/01-*.rda: data/intermediate/00-*.rda code/R/analysis/01-*.R
 data/intermediate/00-*.rda: code/R/analysis/00-*.R code/parameters/general.toml code/R/functions/*.R
 	$(R) CMD BATCH --no-restore --no-save '--args MODE=$(MODE)' code/R/analysis/00-*.R
 	mv *.Rout data/intermediate/
+
+# command to install package dependencies
+install:
+	$(R) CMD BATCH --no-restore --no-save '--args --bootstrap-packrat' packrat/init.R
+	mv -f *.Rout data/intermediate/
+
+.PHONY: clean install analysis article R

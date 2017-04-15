@@ -21,16 +21,27 @@ bibliography: references.bib
 csl: reference-style.csl
 ---
 
-Abstract word count: 347 / 350  
-Total word count: XXXX / 7000  
-Number of references: 42  
-Number of figures: 8  
-Number of tables: 0  
-Number of textboxes: 0  
-Number of equations: 4  
+```{r, include = FALSE}
+# set wd
+knitr::opts_knit$set(root.dir = normalizePath("../.."))
+```
+
+```{r, include = FALSE}
+## initialization
+# load .rda file
+try(session::restore.session("data/final/results.rda"))
+```
+
+Abstract word count: 347 / 350
+Total word count: XXXX / 7000
+Number of references: 42
+Number of figures: 8
+Number of tables: 0
+Number of textboxes: 0
+Number of equations: 4
 Short running title:
-Short abstract: Prioritize biodiversity processes and patterns using raptr https://github.com/jeffreyhanson/raptr  
-Keywords: conservation, biodiversity, mixed integer linear programming, optimization, protected areas  
+Short abstract: Prioritize biodiversity processes and patterns using raptr https://github.com/jeffreyhanson/raptr
+Keywords: conservation, biodiversity, mixed integer linear programming, optimization, protected areas
 
 \clearpage
 
@@ -45,7 +56,172 @@ Keywords: conservation, biodiversity, mixed integer linear programming, optimiza
 4. The \texttt{raptr R} package provides a toolkit for making prioritizations that secure an adequate and representative sample of each feature. By using solutions that secure a representative sample of each feature, prioritizations may have a greater chance of achieving long-term biodiversity persistence.
 
 \clearpage
-\input{./text.tex}
 
-\clearpage
-\input{./figures.tex}
+# Introduction
+
+Perhaps the most fundamental aim of conservation is to maximize the long-term persistence of biodiversity [@r423; @r255]. To achieve this, conservation actions must preserve biodiversity patterns (eg. populations, species, ecosystems), but also crucially the processes that sustain them. One of the major tangible achievements of modern conservation has been the act of setting aside areas for preservation [@r484; @r440]. Reserve networks buffer species from gross threatening processes and set the stage for enhanced management interventions [@r465]. Since the resources available for conservation action are limited, protected area networks must be sited in places that satisfy conservation objectives for minimal cost [@r255].
+
+Today, the most widely used conservation planning tools focus on biodiversity patterns [\texttt{Zonation} and \texttt{Marxan}; @r429; @r22]. Decision makers can use these tools to obtain solutions that secure a proportion of the geographic range of each biological feature (populations, species, or ecosystems) of interest by setting targets. One method to incorporate data on the ecological and evolutionary processes that sustain biological features is to conserve a representative sample of the physical attributes that underpin these processes. To achieve this, current methods typically involve partitioning each feature into sub-groups based on an attribute variable that relates to a biodiversity process of interest [@r9; @r247; @r448]. For instance, by dividing species distributions into sub-groups according to habitat discontinuities, and ensuring that each sub-group is represented in the solution, conservation planners can obtain prioritizations that promote adaptive processes [@r2]. However, using this method is challenging because biodiversity often cannot be divided into operational groups for conservation planning without loss of information [@r489; @r490; @r218]. This limitation has been known of quite some time, and dates back to some of the earliest reserve selection methods [@r489].
+
+To overcome this limitation, Faith and Walker [-@r480] developed a decision support tool (\texttt{DIVERSITY}) to identify prioritizations that secure a representative sample of the environmental variation found across a study area. Although this method was originally pitched as an alternative to species-based conservation planning [@r481; @r218; @r203], it can also identify solutions that conserve a representative sample of variation across a single species' range. Recent work has built on this reserve selection method by solving problems with more advanced optimization algorithms [@r482]. However, existing \texttt{DIVERSITY}-based methods have limited utility for species-based conservation planning, in part, because they cannot accommodate multiple biological features and do not provide options to specify specific targets pertaining to the amount of habitat required to conserve species (unlike \texttt{Marxan} and \texttt{Zonation}). As a consequence, such methods are not useful for most conservation planning exercises [@r255].
+
+Conservation planners lack a decision support tool that lets them set explicit targets to obtain solutions that (1) secure an adequate amount of habitat for each feature and (2) a representative sample of the variation in each feature. To begin to fill this gap, here we unite the ideas underpinning \texttt{DIVERSITY} and \texttt{Marxan} into new formulations of the reserve selection problem, and implement them in the \texttt{raptr R} package. This \texttt{R} package provides decision makers with the tools to generate prioritizations based on data that relate to biodiversity patterns and processes. Here, we aim to the provide an in-depth understanding of this \texttt{R} package and explore its functionality.
+
+# Methods
+## PROBLEM FORMULATION
+Biodiversity features are defined as the entities that the prioritization is required to preserve (eg. species, ecosystems). Here, attributes are defined as the variation across the features' ranges that the prioritization is required to sample. These attributes can be intrinsic (eg. genetic or phenotypic) or extrinsic (eg. environmental conditions) to the feature. There should, however, be a reasonable underlying hypothesis that relates the attribute to the biodiversity processes that needs to be conserved.
+
+A set of attributes is conceptualized as a space (termed an "attribute space"). For example, a decision maker may require a prioritization that represents populations along climatic gradients. To achieve this, the decision maker might use a "climatic" attribute space with dimensions relating to mean annual temperature ($^{\circ}$C) and precipitation (mm). Any given combination of temperature and precipitation may be conceived as a point in this climatic space. Although they exist as polygons, for simplicity, each planning unit may be thought to exist as a single point inside a given attribute space. By associating the planning units with climatic data, and calculating a descriptive statistic for each planning unit (eg. mean), they can be mapped from geographic space to this climatic attribute space. In addition to points representing planning units, attribute spaces also contain demand points.
+
+Demand points [@r480; @r218; @r203] are designated by the decision maker to indicate regions of the attribute space that they wish to represent in the prioritization (see below for discussion on generating demand points for real-world data sets). For instance, by siting demand points throughout an attribute space, planners can obtain solutions that conserve a representative sample of an attribute space. Alternatively, by siting demand points in specific regions of an attribute space, planners can obtain solutions that target specific samples of an attribute space. For a given set of demand points, the shorter the distances between the demand points and the planning units selected for prioritization; the better a solution is at securing the desired variation in the attribute space. In any attribute space there may exist points that are impossible (eg. mean annual rainfall -5 mm), or do not occur in the study area (eg. mean annual temperature 30$^{\circ}$C in Antarctica). Additionally, there may be some regions that are desirable for some features and undesirable for others (eg. conditions known to be outside the physiological tolerance of certain species). Thus a different set of demand points may be appropriate for different attribute spaces and features.
+
+To illustrate these concepts, consider the following example: we wish to develop a prioritization for a single species that has four populations. Since we can only afford to preserve three of the four populations, our objective is to conserve the most representative sample possible. To achieve this goal, we obtained annual rainfall (mm) and temperature ($^{\circ}$C) data at the location of each population. We used this data to construct a two-dimensional climatic attribute space. Next, we generated demand points as equi-distant points inside this space. By comparing the distribution of the demand points to the distribution of the populations in the attribute space, we can identify the optimal solution (Fig. 1). We can see that a solution that prioritizes both populations _A_ and _B_, effectively "doubles-up" on the same climatic characteristics and constitutes considerable redundancy if both selected. Instead, a more representative sample of the intra-specific variation could be captured by securing populations _A_ (or _B_), _C_, and _D_. However, if the goal of the prioritization was to preserve populations living in warmer temperatures, then instead of siting demand points across the full range of conditions, we could site demand points in environmental conditions with temperatures over 30 $^{\circ}$C (ie. the top two rows of demand points in Fig. 1). Given this new set of demand points, populations _A_, _B_, and _C_ would be prioritized. Since demand points can be sited and weighted in any configuration, they provide a flexible means to guide the reserve selection process.
+
+The \texttt{raptr R} package utilizes two novel formulations of reserve selection problem to generate prioritizations. These formulations are based on elements of the \texttt{Marxan}, \texttt{DIVERSITY}, and uncapacitated facility location problems [@r451]. Since they are based on the unreliable and reliable facility location problems [@r16], the formulations are hereafter referred to as the "unreliable" and "reliable" formulations. The difference between the two formulations is that the reliable formulation explicitly considers the probability that planning units are occupied by features when calculating how well a given solution samples a feature's attribute space. On the other hand, the unreliable formulation assumes that features occupy all of the planning units within which they are found with 100 % certainty when performing these calculations. For brevity, we will define the simpler formulation--the unreliable formulation--below and define the more complex version--the reliable formulation--in Appendix S1. All mathematical terms defined hereafter are described in Table S1. For convenience, the cardinality of sets will be denoted using the same symbol used to denote the set.
+
+Define $F$ to be the set of features one wishes to conserve (indexed by $f$). Let $J$ be a set of planning units (indexed by $j$). Also, let $A_j$ denote the area, and $C_j$ denote the cost of preserving planning unit $j \in J$. To assess the extent to which each feature is secured in a given prioritization, let $q_{fj}$ denote the probability of feature $f$ occupying planning unit $j$. The level of fragmentation associated with a prioritization is parameterized as the total exposed boundary length (as in \texttt{Marxan}). Let the shared edges between each planning unit $j \in J$ and $k \in J$ be $e_{jk}$.
+
+Let $S$ denote a set of attribute spaces (indexed by $s$). Each $j \in J$ is associated with spatially explicit data that represent coordinates for each attribute space $s \in S$. Let $I_{fsi}$ denote a set of demand points (indexed by $i$) for each feature $f \in F$ and each attribute space $s \in S$. Let $\lambda_{fsi}$ denote the weighting for each demand point $i \in I$, $f \in F$ and $s \in S$. Let $d_{fsij}$ denote the distance between each demand point $i \in I$ and each planning unit $j \in J$ for each feature $f \in F$ and attribute space $s \in S$. To describe the inherent variation in the distribution of demand points for feature $f$ and space $s$, let $\delta_{fsi}$ denote the distance between each demand point $i \in I$ and the centroid of the demand points. Demand points with greater weight $\lambda_{fsi}$ are more important, and the solutions that select planning units close to highly weighted demand points will be more favorable. As a consequence, the decision maker will need to choose an appropriate weighting for each demand point.
+
+Targets are used to ensure that prioritizations sufficiently conserve each feature. Amount-based targets specify the minimum amount of habitat required for each feature to be adequately conserved (similar to those used in \texttt{Marxan}). Let $T_f$ denote the amount of area or habitat that needs to be preserved for each feature $f \in F$. Space-based targets specify the minimum proportion of variation in the demand points that needs to be secured for each feature to be sufficiently conserved. Space-based targets are expressed as proportions--instead of a sum of weighted distances--by scaling the sum of weighted distances between the demand points and the selected planning units in a solution relative to the distances between demand points and the demand points' centroid. This scaling is conceptually similar to that used in calculating the R$^2$ statistic for _K_-means clustering analyses from the within sums of squares and total sums of squares [@r491; page 106]. Let $\tau_{fs}$ denote the space-based targets for feature $f \in F$ and attribute space $s \in S$. The control variables for the unreliable formulation are the $B$, $T_{s}$, and $\tau_{fs}$ variables.
+
+\begin{align*}
+T_s &= \text{amount target for feature $f$} \tag*{eqn 1a}\\
+%
+\tau_{fs} &= \parbox{25em}{space target for feature $f$ in attribute space $s$} \tag*{eqn 1b}\\
+%
+B &= \text{boundary length modifier (BLM) to penalize fragmented solutions} \tag*{eqn 1c}\\
+\end{align*}
+
+The decision variables are the $X_j$ and $Y_{fsij}$ variables.
+
+\begin{align*}
+X_j
+  &= \begin{cases}
+    1, & \parbox{25em}{if planning unit $j$ is selected for conservation action} \tag*{eqn 2a} \\
+    0, & \parbox{25em}{otherwise} \\
+  \end{cases} \\
+%
+Y_{fsij} &= \begin{cases}
+    1, & \parbox{25em}{if demand point $i$ is used to represent planning unit $j$ for feature $f$ in space $s$. } \tag*{eqn 2b} \\
+    0, & \parbox{25em}{otherwise} \\
+  \end{cases} \\
+\end{align*}
+
+Each demand point $i \in I$ for feature $f \in F$ and space $s \in S$ is represented by a single selected planning unit (ie. a $j \in J$ where $X_j = 1$). The degree to which a demand point $i$ is represented by a planning unit $j$ is determined by the distance between them ($d_{fsij}$). Generally--unless near zero space targets are used so that the problem is effectively unconstrained by the target--demand points are represented by their closest selected planning units. In poorer quality solutions, demand points will be represented by planning units that have larger distances between them. As a consequence, the sum of the weighted distances between all of the demand demand points and the planning units used to represent them will be larger, and so, the solution will capture less of the variation described by the demand points.
+
+The unreliable formulation (URAP) is a defined as a multi-objective optimization problem.
+
+\begin{align*}
+& \text{(URAP)} & \text{Min } & \sum_{j=0}^{J-1} \left( X_j C_j \right) + \sum_{j=0}^{J-1} \sum_{k=j}^{J-1} X_j \left( 1-X_k \right) \left( B e_{jk} \right) + & & \tag*{eqn 3a} \\
+%
+& & \text{s.t. } & \sum_{j=0}^{J-1} A_j q_{fj} \geq T_{f} & \forall & 0 \leq f \leq F-1 \tag*{eqn 3b}\\
+%
+& & & 1 - \frac{\sum_{i=0}^{I-1} \sum_{j=0}^{J-1} \lambda_{fsi} {d_{fsij}}^{2} Y_{fsij}}{\sum_{i=0}^{I-1} \lambda_{fsi} {\delta_{fsi}}^{2}} \geq \tau_{fs} & \forall & 0 \leq f \leq F-1, \tag*{eqn 3c}\\
+& & & & & 0 \leq s \leq S-1\\
+%
+& & & \sum_{j=0}^{J-1} Y_{fsij} = 1 & \forall & 0 \leq f \leq F-1, \tag*{eqn 3d}\\
+& & & & & 0 \leq s \leq S-1, \\
+& & & & & 0 \leq i \leq I-1\\
+%
+& & & Y_{fsij} \leq X_j & \forall & 0 \leq f \leq F-1, \tag*{eqn 3e}\\
+& & & & & 0 \leq s \leq S-1, \\
+& & & & & 0 \leq i \leq I-1,\\
+& & & & & 0 \leq j \leq J-1\\
+%
+& & & X_j, Y_{fsij} \in {0,1} & \forall & 0 \leq f \leq F-1, \tag*{eqn 3f}\\
+& & & & & 0 \leq s \leq S-1,\\
+& & & & & 0 \leq i \leq I-1\\
+%
+\end{align*}
+
+The objective function (eqn 3a) determines the utility of a given prioritization: a combination of the total cost of a prioritization and how fragmented it is. Constraints (eqn 3b) ensure that all the amount-based targets are met. Constraints (eqn 3c) ensure that all the space-based targets are met for each feature and each attribute space. For each feature and attribute space, the total weighted distance between the demand points and their closest selected planning units is calculated ($\sum_{i=0}^{I-1} \sum_{j=0}^{J-1} \lambda_{fsi} {d_{fsij}}^{2} Y_{fsij}$). This total weighted distance is then scaled by the inherent variation in the demand points ($\sum_{i=0}^{I-1} \lambda_{fsi} {\delta_{fsi}}^{2}$). As previously mentioned, the resulting fraction is used to calculate a proportion conceptually similar to the $R^2$ statistic used in $k$-means clustering analysis. The constraints (eqn 3c) ensure that the proportion of variation in the demand points secured in the solution must be equal to or greater than the space-based target. Constraints (eqn 3d) ensure that only one planning unit is assigned to each demand point. Constraints (eqn 3e) ensure that demand points are only assigned to selected planning units. Constraints (eqn 3f) ensure that the $X$ and $Y$ variables are binary.
+
+## Optimization
+Although the reserve selection problems presented here are non-linear (see Appendix S1 for reliable formulation), they can be linearized using methods described by Beyer _et al._ [-@r426] and Cui _et al._ [@r16]. The \texttt{raptr} R package provides functions to express conservation planning data as linearized versions of the optimization problems and solve them using the commercial \texttt{Gurobi} software suite (\url{www.gurobi.com}). Presently, academics can obtain a license at no cost.
+
+# Examples
+
+To showcase the behavior of the unreliable formulation, we conducted a simulation study and two case studies. To understand how long it would take to solve various sized problems, we also conducted a benchmark analysis (Appendix S2). We completed the analyses using \texttt{R} [version `r getRversion()`; @r192] and solved all optimization problems to within `r general_parameters$MIPGap * 100` % of optimality.
+
+## SIMULATION STUDY
+### Methods
+We simulated a hypothetical study area with square planning units arranged in a $`r sqrt(sim_parameters$number_planning_units)` \times `r sqrt(sim_parameters$number_planning_units)`$ grid (Fig. 2). We then simulated three species to inhabit this study area. Firstly, we simulated a hyper-generalist species (hereafter referred to as the "uniformly distributed species"). It occupied all planning units with equal probability (Fig. 2a; eqn 4a). Secondly, we simulated a species with simple habitat requirements (hereafter referred to as the "normally distributed species"; Fig. 2b). This species was most likely to be found in planning units nearest to the center of the study area. It was simulated using the density function of a multivariate normal distribution (represented by $\mathcal{N}$; eqn 4b). Thirdly, we simulated a species two distinct populations (hereafter referred to as the "bimodally distributed species"; Fig. 2c). It was simulated using the maximum density of two multivariate normal distributions (eqn 4c). For a given species, planning unit occupancy was calculated using the $(X, Y)$ coordinates of the units' centroids and the relevant equation. We used a geographic attribute space to provide an intuitive visualization of the solutions. Demand points were set as the planning units' centroids and were weighted according to the units' probability of occupancy.
+
+\begin{align*}
+\\
+P \left( \text{uniformly distributed species} | \left( x, y \right) \right) &= 0.5 \tag*{eqn 4a} \\
+%
+P \left( \text{normally distributed species} | \left( x , y \right) \right) &= \frac{\mathcal{N} \left( \left[ \begin{smallmatrix} x \\ y \end{smallmatrix} \right] \, \left[ \begin{smallmatrix} 0.0 \\ 0.0 \end{smallmatrix} \right] \, \left[ \begin{smallmatrix} 12.58&0 \\ 0&12.5 \end{smallmatrix} \right] \right)}{2} \tag*{eqn 4b} \\
+%
+P \left( \text{bimodally distributed species} | \left( x,y \right) \right) &= \text{Max} \begin{cases}
+\mathcal{N} \left(\left[ \begin{smallmatrix} x \\ y \end{smallmatrix} \right] \, \left[ \begin{smallmatrix} -3.75 \\ -3.75 \end{smallmatrix} \right] \, \left[ \begin{smallmatrix} 10&0 \\ 0&10 \end{smallmatrix} \right] \right), \\ \frac{\mathcal{N} \left( \left[ \begin{smallmatrix} x \\ y \end{smallmatrix} \right] \, \left[ \begin{smallmatrix} 3.75 \\ 3.75 \end{smallmatrix} \right] \, \left[ \begin{smallmatrix} 8&0 \\ 0&8 \end{smallmatrix} \right] \right)} {2} \\
+\end{cases} \tag*{eqn 4c} \\
+%
+\end{align*}
+
+We generated four solutions for each species. Firstly, to represent solutions generated using conventional methods (eg. \texttt{Marxan}), we generated solutions using `r sim_parameters$amount_target*100` % amount targets. Secondly, to show how the addition of space targets can affect solutions, we generated solutions using `r (sim_parameters$amount_target*100)` % amount targets and `r (sim_parameters$space_target*100)` % space targets to capture the geographic spread of each species (hereafter referred to as geographic spread targets). Thirdly, to represent solutions generated using conventional planning methods that penalize for fragmentation, we generated solutions using `r (sim_parameters$amount_target*100)` % amount targets and a boundary length modifier of `r sim_parameters$blm`. Fourthly, to illustrate the combined effects of using amount and space targets as well as penalties for fragmentation, we generated solutions using `r (sim_parameters$amount_target*100)` % amount targets, `r (sim_parameters$space_target*100)` % geographic spread targets, and boundary length modifiers of `r sim_parameters$blm`.
+
+### Uniformly distributed species
+
+The solution generated for the uniformly distributed species using an amount target prioritized `r dplyr::filter(sim_spp_results, species == "Uniform\nspecies", prioritisation == "Amount\ntargets")$n` planning units near the southern end of study area (Fig. 2a). For this species, all solutions containing this number of planning units are optimal when using a `r sim_parameters$amount_target*100` % amount target. We obtained this particular solution due to artifacts in the solver (eg. seed for the random number generator, order of variables in the problem matrix). This solution captured a small amount of the geographic spread of the species (`r round(dplyr::filter(sim_spp_results, species == "Uniform\nspecies", prioritisation == "Amount\ntargets")$space_held, 2)` % sampled). In fact, the coverage was so poor that the proportion was negative because the solution captured a less representative sample than a solution containing one planning unit in the center of the species' distribution.
+
+By explicitly targeting representativeness, we obtained a solution that captured the geographic spread of the uniform species (`r round(dplyr::filter(sim_spp_results, species == "Uniform\nspecies", prioritisation == "Amount &\nspace targets")$space_held, 2)` % sampled; Fig. 3b). Although this solution secured an adequate amount of habitat and a representative sample of the species' geographic spread, this solution was highly fragmented. However, by penalizing fragmentation using a boundary length modifier, we were able to obtain a well connected solution that met all of the objectives (Fig. 3d). This solution prioritized the same number of planning units as the previous solutions even though it is far superior. As we can see, under the simplest of circumstances, reserve selection methods may not yield solutions that secure a representative sample of features unless constraints are used to guarantee this property.
+
+### Normally distributed species
+
+The solution generated for the normally distributed species using just an amount target prioritized planning units in the species' core range area (Fig. 3e). While this strategy is cost-effective for protecting habitat, it was ineffective for securing a representative sample of the species' geographic spread (`r round(dplyr::filter(sim_spp_results, species == "Normal\nspecies", prioritisation == "Amount\ntargets")$space_held, 2)` % sampled) because it did not protect any planning units along the periphery of the species' distribution. By using amount and space targets, we were able to conserve an adequate amount of habitat and also secure a representative sample of the species' geographic spread (`r round(dplyr::filter(sim_spp_results, species == "Normal\nspecies", prioritisation == "Amount &\nspace targets")$space_held, 2)` % sampled; Fig. 3f). Similar to the solutions for the uniformly distributed species, this solution was highly fragmented and we were able to obtain a better connected solution by specifying fragmentation penalties (Fig. 3h). However, unlike the solutions for the uniformly distributed species, the solution generated using an amount target, a space target, and fragmentation penalties required more planning units than the other solutions. These results suggest that solutions may need to prioritize more planning units to meet additional conservation objectives.
+
+### Bimodally distributed species
+
+The solution generated for the bimodally distributed species using an amount target only conserved individuals belonging to one of the two populations (Fig. 3i). As a consequence, this solution did not secure a representative sample of the species' geographic spread (`r round(dplyr::filter(sim_spp_results, species == "Bimodal\nspecies", prioritisation == "Amount\ntargets")$space_held, 2)` % sampled). The addition of fragmentation penalties exacerbated this issue, and resulted in a solution that sampled even less of the species' geographic spread (`r round(dplyr::filter(sim_spp_results, species == "Bimodal\nspecies", prioritisation == "Amount target\nand BLM")$space_held, 2)` % sampled; Fig. 3k). However, this issue was resolved by using a space target  to obtain a solution that secured both populations (`r round(dplyr::filter(sim_spp_results, species == "Bimodal\nspecies", prioritisation == "Amount & space\ntargets and BLM")$space_held, 2)` % geographic spread secured; Fig. 3l). This finding suggests that species with large intra-specific variation could benefit the most from prioritizations generated using space-based targets.
+
+## CASE STUDY 1
+### Methods
+We investigated how space-based targets can be used in a multi-species planning context to generate a prioritization that sufficiently preserves the species' realized niches. By preserving the populations in suitable habitats with different environmental conditions, conservation planners can preserve the species' adaptive landscape and foster resilience to environmental change [@r63]. We selected Queensland, Australia as the study area. We obtained data for 19 bioclimatic variables across the region [at $30^{\prime \prime}$ resolution from \url{www.worldclim.org}; @r33] and subjected them to a principal components analysis (using ArcMap 10.3.1). We used the scores from the first `r as.character(english::as.english(cs1_parameters$number_pc_layers))` principal components to characterize the environmental variation across the study area (explaining `r round(cs1_pca_data[[4]][cs1_parameters$number_pc_layers], 1)` % of the total variation; Fig. 4).
+
+We used four bird species in this case study: blue-winged kookaburra (_Dacelo leachii_), brown-backed honeyeater (_Ramsayornis modestus_), brown falcon (_Falco berigora_), and pale headed rosella (_Platycercus adscitus_). These species span a range of different habitat requirements. We mapped the extent of occurrence for each species (Fig. 5). To do this, we obtained occurrence records from the Atlas of Living Australia across the whole of Australia [using the \texttt{ALA4R R} package; @r453], spatially thinned the data to omit points within `r cs1_parameters$thin_distance/1000` km$^2$ of each other to ameliorate the effects of sampling bias [using the developmental version of the \texttt{spThin R} package; \url{https://github.com/mlammens/spThin}; @r454], and fit `r cs1_parameters$mcp_percent` % minimum convex polygons [using the \texttt{adehabitatHR R} package; @r455]. We used this method because it is entirely reproducible using freely available data.
+
+We generated `r cs1_parameters$dp_number` demand points for each species (Fig. S2). To ensure that the demand points reflected the core parts of the species' realized niches, we used the following method. For each species, we generated random points inside the species' geographic range and at each point extracted the principal component values at that location. We then fit hyperbox kernels to the distribution of principal component values to characterize the realized niche of each species using a manually chosen bandwidth of `r cs1_parameters$dp_bandwidth[1]` and a `r cs1_parameters$dp_quantile` quantile to map the core parts of the species' niches [implemented in the \texttt{hypervolume R} package; @r231]. We then generated uniformly distributed points inside the species' distribution in environmental space, and extracted the kernel density at their locations. These uniformly distributed points and associated density estimations were used as demand point coordinates and weights (respectively).
+
+We generated two multi-species prioritizations. The first solution was generated using `r cs1_parameters$amount_target*100` % amount targets for each species. The second solution was generated the same amount targets with an additional `r cs1_parameters$space_target*100` % niche-based target for each species.
+
+### Results
+Generally, the solution generated using just amount targets preserved a representative sample of each the `r as.character(english::as.english(length(cs1_parameters$species_names)))` bird species' niches. (Figure S1). This solution secured over `r cs1_parameters$space_target*100` % of the realized niche of `r parsed_representative_space_held_names`. Yet it failed to achieve this for the `r parsed_not_representative_space_held_names`. This result demonstrates that although conventional methods may yield solutions that conserve a representative sample of some features, only through the use of explicit targets can planners obtain cost-effective solutions that secure a representative sample of all features.
+
+## CASE STUDY 2
+### Methods
+Here we used space-based targets to generate a prioritization securing a representative sample of a species' intra-specific genetic variation. We used species occurrence and genetic data collected by the international IntraBioDiv project in the European Alps [@r463; @r461; @r462]. Although this dataset contains multiple species, we used data for the `r tolower(cs2_parameters$common_name)` (\textit{`r gsub('_', ' ',cs2_parameters$species_name,fixed=TRUE)`}) as a simple case study, because exhibits significant inter-population genetic structure [@r462]. Members of the IntraBioDiv project collected data using a $20^{\prime}$ longitude by $21^{\prime}$ latitude grid (approx. 22.3 km $\times$ 25 km; Fig. 7a). They visited every second grid cell, and if the species was detected in a cell, samples were collected from three individuals. Samples were genotyped using amplified fragment length polymorphisms [AFLP; @r472], and used to construct matrices denoting the presence/absence of polymorphisms at loci. In total, `r structurer::n.samples(cs2_spp_structure_data[[1]])` individuals were genotyped at `r structurer::n.loci(cs2_spp_structure_data[[1]])` markers.
+
+We used non-metric multi-dimensional scaling [NMDS; using Gower distances to accommodate sparsity; @r459; implemented using the \texttt{cluster R} package; @r457] to ordinate the presence (or absence) of locus-specific alleles within individuals into two continuous variables [implemented in the \texttt{vegan R} package; @r458]. These continuous variables described the main axes of genetic variation within the species. We averaged together values corresponding to samples collected in the same grid cell, and used them to create a genetic attribute space (Figs. 7c and 7d). To assess spatial auto-correlation, we calculated Moran's I auto-correlation index for each NMDS axis using scaled  great circle distances between the grid cells' centroids [using the \texttt{ape R} package; @r464].
+
+The grid cells were used as planning units for generating prioritizations. Since data were not collected in every grid cell, and the planning units were arranged in a checkerboard pattern. The grid-cell averaged ordinations were used to describe the typical genetic characteristics of individuals in the planning unit. Since the number of planning units was relatively small, we used the same grid-cell averaged ordinations as demand points. To ensure that the solutions did not prioritize particularly costly areas, we obtained population density data [1 km resolution from the Global Rural-Urban Mapping Project; \texttt{GRUMP V1}; @r456] and estimated the total population density inside each grid cell. We used these values to represent opportunity cost (Fig. 7b).
+
+We generated two solutions. The first solution was generated using an `r cs2_parameters$amount_target*100` % amount-based target. The second solution was generated using the same amount-based target and an additional `r cs2_parameters$genetic_target*100` % genetic-based target.
+
+### Results
+
+A two-dimensional attribute genetic space was able to capture most of the variation between individuals (stress = `r round(cs2_spp_nmds[[1]]$stress,2)`; Figs. 7c--7d). Planning units located near each other contained individuals with similar genetic characteristics (Moran's I: NMDS axis 1, $I = `r round(cs1_nmds_morans_i[[1]][[1]]$observed,2)`$, $P `r lazyWeave::pvalString(cs1_nmds_morans_i[[1]][[1]]$p.value)`$; Moran's I: NMDS axis 2, $I = `r round(cs1_nmds_morans_i[[1]][[2]]$observed,2)`$, $P `r lazyWeave::pvalString(cs1_nmds_morans_i[[1]][[2]]$p.value)`$). In terms of the average genetic characteristics of individuals in the planning units, they tended to cluster into two main groups, with evidence of within-group structure inside the larger group (Fig 8c). This analysis supports previous work by Alvarez _et al._ [-@r461] who also found evidence of genetic structure within this species.
+
+The solution generated using just the amount target failed to preserve a representative portion of the species' genetic variation (`r round(cs2_spp_results$genetic[1], 2)` % sampled; Figs. 8a and 8c). This solution only conserved individuals in one of the two main genetic groups. In fact, this solution is just a collection of the cheapest planning units occupied by the species needed to fullfil the target. Whereas, the solution generated using both amount and genetic targets conserved individuals in each of the two main genetic groups (`r round(cs2_spp_results$genetic[2],2)` % sampled; Figs. 8b and 8d). Although the solutions only differ by a single planning unit, by securing individuals in both main genetic groups the second solution was able to secure a much more representative sample of the species' genetic variation for only a minor increase in cost (`r round(cs2_spp_results$Score[2],2)` compared to `r round(cs2_spp_results$Score[1],2)` total cost).
+
+# Implications and future directions
+The \texttt{raptr R} package provides a unified approach to reserve selection. Conservation planners can use this \texttt{R} package to generate prioritizations that secure intra- and inter-specific biodiversity patterns. Both the simulations and case studies show that explicitly targeting a representative sample of each feature in a conservation planning exercise can substantially alter prioritizations. Additionally, we found that prioritizations often needed to secure more habitat to conserve a representative sample of each feature. Although it may not be practical to conserve substantially more habitat than the amount specified using amount-based targets [eg. 10 % geographic range; @r255], we did find that even small increases in reserve size could yield large gains.
+
+One of the key advantages of this package is that it is general enough to incorporate almost any spatially explicit variable. This package can accommodate intrinsic or extrinsic variation in the feature(s). For example, adaptation processes could be secured using environmental variation [eg. @r247], and trophic processes could be conserved by capturing the overlapping distributions of predator and prey species [eg. @r471; @r485]. Note that maximizing one process can result in trading off against another (eg. geographic spread vs. connectivity). Additionally, space targets can be used to achieve representation for reasons that are not related to biodiversity processes, such as obtaining a geographically representative set of reserves so there is equitable access to parks by people [eg. @r483]. As long as the variation can be described using Euclidean distances--which could be achieved through transformation or dimension reduction--the \texttt{R} package can be used to obtain a representative sample.
+
+The degree to which a prioritization truly secures a representative sample of a feature depends on (1) the attribute space(s), (2) the distribution of demand points chosen by the conservation planner, and (3) the space target used. The optimal solution will not effectively represent the decision maker's objectives if an inappropriate set of spatial variables or demand points are used to represent the attribute space. Demand points should be distributed across the full range of variation in an attribute space to obtain solutions that secure a representative sample of the attribute space (see the `make.DemandPoints` function for statistical routines to achieve this). As with conventional amount-based targets, planners will have to ensure that space targets are high enough to fulfill conservation objectives [eg. when setting targets to conserve intra-specific genetic variation; @r487]. We encourage conservation planners to consult with experts to identify suitable targets.
+
+Attribute data need to be spatially comprehensive to map planning units to attribute spaces. However, many real-world data sets are patchy. For example, due to constrained resources, genetic data may only be available for some planning units. To use such patchy data, planners could omit the planning units that are missing data, or estimate the missing data using spatially explicit models [eg. krigging or generalized dissimilarity models; @r467; @r486]. This approach has been successfully applied to a range of biological data sets [eg. @r468]. We caution that inaccuracy and uncertainty in data can negatively impact prioritizations [@r488], and recommend that planners ensure that data are sufficiently reliable or use the reliable formulation (described in Appendix S1) to accommodate uncertainty into the reserve selection process.
+
+To maximize the long-term persistence of biodiversity, decision makers need to identify prioritizations that preserve existing patterns of biodiversity and the processes that support them. It is becoming increasingly apparent that simply protecting a large area will fail to achieve this [@r492]. Here, we developed the \texttt{raptr R} package to provide conservation planners with the tools to deliver cost-effective prioritizations that secure an adequate amount of a representative sample of biodiversity features. By exploring the functionality of this software package, we found that explicitly targeting a representative sample of each feature can result in substantially different solutions.
+
+# Acknowledgements
+JOH is funded by an Australian Postgraduate Award (APA) scholarship. RAF and HPP have Australian Research Council Fellowships. This work was supported by the Centre for Biodiversity and Conservation Science (CBCS).
+
+# Data accessibility
+The \texttt{raptr R} package can be downloaded from The Comprehensive R Archive Network (\url{https://CRAN.R-project.org/package=raptr}). All data, code, and results are stored in an online repository (\url{https://github.com/jeffreyhanson/raptr-manuscript}) to permit replication and validation of this study.
+
+# References
+
+\bibliography{references}
