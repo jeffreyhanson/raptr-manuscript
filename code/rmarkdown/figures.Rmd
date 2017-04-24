@@ -1,12 +1,17 @@
 ---
-bibliography: references.bib
-csl: reference-style.csl
+title: "Figures"
 output:
   rmarkdown::pdf_document:
-    fig_caption: yes
+    toc: false
     keep_tex: yes
+    fig_caption: yes
     includes:
       in_header: preamble.tex
+fontsize: 11pt
+documentclass: article
+subparagraph: true
+bibliography: references.bib
+csl: reference-style.csl
 ---
 
 ```{r, include = FALSE}
@@ -188,7 +193,7 @@ ggplot2::ggplot() +
   ggplot2::facet_grid(species ~ prioritisation)
 ```
 
-```{r, echo = FALSE, fig.height = 1.9, fig.width = column_width, fig.cap = "Two main gradients of climatic variation across Queensland, Australia. Polygons denote planning units."}
+```{r, echo = FALSE, fig.height = 1.9, fig.width = column_width, fig.cap = "Two main gradients of climatic variation across Queensland, Australia. Polygons denote planning units. The map is rendered in an equal-area coordinate system (\texttt{EPSG:3577})"}
 # prepare data
 cs1_pca_fpoints <- plyr::ldply(seq_len(cs1_parameters$number_pc_layers),
   function(i) {
@@ -269,7 +274,7 @@ p2 <- ggplot2::ggplot() +
 gridExtra::grid.arrange(p1, p2, ncol = 2)
 ```
 
-```{r, echo = FALSE, fig.height = 3.8, fig.width = column_width, fig.cap = "Distribution of the species used in the first case study. Polygons denote planning units. Planning units occupied by a given species are shown in light blue."}
+```{r, echo = FALSE, fig.height = 3.8, fig.width = column_width, fig.cap = "Distribution of the species used in the first case study. See Fig. 4 caption for conventions. Planning units occupied by a given species are shown in light blue."}
 # prepare data
 cs1_pus_occ_fpolygons <- plyr::ldply(
   seq_along(cs1_parameters$common_names),

@@ -73,14 +73,14 @@ if (length(amount_not_represented_species_names) > 1) {
      dplyr::last(parsed_not_representative_space_held_names))
 } else if (length(amount_not_represented_species_names) == 1) {
   parsed_not_representative_space_held_names <- paste0(
-    amount_not_represented_species_names, "(", round(dplyr::filter(
+    tolower(amount_not_represented_species_names), " (", round(dplyr::filter(
       cs1_spp_results, Prioritisation == "Amount targets",
       Species == amount_not_represented_species_names)$niche, 2), " %)")
 } else {
   parsed_not_representative_space_held_names <- c()
 }
 
-amount_represented_species_names  %<>% tolower()
+amount_represented_species_names %<>% tolower()
 amount_not_represented_species_names %<>% tolower()
 
 ## save session

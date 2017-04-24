@@ -7,7 +7,7 @@ MODE=release
 R = /opt/R/R-3.3.2/bin/R
 
 # main operations
-all: install analysis article rev-comments
+all: install analysis article
 
 R:
 	$(R) --no-save
@@ -46,32 +46,14 @@ push_ms:
 	@scp -P 443 code/rmarkdown/* uqjhans4@cbcs-comp01.server.science.uq.edu.au:/home/uqjhans4/GitHub/raptr-manuscript/code/rmarkdown
 
 # commands for generating manuscript
-cover-letter: article/cover-letter.pdf
-
-article: article/article.pdf article/figures.pdf article/supporting-information.pdf
-
-rev-comments: article/reviewer-comments.pdf
-
-article/cover-letter.pdf: code/rmarkdown/cover-letter.tex
-	cd code/rmarkdown;\
-	pdflatex cover-letter.tex
-	mv code/rmarkdown/cover-letter.pdf article/
-	rm -f code/rmarkdown/cover-letter.aux
-	rm -f  code/rmarkdown/cover-letter.log
-	rm -f  code/rmarkdown/cover-letter.out
+article: article/article.docx article/article.pdf article/figures.pdf article/supporting-information.pdf
 
 article/article.docx: code/rmarkdown/preamble.tex code/rmarkdown/article.Rmd
-	$(R) --no-save -e "rmarkdown::render('code/rmarkdown/article.Rmd')"
+	-R --no-save -e "rmarkdown::render('code/rmarkdown/article.Rmd', output_file='article.tex')"
 	rm -f code/rmarkdown/article.md
-	rm -f code/rmarkdown/article.knit.md
-	rm -f code/rmarkdown/article.utf8.md
+	cd code/rmarkdown && pandoc +RTS -K512m -RTS article.tex -o article.docx --highlight-style tango --latex-engine pdflatex --include-in-header preamble.tex --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
 	rm -f code/rmarkdown/article.tex
-	mv code/rmarkdown/article.pdf article/
-
-article/article.pdf: code/rmarkdown/preamble.tex code/rmarkdown/article.Rmd
-	$(R) --no-save -e "rmarkdown::render('code/rmarkdown/article.Rmd')"
-	rm -f code/rmarkdown/article.tex
-	mv code/rmarkdown/article.pdf article/
+	mv code/rmarkdown/article.docx article/
 
 article/supporting-information.pdf: code/rmarkdown/preamble.tex code/rmarkdown/supporting-information.Rmd code/rmarkdown/references.bib code/rmarkdown/reference-style.csl
 	$(R) --no-save -e "rmarkdown::render('code/rmarkdown/supporting-information.Rmd')"
@@ -89,11 +71,14 @@ article/figures.pdf: code/rmarkdown/figures.Rmd
 	rm -f code/rmarkdown/figures.tex
 	mv code/rmarkdown/figures.pdf article/
 
-article/reviewer-comments.pdf: code/rmarkdown/reviewer-comments.md
-	cd code/rmarkdown;\
-	/usr/bin/pandoc reviewer-comments.md --output reviewer-comments.pdf --variable 'geometry:margin=1in'
-	mv code/rmarkdown/reviewer-comments.pdf article/reviewer-comments.pdf
-
+article/article.pdf: code/rmarkdown/article.Rmd
+	$(R) --no-save -e "rmarkdown::render('code/rmarkdown/article.Rmd')"
+	rm -f code/rmarkdown/article.md
+	rm -f code/rmarkdown/article.utf8.md
+	rm -f code/rmarkdown/article.knit.md
+	rm -f code/rmarkdown/article.tex
+	mv code/rmarkdown/article.pdf article/
+	
 # commands for running analysis
 analysis: data/final/results.rda
 
