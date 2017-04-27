@@ -193,7 +193,7 @@ ggplot2::ggplot() +
   ggplot2::facet_grid(species ~ prioritisation)
 ```
 
-```{r, echo = FALSE, fig.height = 1.9, fig.width = column_width, fig.cap = "Two main gradients of climatic variation across Queensland, Australia. Polygons denote planning units. The map is rendered in an equal-area coordinate system (\texttt{EPSG:3577})"}
+```{r, echo = FALSE, fig.height = 1.9, fig.width = column_width, fig.cap = "Two main gradients of climatic variation across Queensland, Australia. Polygons denote planning units. The map is rendered in an equal-area coordinate system (\\texttt{EPSG:3577})."}
 # prepare data
 cs1_pca_fpoints <- plyr::ldply(seq_len(cs1_parameters$number_pc_layers),
   function(i) {
@@ -385,7 +385,7 @@ ggplot2::ggplot() +
   ggplot2::facet_wrap(~ Prioritisation, ncol = 2)
 ```
 
-```{r, echo = FALSE, fig.height = 2.2, fig.width = column_width, fig.cap = paste0("Data used for the second case study. Squares denote planning units. Panel (a) shows all grid cells surveyed by the IntraBioDiv project. Grid cells occupied by the ",tolower(cs2_parameters$common_name)," are shown in bright blue. The subsequent panels contain only show occupied grid cells. Panel (b) shows the acquisition cost of each planning unit (estimated as the total human population density). Panels (c--d) show the spatial distribution of the ordinations describing genetic variation. These values describe the typical genetic characteristics of individuals in each planning unit. Planning units with similar values/colors contain individuals with similar loci polymorphisms.")}
+```{r, echo = FALSE, fig.height = 2.2, fig.width = column_width, fig.cap = paste0("Data used for the second case study. Squares denote planning units. Panel (a) shows all grid cells surveyed by the IntraBioDiv project. Grid cells occupied by the ",tolower(cs2_parameters$common_name)," are shown in bright blue. The subsequent panels contain only show occupied grid cells. Panel (b) shows the acquisition cost of each planning unit (estimated as the total human population density). Panels (c--d) show the spatial distribution of the ordinations describing genetic variation. These values describe the typical genetic characteristics of individuals in each planning unit. Planning units with similar values/colors contain individuals with similar loci polymorphisms. Note that data were not collected in every grid cell, and the planning units are therefore arranged in a checkerboard pattern.")}
 # prepare full grid data
 cs2_spp_grid_fpolygons <- cs2_grid_fpolygons
 cs2_spp_grid_fpolygons$Title <- "Occupancy"
