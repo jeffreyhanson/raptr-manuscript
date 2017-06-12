@@ -141,7 +141,7 @@ The benchmark analysis revealed that moderately-sized conservation problems can 
 \clearpage
 
 # Figures
-```{r, echo = FALSE, fig.height = 8, fig.width = 8.5, fig.cap = "Attribute spaces used in the first case-study. Each panel shows a the distribution of a solution in environmental space and how it samples the realized niche for a different species. The left column of panels shows the solution generated using amount targets. The right column of panels shows the solution generated using amount and niche targets. Each column of panels corresponds to a different species. Hexagons show the distribution of demand points. The color of each hexagon denotes the weighted frequency of demand points inside it. Points represent the environmental conditions associated with planning units inside the species geographic range that were selected for preservation in a given solution."}
+```{r, echo = FALSE, fig.height = 8, fig.width = 8.5, fig.cap = "Attribute spaces used in the first case-study. Each panel shows a the distribution of a solution in environmental space and how it samples the realized niche for a different species. The left column of panels shows the solution generated using amount targets. The right column of panels shows the solution generated using amount and space targets. Each column of panels corresponds to a different species. Hexagons show the distribution of demand points. The color of each hexagon denotes the weighted frequency of demand points inside it. Points represent the environmental conditions associated with planning units inside the species geographic range that were selected for preservation in a given solution."}
 ## prepare data
 cs1_pu_niche_data <- plyr::ddply(cs1_spp_results,
   c("Species", "Prioritisation"),
@@ -208,12 +208,14 @@ cs1_dp_niche_data <- plyr::ddply(
     # return data
     return(curr_data)
 })
-cs1_pu_niche_data$Prioritisation <- factor(as.character(
-                                      cs1_pu_niche_data$Prioritisation),
-                                      levels = names(cs1_prioritisations))
-cs1_dp_niche_data$Prioritisation <- factor(as.character(
-                                      cs1_dp_niche_data$Prioritisation),
-                                      levels = names(cs1_prioritisations))
+
+cs1_pu_niche_data$Prioritisation[grepl("niche", as.character(cs1_pu_niche_data$Prioritisation))] <- "Amount & space targets"
+
+cs1_dp_niche_data$Prioritisation[grepl("niche", as.character(cs1_dp_niche_data$Prioritisation))] <- "Amount & space targets"
+
+cs1_pu_niche_data$Prioritisation <- factor(cs1_pu_niche_data$Prioritisation, levels = rev(unique(cs1_pu_niche_data$Prioritisation)))
+
+cs1_dp_niche_data$Prioritisation <- factor(cs1_dp_niche_data$Prioritisation, levels = rev(unique(cs1_dp_niche_data$Prioritisation)))
 
 # make letter data.frame
 cs1_letters_data <- expand.grid(Species = levels(cs1_pu_niche_data$Species),

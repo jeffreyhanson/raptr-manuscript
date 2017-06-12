@@ -49,7 +49,7 @@ push_ms:
 article: article/article.docx article/article.pdf article/figures.pdf article/supporting-information.pdf
 
 article/article.docx: code/rmarkdown/preamble.tex code/rmarkdown/article.Rmd
-	-R --no-save -e "rmarkdown::render('code/rmarkdown/article.Rmd', output_file='article.tex')"
+	$(R) --no-save -e "rmarkdown::render('code/rmarkdown/article.Rmd', output_file='article.tex')"
 	rm -f code/rmarkdown/article.md
 	cd code/rmarkdown && pandoc +RTS -K512m -RTS article.tex -o article.docx --highlight-style tango --latex-engine pdflatex --include-in-header preamble.tex --variable graphics=yes --variable 'geometry:margin=1in' --bibliography references.bib --filter /usr/bin/pandoc-citeproc
 	rm -f code/rmarkdown/article.tex
@@ -78,7 +78,7 @@ article/article.pdf: code/rmarkdown/article.Rmd
 	rm -f code/rmarkdown/article.knit.md
 	rm -f code/rmarkdown/article.tex
 	mv code/rmarkdown/article.pdf article/
-	
+
 # commands for running analysis
 analysis: data/final/results.rda
 
