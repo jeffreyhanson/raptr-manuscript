@@ -62,7 +62,7 @@ column_width <- 2.75591
 
 # Figures
 
-```{r, echo = FALSE, message = FALSE, fig.height = 2, fig.width = 2, fig.cap = "Attribute space example. This environmental attribute space has dimensions relating to annual temperature ($^{\\circ}$C) and rainfall (mm). Letters denote the environmental conditions associated with the geographic locations where four hypothetical populations are found. Points represent demand points. In this space, populations close to each other inhabit similar environmental conditions."}
+```{r, echo = FALSE, message = FALSE, fig.height = 2, fig.width = 2, fig.cap = "Attribute space example. This environmental attribute space has dimensions relating to annual temperature ($^{\\circ}$C) and rainfall (mm). Letters denote the environmental conditions associated with the geographic locations where four hypothetical populations are found. Points denote demand points. In this space, populations close to each other inhabit similar environmental conditions."}
 ## generate data
 # population data
 populations <- data.frame(population = LETTERS[1:4],
@@ -576,7 +576,7 @@ p4 <- ggplot2::ggplot() +
 gridExtra::grid.arrange(p1, p2, p3, p4, ncol = 2)
 ```
 
-```{r, echo = FALSE, fig.height = 2.5, fig.width = column_width, fig.cap = paste0("Prioritizations for the second case study. Panels (a--b) show prioritizations generated using different parameters. Polygons denote planning units. Dark green planning units were selected for protection. Panel (a) shows the planning units selected when using ",cs2_parameters$amount_target * 100," % amount targets. Panel (b) shows the planning units selected when using ",cs2_parameters$amount.target*100," % amount targets and ",cs2_parameters$genetic_target * 100," % space targets. Panels (c--d) show the solutions in the genetic space. Each point corresponds to a planning unit. The coordinates of the points represent the typical genetic characteristics of individuals sampled in that planning unit (based on an NMDS of the binary loci data). Planning units associated with points that are closer together contain individuals with more similar genetic characteristics than planning units that are further apart.")}
+```{r, echo = FALSE, fig.height = 2.5, fig.width = column_width, fig.cap = paste0("Prioritizations for the second case study. Panels (a--b) show prioritizations generated using different parameters. Polygons denote planning units. Dark green planning units were selected for protection. Panel (a) shows the planning units selected when using ",cs2_parameters$amount_target * 100," % amount targets. Panel (b) shows the planning units selected when using ",cs2_parameters$amount.target*100," % amount targets and ",cs2_parameters$genetic_target * 100," % space targets. Panels (c--d) show the solutions in the genetic space. Each point corresponds to a planning unit. The coordinates of the points denote the typical genetic characteristics of individuals sampled in that planning unit (based on an NMDS of the binary loci data). Planning units associated with points that are closer together contain individuals with more similar genetic characteristics than planning units that are further apart.")}
 # prepare spatial data
 cs2_sel_grid_sub_fpolygons <- cs2_grid_sub_fpolygons
 cs2_sel_grid_sub_fpolygons$Title1 <-"Amount target"
