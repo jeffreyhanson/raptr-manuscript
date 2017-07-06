@@ -1,8 +1,8 @@
-raptr: Representative and Adequate Prioritisation Toolkit in R
-==============================================================
-[![Status](https://img.shields.io/badge/status-in%20press-yellow.svg?style=flat-square)]()
+## raptr: Representative and Adequate Prioritization Toolkit in R
+
+[![Status](https://img.shields.io/badge/status-peer%20reviewed-green.svg?style=flat-square)]()
 [![License (GPL version 3)](https://img.shields.io/badge/license-GNU%20GPL%20version%203-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/GPL-3.0)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.823479.svg)](https://doi.org/10.5281/zenodo.823479)
+[![DOI](https://img.shields.io/badge/DOI-XXXXXXXXX-blue.svg?style=flat-square)](https://doi.org/XXXX/zenodo.XXXXX)
 
 [Jeffrey O. Hanson](http://www.jeffrey-hanson.com), [Jonathan R. Rhodes](https://rhodesconservation.com/people/jonathan-rhodes/), [Hugh P. Possingham](http://www.possinghamlab.org/people-new/all-lab-members/570-hugh-possingham.html), [Richard A. Fuller](https://www.fullerlab.org/drrichardfuller/)
 
@@ -20,7 +20,7 @@ Correspondence should be addressed to [jeffrey.hanson@uqconnect.edu.au](mailto:j
 
 ### Overview
 
-This repository contains the source code for the manuscript entitled "_raptr: Representative and Adequate Prioritisation Toolkit in R_". For more information on the _raptr R_ package, [check out the official version on CRAN](https://cran.r-project.org/web/packages/raptr/index.html) or the [the development version](http://www.github.com/jeffreyhanson/raptr).
+This repository contains the data, code, and results that underpins the manuscript "_raptr: Representative and Adequate Prioritisation Toolkit in R_". This manuscript has recently been accepted to the journal [_Methods in Ecology and Evolution_](http://besjournals.onlinelibrary.wiley.com/hub/journal/10.1111/(ISSN)2041-210X/). For more information on the _raptr R_ package, [check out the official version on CRAN](https://cran.r-project.org/web/packages/raptr/index.html) or the [the development version](http://www.github.com/jeffreyhanson/raptr).
 
 [Download our data, code, results here](https://github.com/jeffreyhanson/raptr-manuscript/releases/latest). Alternatively, clone this repository, and rerun the entire analysis on your own computer using the system command `make all`.
 
