@@ -7,7 +7,7 @@ raptr: Representative and Adequate Prioritisation Toolkit in R
 
 Correspondence should be addressed to [jeffrey.hanson@uqconnect.edu.au](mailto:jeffrey.hanson@uqconnect.edu.au)
 
-## Abstract
+### Abstract
 
 1. An underlying aim in conservation planning is to maximize the long-term persistence of biodiversity. To fulfill this aim, the ecological and evolutionary processes that sustain biodiversity must be preserved. One way to conserve such processes at the feature level (eg. species, ecosystem) is to preserve a sample of the feature (eg. individuals, areas) that is representative of the intrinsic or extrinsic physical attributes that underpin the process of interest. For example, by conserving a sample of populations with local adaptations---physical attributes associated with adaptation---that is representative of the range of adaptations found in the species, protected areas can maintain adaptive processes by ensuring these adaptations are not lost. Despite this, current reserve selection methods overwhelmingly focus on securing an adequate amount of area or habitat for each feature. Little attention has been directed towards capturing a representative sample of the variation within each feature.
 
