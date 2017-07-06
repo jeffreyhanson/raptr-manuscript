@@ -29,7 +29,7 @@ This repository contains the data, code, and results that underpins the manuscri
 * code
 	+ [_R_](https://www.r-project.org): scripts used to run the analysis
 	+ _parameters_: files used to run analysis in [TOML format](https://github.com/toml-lang/toml)
-	+ [_rmarkdown_](https://wwww.rmarkdown.rstudio.com) files used to compile them manuscript
+	+ [_rmarkdown_](http://rmarkdown.rstudio.com) files used to compile them manuscript
 * data
 	+ _raw_: raw data used to run the analysis
 	+ _intermediate_: results generated during processing
