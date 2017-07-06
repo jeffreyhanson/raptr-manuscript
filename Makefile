@@ -53,7 +53,7 @@ article/article.pdf: code/rmarkdown/article.Rmd code/rmarkdown/references.bib co
 	rm -f code/rmarkdown/article.md
 	rm -f code/rmarkdown/article.utf8.md
 	rm -f code/rmarkdown/article.knit.md
-	rm -f code/rmarkdown/article.tex
+	mv code/rmarkdown/article.tex article/
 	mv code/rmarkdown/article.pdf article/
 
 article/article.docx: code/rmarkdown/preamble.tex code/rmarkdown/article.Rmd code/rmarkdown/references.bib code/rmarkdown/reference-style.csl
@@ -68,7 +68,7 @@ article/supporting-information.pdf: code/rmarkdown/preamble.tex code/rmarkdown/s
 	rm -f code/rmarkdown/supporting-information.md
 	rm -f code/rmarkdown/supporting-information.utf8.md
 	rm -f code/rmarkdown/supporting-information.knit.md
-	rm -f code/rmarkdown/supporting-information.tex
+	mv code/rmarkdown/supporting-information.tex article/
 	mv code/rmarkdown/supporting-information.pdf article/
 
 article/figures.pdf: code/rmarkdown/figures.Rmd
@@ -76,7 +76,7 @@ article/figures.pdf: code/rmarkdown/figures.Rmd
 	rm -f code/rmarkdown/figures.md
 	rm -f code/rmarkdown/figures.utf8.md
 	rm -f code/rmarkdown/figures.knit.md
-	rm -f code/rmarkdown/figures.tex
+	# rm -f code/rmarkdown/figures.tex
 	mv code/rmarkdown/figures.pdf article/
 
 # commands for running analysis
