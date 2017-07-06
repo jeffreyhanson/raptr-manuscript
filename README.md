@@ -20,9 +20,9 @@ Correspondence should be addressed to [jeffrey.hanson@uqconnect.edu.au](mailto:j
 
 ### Overview
 
-This repository contains the data, code, and results that underpins the manuscript "_raptr: Representative and Adequate Prioritisation Toolkit in R_". This manuscript has recently been accepted to the journal [_Methods in Ecology and Evolution_](http://besjournals.onlinelibrary.wiley.com/hub/journal/10.1111/(ISSN)2041-210X/). For more information on the _raptr R_ package, [check out the official version on CRAN](https://cran.r-project.org/web/packages/raptr/index.html) or the [the development version](http://www.github.com/jeffreyhanson/raptr).
+This repository contains the data, code, and results that underpins the manuscript "_raptr: Representative and Adequate Prioritisation Toolkit in R_". This manuscript has been accepted to the journal [_Methods in Ecology and Evolution_](http://besjournals.onlinelibrary.wiley.com/hub/journal/10.1111/(ISSN)2041-210X/). For more information on the _raptr R_ package, [check out the official version on CRAN](https://cran.r-project.org/web/packages/raptr/index.html) or the [the development version](http://www.github.com/jeffreyhanson/raptr).
 
-[Download our data, code, results here](https://github.com/jeffreyhanson/raptr-manuscript/releases/latest). Alternatively, clone this repository, and rerun the entire analysis on your own computer using the system command `make all`.
+[Download our data, code, results here](https://doi.org/10.5281/zenodo.823768). Alternatively, clone this repository, and rerun the entire analysis on your own computer using the system command `make all`.
 
 * article
 	+ manuscript main text, figures, and supporting information
