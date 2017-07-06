@@ -2,6 +2,7 @@ raptr: Representative and Adequate Prioritisation Toolkit in R
 ==============================================================
 [![Status](https://img.shields.io/badge/status-in%20press-yellow.svg?style=flat-square)]()
 [![License (GPL version 3)](https://img.shields.io/badge/license-GNU%20GPL%20version%203-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/GPL-3.0)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.823479.svg)](https://doi.org/10.5281/zenodo.823479)
 
 [Jeffrey O. Hanson](http://www.jeffrey-hanson.com), [Jonathan R. Rhodes](https://rhodesconservation.com/people/jonathan-rhodes/), [Hugh P. Possingham](http://www.possinghamlab.org/people-new/all-lab-members/570-hugh-possingham.html), [Richard A. Fuller](https://www.fullerlab.org/drrichardfuller/)
 
