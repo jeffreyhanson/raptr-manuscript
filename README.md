@@ -24,15 +24,17 @@ This repository contains the source code for the manuscript entitled "_raptr: Re
 [Download our data, code, results here](https://github.com/jeffreyhanson/raptr-manuscript/releases/latest). Alternatively, clone this repository, and rerun the entire analysis on your own computer using the system command `make all`.
 
 * article
-	+ manuscript main text, figures, tables, and supporting information
-* data
-	+ _raw_: raw data used to run the analysis
-	+ _intermediate_: results generated during processing
-	+ _final_: results used in the paper
+	+ manuscript main text, figures, and supporting information
 * code
 	+ [_R_](https://www.r-project.org): scripts used to run the analysis
 	+ _parameters_: files used to run analysis in [TOML format](https://github.com/toml-lang/toml)
 	+ [_rmarkdown_](https://wwww.rmarkdown.rstudio.com) files used to compile them manuscript
+* data
+	+ _raw_: raw data used to run the analysis
+	+ _intermediate_: results generated during processing
+	+ _final_: results used in the paper
+* packrat
+	+ _R_ packages used for analysis
 
 ### Software required
 

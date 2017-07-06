@@ -209,7 +209,7 @@ cs1_pca_fpoints <- plyr::ldply(seq_len(cs1_parameters$number_pc_layers),
 p1 <- ggplot2::ggplot() +
   ggplot2::geom_polygon(data = aus_fpolygons,
                         ggplot2::aes(x = long, y = lat, group = group),
-                        fill = "grey85", color = "grey70") +
+                        fill = "grey85", color = "grey70", size = 0.05) +
   ggplot2::geom_raster(data = dplyr::filter(cs1_pca_fpoints,
                                             pc == unique(pc)[1]),
                        ggplot2::aes(x = x, y = y, fill = Score)) +
@@ -241,7 +241,7 @@ p1 <- ggplot2::ggplot() +
 p2 <- ggplot2::ggplot() +
   ggplot2::geom_polygon(data = aus_fpolygons,
                         ggplot2::aes(x = long, y = lat, group = group),
-                        fill="grey85", color="grey70") +
+                        fill="grey85", color="grey70", size = 0.05) +
   ggplot2::geom_raster(data = dplyr::filter(cs1_pca_fpoints,
                                             pc == unique(pc)[2]),
                        ggplot2::aes(x = x, y = y, fill = Score)) +
@@ -434,7 +434,7 @@ cs2_spp_grid_sub_letters_data <- data.frame(
 p1 <- ggplot2::ggplot() +
   ggplot2::geom_polygon(data = countries_fpolygons,
                         ggplot2::aes(x = long, y = lat, group = group),
-                        fill = "grey85", color = "grey70") +
+                        fill = "grey85", color = "grey70", size = 0.05) +
   ggplot2::geom_polygon(data = cs2_spp_grid_fpolygons,
                         ggplot2::aes(x = long, y = lat, group = group,
                                      fill = Occupancy),
@@ -463,7 +463,7 @@ p1 <- ggplot2::ggplot() +
 p2 <- ggplot2::ggplot() +
   ggplot2::geom_polygon(data = countries_fpolygons,
                         ggplot2::aes(x =long, y = lat, group = group),
-                        fill = "grey85", color = "grey70") +
+                        fill = "grey85", color = "grey70", size = 0.05) +
   ggplot2::geom_polygon(data = cs2_spp_grid_sub_fpolygons,
                         ggplot2::aes(x = long, y = lat, group = group,
                                      fill = Cost),
@@ -499,7 +499,7 @@ p2 <- ggplot2::ggplot() +
 p3 <- ggplot2::ggplot() +
   ggplot2::geom_polygon(data = countries_fpolygons,
                         ggplot2::aes(x = long, y = lat, group = group),
-                        fill = "grey85", color = "grey70") +
+                        fill = "grey85", color = "grey70", size = 0.05) +
   ggplot2::geom_polygon(data = cs2_spp_grid_sub_fpolygons,
                         ggplot2::aes(x = long, y = lat, group = group,
                                      fill = nmds1),
@@ -536,7 +536,7 @@ p3 <- ggplot2::ggplot() +
 p4 <- ggplot2::ggplot() +
   ggplot2::geom_polygon(data = countries_fpolygons,
                         ggplot2::aes(x = long, y = lat, group = group),
-                        fill="grey85", color="grey70") +
+                        fill="grey85", color="grey70", size = 0.05) +
   ggplot2::geom_polygon(data = cs2_spp_grid_sub_fpolygons,
                         ggplot2::aes(x = long, y = lat, group = group,
                                      fill = nmds2),
@@ -634,7 +634,7 @@ cs2_sel_space_letters_data <- data.frame(
 p1 <- ggplot2::ggplot() +
   ggplot2::geom_polygon(data = countries_fpolygons,
                         ggplot2::aes(x = long, y = lat, group = group),
-                        fill = "grey85", color = "grey70") +
+                        fill = "grey85", color = "grey70", size = 0.05) +
   ggplot2::geom_polygon(data = cs2_sel_grid_sub_fpolygons,
                         ggplot2::aes(x = long, y = lat, group = group,
                                      fill = Amount_selection), color="black") +
@@ -664,7 +664,7 @@ p1 <- ggplot2::ggplot() +
 p2 <- ggplot2::ggplot() +
   ggplot2::geom_polygon(data = countries_fpolygons,
                         ggplot2::aes(x=long, y=lat, group=group),
-                        fill="grey85", color="grey70") +
+                        fill="grey85", color="grey70", size = 0.05) +
   ggplot2::geom_polygon(data = cs2_sel_grid_sub_fpolygons,
                         ggplot2::aes(x=long, y=lat, group=group,
                                      fill = Amount_genetic_selection),
