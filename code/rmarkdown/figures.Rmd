@@ -134,7 +134,7 @@ ggplot2::ggplot() +
   ggplot2::facet_wrap(~ species, ncol = 3)
 ```
 
-```{r, echo = FALSE, fig.height = 3.5, fig.width = 2 * column_width, fig.cap = paste0("Prioritizations for the simulation study. Each panel shows a prioritization generated for a single species using a set of parameters. Squares denote planning units. Dark green planning units were selected for protection. Each row of panels show prioritizations generated for a different species. Each column of panels corresponds to a different set of parameters used to generate the prioritization.")}
+```{r, echo = FALSE, fig.height = 3.5, fig.width = 2 * column_width, fig.cap = paste0("Prioritizations for the simulation study. Each panel shows a prioritization generated for a single species using a set of parameters. Squares denote planning units. Dark green planning units were selected for protection. Each row of panels show prioritizations generated for a different species. Each column of panels corresponds to a different set of parameters used to generate the prioritizations.")}
 # prepare data
 sim_pus_sel_fpolygons <- plyr::ldply(seq_len(nrow(sim_spp_results)), function(i) {
     curr_data <- sim_pus_fpolygons %>%
