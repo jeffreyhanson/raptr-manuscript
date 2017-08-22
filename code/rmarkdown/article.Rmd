@@ -228,7 +228,7 @@ JOH is supported by an Australian Government Research Training Program (RTP) Sch
 JOH performed the analysis and drafted the manuscript. All authors developed the study and edited the manuscript.
 
 # Data accessibility
-The \texttt{raptr R} package can be downloaded from The Comprehensive R Archive Network (\url{https://CRAN.R-project.org/package=raptr}). To permit replication and validation of this study, all data, code, and results are stored in an online repository (\url{https://github.com/jeffreyhanson/raptr-manuscript}) and are available at the DOI: \texttt{10.5281/zenodo.823768}.
+The \texttt{raptr R} package can be downloaded from The Comprehensive R Archive Network (\url{https://CRAN.R-project.org/package=raptr}). To permit replication and validation of this study, all data, code, and results are stored in an online repository (\url{https://github.com/jeffreyhanson/raptr-manuscript}) and are available at the DOI: \texttt{10.5281/zenodo.846477}.
 
 # References
 
