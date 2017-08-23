@@ -144,7 +144,7 @@ Although the reserve selection problems presented here are non-linear (see Appen
 
 # Examples
 
-To showcase the behavior of the unreliable formulation, we conducted a simulation study and two case studies. To assess how long it would take to solve various sized problems, we also conducted a benchmark analysis (Appendix S2). We completed the analyses using \texttt{R} [version `r getRversion()`; @r192] and solved all optimization problems to within `r general_parameters$MIPGap * 100` % of optimality using \texttt{Gurobi} (version 7.0.2).
+To showcase the behavior of the unreliable formulation, we conducted a simulation study and two case studies. To assess how long it would take to solve various sized problems, we also conducted a benchmark analysis (Appendix S2). We completed the analyses using \texttt{R} [version `r getRversion()`; @r192] and \texttt{raptr} (version 0.0.3). We solved all optimization problems to within `r general_parameters$MIPGap * 100` % of optimality using \texttt{Gurobi} (version 7.0.2).
 
 ## SIMULATION STUDY
 ### Methods
@@ -228,7 +228,7 @@ JOH is supported by an Australian Government Research Training Program (RTP) Sch
 JOH performed the analysis and drafted the manuscript. All authors developed the study and edited the manuscript.
 
 # Data accessibility
-The \texttt{raptr R} package can be downloaded from The Comprehensive R Archive Network (\url{https://CRAN.R-project.org/package=raptr}). To permit replication and validation of this study, all data, code, and results are stored in an online repository (\url{https://github.com/jeffreyhanson/raptr-manuscript}) and are available at the DOI: \texttt{10.5281/zenodo.846477}.
+The \texttt{raptr R} package can be downloaded from The Comprehensive R Archive Network (\url{https://CRAN.R-project.org/package=raptr}). To permit replication and validation of this study, all data, code, and results are stored in an online repository (\url{https://github.com/jeffreyhanson/raptr-manuscript}) and are available at the digital object identifier (DOI) \texttt{10.5281/zenodo.847016}.
 
 # References
 
